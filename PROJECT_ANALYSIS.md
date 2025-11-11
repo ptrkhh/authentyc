@@ -4,9 +4,7 @@
 
 > Dual-market scope (dating and hiring) is baked into Phase 1, stretching focus and resources before validating a single use case (MASTER_PLAN_BUSINESS.md:15; MASTER_PLAN_BUSINESS.md:154-187; MASTER_PLAN_TECHNICAL.md:589-705).
 
-Phase 1 should be dating. Once dating reaches a certain threshold (MAU, for example) then we will start developing the hiring version
-
-Actually I am now thinking of doing friendship and/or groupschats. What else can you think of by utilizing this ChatGPT history theory. It must be interpersonal though, not a self-reflection bullshit
+Phase 1 should be dating. Once dating reaches a certain threshold (MAU, for example) then we will start developing the hiring version. Also see RELATIONSHIP_EXPANSIONS.md, we might not even be doing dating at all.
 
 > The onboarding path assumes users will copy prompts, generate ChatGPT share links, and hand them over—each step is high-friction and unproven for cold users (MASTER_PLAN_BUSINESS.md:34-51; MASTER_PLAN_TECHNICAL.md:85-135).
 
