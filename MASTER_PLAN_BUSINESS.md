@@ -10,15 +10,17 @@ Build the world's leading AI-powered personality insights platform by analyzing 
 ## The Opportunity
 **Problem**: Modern profiles are curated fiction. Resumes, dating bios, and interviews can be gamed. Truth hides in ChatGPT chats where people reveal authentic thinking.
 
-**Solution**: Analyze ChatGPT conversation summaries (via share links) to reveal:
+**Solution**: Analyze candidates' authentic AI conversation histories (ChatGPT, Claude, Gemini) to reveal:
 - Cognitive patterns & problem-solving approach
 - Communication style & authenticity
 - Values, priorities, and technical depth
 - Leadership potential
 
-**Why ChatGPT?** 80% marketshare, 200M+ weekly users, humanity's most candid mirror.
+**Start with ChatGPT. Why?** 80% marketshare, 200M+ weekly users, humanity's most candid mirror.
 
-**Example Prompt**: "Based on everything you know about me from our past chats, please describe my personality, intelligence, and communication style as objectively and as detailed as possible."
+**Example Prompt (user)**: "Based on everything you know about me from our past chats, please describe my personality, intelligence, and communication style as objectively and as detailed as possible."
+
+**Example Prompt (server)**: "Analyze compatibility between Person A and Person B for romantic relationship potential. Be objective and evidence-based."
 
 ## Strategy: Consumer → B2B → (Maybe) B2G
 
@@ -165,8 +167,6 @@ Month 19-24: Formalize or deploy multi-LLM backup
 
 **Product**: Domain names? Prevent fake conversations? Multi-LLM support timing?
 **B2B**: Which segments first (tech/search/platforms)? Pricing model (per-candidate/seat/usage)?
-**B2G**: Which agencies (DIU/DoD/OPM)? FedRAMP level (Moderate/High)? Ethics oversight structure?
-**Funding**: Bootstrap vs. raise? Pre-seed ($250K-500K) now, Seed ($2M-3M) month 6-9, Series A ($10M-20M) month 18-24?
 
 ## Why This Works
 1. De-risk tech in consumer before enterprise
