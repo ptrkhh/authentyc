@@ -3,12 +3,12 @@
 ## Vision & End Goal
 Build the world's leading AI-powered personality insights platform by analyzing ChatGPT conversation histories. Transform high-stakes decisions in hiring, security clearance, team formation, and leadership development.
 
-**End Goal**: B2B market dominance → B2G aspirational (if conditions align)
+**End Goal**: B2B market dominance, optional B2G
 - **B2B**: Enterprise talent assessment, executive recruiting ($500B+ TAM)
 - **B2G**: Security clearance evaluation, government hiring ($50B+ market) - long-term only
 
 ## The Opportunity
-**Problem**: Modern profiles are curated fiction. Resumes, dating bios, and interviews can be gamed. Truth hides in ChatGPT chats where people reveal authentic thinking.
+**Problem**: Modern profiles are curated fiction. Resumes, dating bios, and interviews are all performative. Truth hides in ChatGPT chats where people reveal authentic thinking.
 
 **Solution**: Analyze candidates' authentic AI conversation histories (ChatGPT, Claude, Gemini) to reveal:
 - Cognitive patterns & problem-solving approach
@@ -20,61 +20,58 @@ Build the world's leading AI-powered personality insights platform by analyzing 
 
 **Example Prompt (user)**: "Based on everything you know about me from our past chats, please describe my personality, intelligence, and communication style as objectively and as detailed as possible."
 
-**Example Prompt (server)**: "Analyze compatibility between Person A and Person B for romantic relationship potential. Be objective and evidence-based."
+**Example Prompt (server)**: "Analyze compatibility between Person A and Person B for romantic relationship potential. Be objective and evidence-based. <Person A copy-pasted output> <Person B copy-pasted output>"
 
-## Strategy: Consumer → B2B → (Maybe) B2G
+## Strategy: Multi-Category Testing → B2B → (Maybe) B2G
 
-### Phase 1: Consumer Proof-of-Concept (Months 1-12)
-**Goal**: Validate technology works
-- Launch RealMatch dating app to prove ChatGPT analysis predicts compatibility
-- Target: 10K users, 500+ matches, major press coverage
-- **Why dating first?** Fast validation, high motivation to share, immediate feedback
+### Phase 1: Multi-Category Validation (Months 1-12)
+**Goal**: Test all three categories, identify strongest segment, validate technology
+- Launch Authentyc with three tracks: Dating, Hiring / Job Seeking, and Founder Matching
+- Collect waitlist signups across all categories to gauge demand
+- Pick the category with strongest interest (>40% of signups) and best engagement metrics
+- Target: 500-1K active users in winning category, 60%+ satisfaction, case studies
 
-**Success Gate**: 60%+ prediction accuracy + credible case studies
+**Success Gate**: Clear category winner + 60%+ prediction accuracy + credible case studies
 
 ### Phase 2: B2B Enterprise (Months 13-24+) ← PRIMARY FOCUS
-**Goal**: $1M-50M ARR from enterprise hiring
+**Goal**: $500K-5M ARR from enterprise hiring (conservative target)
 - Launch TalentSignal for recruiting/talent assessment
 - Target: Tech companies, executive search, HR platforms
-- Pricing: $10K-100K annual contracts
+- Pricing: $30K-75K annual contracts
 - Use cases: Technical hiring, executive assessment, team compatibility
+- Leverage Phase 1 data and case studies for credibility
 
-**Revenue**: $500K-5M ARR initially → $10M-50M at scale
+**Revenue**: $500K-2M ARR initially → $5M-10M at scale
 
-### Phase 3: B2G Government (Years 3-5+) - CONDITIONAL
-**When**: Only after $5M+ B2B ARR, proven results, market pull, $2M-5M compliance budget
-**Use cases**: Security clearance, specialized hiring, leadership pipeline
-**Pricing**: $1M-50M multi-year contracts
-**Barriers**: FedRAMP certification, security clearances, 18-36 month sales cycles
+### Phase 3: Three Possible Paths
 
-**Decision at $5M B2B ARR**:
-- Path A: Scale B2B to $20M-50M ARR (safest)
+**Decision at $3M B2B ARR**:
+- Path A: Scale B2B to $10M-20M ARR (safest, recommended)
 - Path B: Pursue B2G (highest risk/reward)
 - Path C: Exit via acquisition
 
 ## Brand Architecture
-- **Authentyc.AI**: Platform brand (enterprise-focused)
-- **RealMatch**: Consumer dating (10% resources, proof-of-concept)
-- **TalentSignal**: B2B hiring (90% resources, primary revenue)
-- **ClearanceIQ**: B2G product (0% unless Phase 3 pursued)
+- **Authentyc**: Primary brand for Phase 1 multi-category testing
+- **Phase 1 Categories**: Dating, Hiring / Job seeking, Founder Matching (equal weighting)
+- **TalentSignal**: B2B hiring product (Phase 2, primary revenue driver)
+- **ClearanceIQ**: B2G product (Phase 3, only if pursued)
 
 ## Market Economics
 | Market | TAM | ARPU | Our Focus |
 |--------|-----|------|-----------|
-| Consumer Dating | $5B | $10-30/mo | Proof only |
-| Enterprise Hiring | $500B+ | $10K-100K/yr | **PRIMARY** |
-| Government | $50B+ | $1M-50M/contract | Long-term |
+| Consumer (Dating/Founder) | $5B | $10-30/mo | Phase 1 validation |
+| Enterprise Hiring | $500B+ | $30K-75K/yr | **Phase 2 PRIMARY** |
+| Government | $50B+ | $1M-10M/contract | Phase 3 (conditional) |
 
 ## OpenAI Partnership Strategy
 
 ### Approach: Build Without Permission First
 - Use public share links (not API abuse)
 - Prove concept before asking for partnership
-- Backup: Claude, Gemini adapters if blocked
 
 ### When to Contact OpenAI
-**DON'T contact until**: 1K+ users, press coverage, AND ($100K+ MRR OR Series A funding)
-**Ideal timing**: 10K+ users, $500K+ ARR, Month 13-18
+**DON'T contact until**: 500+ active users, press coverage, AND clear traction in winning category
+**Ideal timing**: 1K+ users, strong engagement metrics, Month 9-15
 
 ### What to Prepare
 1. **Traction package**: User metrics, success stories, press, growth charts
@@ -96,46 +93,47 @@ Month 13-18: First contact (Option A)
 Month 19-24: Formalize or deploy multi-LLM backup
 ```
 
-## User Flows (Condensed)
+## User Flows
 
-**Dating (RealMatch)**:
-1. Swipe example profiles → Save pending match
-2. Basic info (name, photo, gender)
-3. Copy personality prompt → Paste in ChatGPT → Share link
+**Phase 1 - All Categories (Dating, Hiring, Founder Matching)**:
+1. User swipes through potential person/job matches
+2. After ~5 swipes, user must create a profile: name, photo, category-specific info
+2. Copy personality prompt → Paste in ChatGPT → Get your profile
+3. Share the ChatGPT link with us
 4. Consent screen → Submit share link
-5. Process pending match immediately
+5. We analyze and give a compatibility summary with the previous matches
+6. From now on, each swipe & match contains an LLM summary of your compatibility
 
-**Hiring (TalentSignal)**:
-- Recruiters: Company setup → Access candidate profiles
-- Candidates: Same as dating flow but swipe on jobs
+**Phase 2 - B2B Hiring (TalentSignal)**:
+- Recruiters: Company setup → Post roles → Access candidate compatibility scores
+- Candidates: Share link + job preferences → Get matched to compatible roles
 
 ## Success Metrics (Phase-Gated)
 
-### Phase 1: Consumer (Months 1-12)
-- **MVP**: 70% completion rate, 80% "helpful" ratings
-- **Launch**: 10K users, 500 matches, 65%+ accuracy, 5+ press features
-- **Gate**: 60%+ accuracy before B2B
+### Phase 1: Multi-Category Validation (Months 1-12)
+- **Month 1**: 100+ waitlist signups across all categories
+- **Month 3**: 300+ signups, clear category leader (>40% of signups)
+- **Month 6**: 500+ active users in winning category, 60%+ satisfaction
+- **Month 12**: 1K+ users, 100+ successful matches/placements, 5+ case studies
+- **Gate**: 60%+ prediction accuracy + clear category winner before B2B
 
 ### Phase 2: B2B (Months 13-24)
-- **Early**: 50+ leads, 5 pilot customers ($10K-25K), 3+ case studies
-- **Scale**: $500K-2M ARR, 20-50 customers, <10% churn
-- **Gate at $5M ARR**: Choose Path A/B/C
+- **Early**: 30+ qualified leads, 3-5 pilot customers ($30K-50K each), 2+ case studies
+- **Scale**: $500K-1M ARR Year 1, $2M-3M ARR Year 2, <15% churn
+- **Gate at $3M ARR**: Choose Path A/B/C
 
-### Phase 3: B2G (If pursued)
-- **Entry**: FedRAMP certified, 5+ cleared engineers, 2+ pilots
-- **Scale**: $10M+ ARR, $1M-10M deals, 70-80% renewal rate
+### Phase 3: The Three Paths
+TBD
 
 ## Risk Mitigation
 
 | Risk | Mitigation |
 |------|------------|
 | OpenAI blocks scraping | Build first with user leverage; backup: Claude/Gemini adapters |
-| Low prediction accuracy | Validate with 50 test users; <60% = pivot before B2B |
 | Privacy backlash | Extreme transparency, user control, consent-first |
 | Discrimination lawsuits | EEOC compliance, disparate impact testing, "supplemental only" |
 | Can't reach B2B | Separate brands; survey at month 6; treat consumer as R&D if needed |
 | Competitors copy | Move fast, network effects, enterprise integrations |
-| FedRAMP too expensive | Only pursue B2G with $5M+ ARR; partner with AWS GovCloud |
 | Ethical concerns | Ethics board, use case limits, refuse unethical contracts |
 
 ## Development Timeline (Concierge MVP)
@@ -157,11 +155,11 @@ Month 19-24: Formalize or deploy multi-LLM backup
 **Phase 3**: LLM fine-tuning, real-time matching, advanced filters, LinkedIn/GitHub integration
 
 ## Exit Scenarios (3-5 Years)
-- **Conservative**: $10M-20M B2B ARR → Exit at $100M-300M (HR tech)
-- **Ambitious**: $20M-50M B2B ARR → Exit at $200M-500M or IPO
-- **Moonshot**: $50M-100M mixed ARR → Exit at $500M-1B (gov contractor)
+- **Conservative**: $5M-10M B2B ARR → Exit at $50M-150M (HR tech acquisition)
+- **Moderate**: $10M-20M B2B ARR → Exit at $100M-250M (strategic acquisition)
+- **Ambitious**: $20M-30M mixed ARR → Exit at $200M-400M or remain independent
 
-**Acquirers**: Workday, Oracle, LinkedIn (B2B) | Booz Allen, SAIC, Leidos (B2G)
+**Acquirers**: Workday, Oracle, LinkedIn, Greenhouse, Lever (B2B) | Booz Allen, SAIC (B2G)
 
 ## Open Questions
 
