@@ -1,0 +1,10 @@
+# Robots.txt for Authentyc Landing Page
+
+User-agent: *
+Allow: /
+
+# Disallow admin or sensitive paths (none for landing page)
+# Disallow: /admin
+
+# Sitemap
+Sitemap: https://authentyc.ai/sitemap.xml
