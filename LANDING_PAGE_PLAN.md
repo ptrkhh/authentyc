@@ -957,6 +957,7 @@ Body Small: 14px / 20px, font-weight: 400
 - Waitlist signups
 - Conversion rate (5-10% target)
 - Signups by category (hiring vs dating vs founder)
+- **Hiring breakdown: Recruiters vs Job Seekers**
 - "Has AI history" breakdown
 
 **Engagement:**
