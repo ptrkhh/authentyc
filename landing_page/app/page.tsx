@@ -13,6 +13,9 @@
  * 9. Footer
  */
 
+'use client';
+
+import { useState } from 'react';
 import { Hero } from '@/components/landing/Hero';
 import { ProblemSection } from '@/components/landing/ProblemSection';
 import { SolutionSection } from '@/components/landing/SolutionSection';
@@ -23,15 +26,24 @@ import { FAQ } from '@/components/landing/FAQ';
 import { FinalCTA } from '@/components/landing/FinalCTA';
 import { Footer } from '@/components/landing/Footer';
 import { PageAnalytics } from '@/components/analytics/PageAnalytics';
+import { WaitlistForm } from '@/components/forms/WaitlistForm';
 
 export default function Home() {
+  const [formOpen, setFormOpen] = useState(false);
+  const [preselectedCategory, setPreselectedCategory] = useState<string | undefined>(undefined);
+
+  const openForm = (category?: string) => {
+    setPreselectedCategory(category);
+    setFormOpen(true);
+  };
+
   return (
     <main className="min-h-screen">
       {/* Analytics tracking */}
       <PageAnalytics />
 
       {/* Hero Section */}
-      <Hero />
+      <Hero onCTAClick={() => openForm()} />
 
       {/* Problem Section */}
       <ProblemSection />
@@ -46,16 +58,23 @@ export default function Home() {
       <ChatAnalyzer />
 
       {/* Category Selection Cards */}
-      <CategoryCards />
+      <CategoryCards onCardClick={(category) => openForm(category)} />
 
       {/* FAQ Section */}
       <FAQ />
 
       {/* Final CTA */}
-      <FinalCTA />
+      <FinalCTA onCTAClick={() => openForm()} />
 
       {/* Footer */}
       <Footer />
+
+      {/* Waitlist Form Modal */}
+      <WaitlistForm
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        preselectedCategory={preselectedCategory}
+      />
     </main>
   );
 }

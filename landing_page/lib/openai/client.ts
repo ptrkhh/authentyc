@@ -1,18 +1,25 @@
 /**
- * OpenAI Client
+ * Gemini AI Client
  *
- * Wrapper for OpenAI API using gpt-4o-mini for cost-effective analysis.
+ * Wrapper for Google Gemini API using gemini-2.5-flash for cost-effective analysis.
  */
 
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('Missing OPENAI_API_KEY environment variable');
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error('Missing GEMINI_API_KEY environment variable');
 }
 
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Use gpt-4o-mini for cost-effectiveness (~$0.15 per 1M input tokens)
-export const MODEL = 'gpt-4o-mini';
+// Use gemini-2.5-flash for cost-effectiveness
+export const MODEL = 'gemini-2.5-flash';
+
+export const gemini = genAI.getGenerativeModel({
+  model: MODEL,
+  generationConfig: {
+    temperature: 0.7,
+    maxOutputTokens: 2048, // Increased to allow for thinking tokens + JSON output
+    responseMimeType: "application/json",
+  },
+});

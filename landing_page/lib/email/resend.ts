@@ -28,6 +28,9 @@ export async function sendEmail(params: SendEmailParams): Promise<SendEmailResul
     throw new Error('Missing RESEND_API_KEY environment variable');
   }
 
+  const emailDomain = process.env.RESEND_FROM_DOMAIN || 'authentyc.ai';
+  const fromEmail = params.from || `Authentyc <hello@${emailDomain}>`;
+
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -36,7 +39,7 @@ export async function sendEmail(params: SendEmailParams): Promise<SendEmailResul
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: params.from || 'Authentyc <hello@authentyc.ai>', // TODO: Verify email domain is configured in Resend
+        from: fromEmail,
         to: params.to,
         subject: params.subject,
         html: params.html,

@@ -25,14 +25,14 @@ export async function fetchChatGPTShareLink(shareUrl: string): Promise<FetchResu
     if (!url.hostname.includes('chatgpt.com') && !url.hostname.includes('chat.openai.com')) {
       return {
         success: false,
-        error: 'Invalid ChatGPT share link. Must be from chatgpt.com',
+        error: 'Please use a valid ChatGPT share link from chatgpt.com (not a regular chat URL)',
       };
     }
 
     if (!url.pathname.includes('/share/')) {
       return {
         success: false,
-        error: 'Invalid share link format. Must contain /share/',
+        error: 'This doesn\'t appear to be a shared link. Make sure to click the share icon and copy the share link.',
       };
     }
 
@@ -47,23 +47,32 @@ export async function fetchChatGPTShareLink(shareUrl: string): Promise<FetchResu
     });
 
     if (!response.ok) {
+      console.error('[fetcher] HTTP error:', response.status, shareUrl);
       return {
         success: false,
-        error: `Failed to fetch: ${response.status}`,
+        error: `Unable to access the shared link (HTTP ${response.status}). Please make sure the link is publicly accessible.`,
         statusCode: response.status,
       };
     }
 
     const html = await response.text();
 
+    console.log('[fetcher] Response received');
+    console.log('[fetcher] Response status:', response.status);
+    console.log('[fetcher] Response content-type:', response.headers.get('content-type'));
+    console.log('[fetcher] HTML length:', html.length);
+    console.log('[fetcher] HTML preview (first 1000 chars):', html.substring(0, 1000));
+
     // Basic validation
     if (!html.includes('ChatGPT') && !html.includes('OpenAI')) {
+      console.log('[fetcher] Validation failed: HTML does not contain ChatGPT or OpenAI');
       return {
         success: false,
         error: 'Invalid response - not a ChatGPT share page',
       };
     }
 
+    console.log('[fetcher] Validation passed');
     return { success: true, html, statusCode: 200 };
   } catch (error: any) {
     return {

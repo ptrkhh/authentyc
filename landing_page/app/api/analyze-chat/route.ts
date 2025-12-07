@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { analyzeRequestSchema } from '@/lib/utils/validation';
 import { fetchChatGPTShareLink, hashShareUrl } from '@/lib/chatgpt/fetcher';
 import { parseChatGPTShareHTML, validateParsedConversation } from '@/lib/chatgpt/parser';
-import { openai, MODEL } from '@/lib/openai/client';
+import { gemini } from '@/lib/openai/client';
 import { buildQuickAnalysisPrompt } from '@/lib/openai/prompts';
 import { supabaseServer } from '@/lib/supabase/server';
 
@@ -65,28 +65,57 @@ export async function POST(request: NextRequest) {
     const validation = validateParsedConversation(parsed);
 
     if (!validation.valid) {
+      console.error('[analyze-chat] Validation failed:', {
+        reason: validation.reason,
+        messageCount: parsed.messageCount,
+        hasPersonalityPrompt: parsed.hasPersonalityPrompt,
+        quality: parsed.estimatedQuality,
+      });
       return NextResponse.json(
         { error: validation.reason || 'Invalid conversation' },
         { status: 400 }
       );
     }
 
-    // Analyze with OpenAI
+    // Analyze with Gemini
     const prompt = buildQuickAnalysisPrompt(parsed);
-    const completion = await openai.chat.completions.create({
-      model: MODEL,
-      messages: [
-        { role: 'system', content: 'You are a personality analysis expert.' },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.7,
-      max_tokens: 500,
-      response_format: { type: 'json_object' },
+    const fullPrompt = `You are a personality analysis expert.\n\n${prompt}`;
+
+    console.log('[analyze-chat] Sending prompt to Gemini, length:', fullPrompt.length);
+
+    let result;
+    try {
+      result = await gemini.generateContent(fullPrompt);
+      console.log('[analyze-chat] Got result from Gemini');
+    } catch (err: any) {
+      console.error('[analyze-chat] Gemini API error:', err);
+      throw new Error(`Gemini API failed: ${err.message}`);
+    }
+
+    const response = await result.response;
+    console.log('[analyze-chat] Response details:', {
+      candidates: response.candidates?.length,
+      promptFeedback: response.promptFeedback,
+      firstCandidate: response.candidates?.[0] ? {
+        finishReason: response.candidates[0].finishReason,
+        safetyRatings: response.candidates[0].safetyRatings,
+        hasContent: !!response.candidates[0].content,
+      } : null
     });
 
-    const analysisText = completion.choices[0]?.message?.content;
+    // Check for blocked content
+    if (response.promptFeedback?.blockReason) {
+      console.error('[analyze-chat] Prompt blocked:', response.promptFeedback.blockReason);
+      throw new Error(`Content blocked: ${response.promptFeedback.blockReason}`);
+    }
+
+    const analysisText = response.text();
+    console.log('[analyze-chat] Analysis text length:', analysisText?.length);
+
     if (!analysisText) {
-      throw new Error('No response from OpenAI');
+      console.error('[analyze-chat] Empty response from Gemini');
+      console.error('[analyze-chat] Full response:', JSON.stringify(response, null, 2));
+      throw new Error('No response from Gemini');
     }
 
     const analysis = JSON.parse(analysisText);

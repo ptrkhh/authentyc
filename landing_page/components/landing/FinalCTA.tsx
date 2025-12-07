@@ -9,13 +9,17 @@
 
 import { trackEvent } from '@/lib/analytics/posthog';
 
-export function FinalCTA() {
+interface FinalCTAProps {
+  onCTAClick: () => void;
+}
+
+export function FinalCTA({ onCTAClick }: FinalCTAProps) {
   const handleCTAClick = () => {
     trackEvent('cta_clicked', {
       location: 'final_cta',
       button_text: 'Get Early Access',
     });
-    // TODO: Open waitlist form
+    onCTAClick();
   };
   return (
     <section className="py-20 px-4 bg-brand-primary text-white">

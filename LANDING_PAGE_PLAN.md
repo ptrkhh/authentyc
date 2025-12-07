@@ -168,6 +168,37 @@ mismatches you could have avoided.
 
 ---
 
+---
+
+### Section 3.5: Simulated Matches Demo (Interactive)
+
+**Goal**: Show, don't just tell. Let users see the value immediately.
+
+**Flow**:
+1. User pastes ChatGPT share link (or text).
+2. User selects category (Hiring, Dating, Founder).
+3. System generates 5 diverse simulated characters.
+4. User sees compatibility analysis for each.
+
+**Character Card Layout**:
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [Avatar]  Alex Chen (Product Manager)           92% Match  │
+│                                                             │
+│  Why you align:                                             │
+│  ✓ Both value direct communication and rapid iteration.     │
+│  ✓ You share a growth mindset and handle feedback well.     │
+│                                                             │
+│  Potential Challenges:                                      │
+│  ⚠ Alex prefers structured planning, while you lean towards │
+│    improvisation.                                           │
+│                                                             │
+│  [View Full Analysis]                                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ### Section 4: How It Works
 
 **Layout**: Horizontal flow diagram, 4 steps
@@ -202,10 +233,15 @@ Copy our personality prompt → Paste into ChatGPT → Get your
 authentic profile → Share the link with us. You control what
 we see.
 
-3. Get Matched & Connect
-We analyze compatibility between you and others in your
-category. When there's strong compatibility + mutual interest,
-we connect you. Skip the performance, start with real conversations.
+3. See Your Matches (Demo)
+Instantly see 5 simulated matches based on your communication
+style. We analyze compatibility, showing you exactly where you
+align and where challenges might appear.
+
+4. Get Matched & Connect
+Join the waitlist to get real matches. We analyze compatibility
+between you and others in your category. Skip the performance,
+start with real conversations.
 ```
 
 ---

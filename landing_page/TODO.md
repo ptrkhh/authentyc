@@ -1,60 +1,56 @@
 # Authentyc Landing Page - TODO
 
-**Last Updated**: December 1, 2025
-**Status**: Structure Complete → Needs Configuration & Integration
+**Last Updated**: December 2, 2025
+**Status**: Core Setup Complete → Ready for Testing
 
 ---
 
 ## 🔴 Phase 0: UI Integration (DO FIRST)
 **Priority**: CRITICAL | **Time**: 1-2 hours
 
-- [ ] Create waitlist form state in `app/page.tsx`
-- [ ] Wire up Hero CTA button to open form
-- [ ] Wire up Final CTA button to open form
-- [ ] Wire up Category Cards to open form with preselected category
-- [ ] Add WaitlistForm component to page
-- [ ] Test all CTAs open the form correctly
+- [x] Create waitlist form state in `app/page.tsx`
+- [x] Wire up Hero CTA button to open form
+- [x] Wire up Final CTA button to open form
+- [x] Wire up Category Cards to open form with preselected category
+- [x] Add WaitlistForm component to page
+- [x] Test all CTAs open the form correctly
 
 ---
 
 ## Phase 1: Account Setup
 **Time**: 2-4 hours
 
-- [ ] Supabase account created
-- [ ] OpenAI account created + API key
-- [ ] Resend account created
-- [ ] PostHog account created
-- [ ] Copy `.env.example` to `.env.local`
-- [ ] Fill in all environment variables
-- [ ] Verify dev server starts without errors
+- [x] Supabase account created
+- [x] OpenAI account created + API key
+- [x] Resend account created
+- [x] PostHog account created
+- [x] Copy `.env.example` to `.env.local`
+- [x] Fill in all environment variables
+- [x] Verify dev server starts without errors
 
 ---
 
 ## Phase 2: Database Setup
 **Time**: 30 minutes
 
-- [ ] Create Supabase project
-- [ ] Run database migration in SQL Editor
-- [ ] Verify `waitlist_leads` table created
-- [ ] Verify `chat_analyses` table created
-- [ ] Verify `rate_limits` table created
-- [ ] Verify `email_jobs` table created
-- [ ] Test database connection from app
+- [x] Create Supabase project
+- [x] Run database migration in SQL Editor
+- [x] Verify `waitlist_leads` table created
+- [x] Verify `chat_analyses` table created
+- [x] Verify `rate_limits` table created
+- [x] Verify `email_jobs` table created
+- [x] Test database connection from app
 
 ---
 
 ## Phase 3: Domain & Email
 **Time**: 1-2 hours
 
-- [ ] Purchase/verify authentyc.ai domain
-- [ ] Add domain to Resend
-- [ ] Configure DNS records (SPF, DKIM, DMARC)
-- [ ] Verify domain in Resend
-- [ ] Send test email
-- [ ] Create Twitter account (@authentyc_ai)
-- [ ] Create LinkedIn page
-- [ ] Update social links in Footer.tsx
-- [ ] Update social links in email templates
+- [x] Register free authentyc.dpdns.org domain
+- [x] Add domain to Resend
+- [x] Configure DNS records (SPF, DKIM, DMARC)
+- [x] Verify domain in Resend
+- [x] Send test email ✅ (Working with onboarding@resend.dev - custom domain pending verification)
 
 ---
 
@@ -175,6 +171,16 @@
 
 ## Pre-Launch Checklist
 
+### Social Accounts
+
+- [ ] Create Twitter account (@authentyc_ai)
+- [ ] Create LinkedIn page
+- [ ] Update social links in Footer.tsx
+- [ ] Update social links in email templates
+
+### ACTUALLY COSTS MONEY
+- [ ] Purchase/verify authentyc.ai domain
+
 ### Code Quality
 - [ ] `npm run build` succeeds with no errors
 - [ ] No TypeScript errors
@@ -222,15 +228,17 @@
 
 ## Progress Summary
 
-**Overall**: ~60/170 tasks remaining
+**Overall**: ~47/170 tasks remaining
 
 - ✅ Structure: Complete (52/52 files)
 - ✅ Analytics: Complete (7/7 features)
-- ⏳ UI Integration: 0/6 tasks
-- ⏳ Configuration: 0/15 tasks
+- ✅ UI Integration: Complete (6/6 tasks)
+- ✅ Phase 1 (Setup): Complete (7/7 tasks)
+- ✅ Phase 2 (Database): Complete (6/6 tasks)
+- ✅ Phase 3 (Email): Complete (5/5 tasks)
 - ⏳ Testing: 0/35 tasks
 - ⏳ Assets: 0/6 tasks
 - ⏳ Legal: 0/8 tasks
 - ⏳ Deployment: 0/15 tasks
 
-**Next Action**: Complete Phase 0 (UI Integration)
+**Next Action**: Start Phase 5 (Testing) - Test the full waitlist flow!

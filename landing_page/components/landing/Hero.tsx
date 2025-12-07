@@ -9,13 +9,17 @@
 
 import { trackEvent } from '@/lib/analytics/posthog';
 
-export function Hero() {
+interface HeroProps {
+  onCTAClick: () => void;
+}
+
+export function Hero({ onCTAClick }: HeroProps) {
   const handleCTAClick = () => {
     trackEvent('cta_clicked', {
       location: 'hero',
       button_text: 'Get Early Access',
     });
-    // TODO: Open waitlist form
+    onCTAClick();
   };
   return (
     <section className="text-center py-20 px-4">

@@ -10,7 +10,11 @@
 
 import { trackEvent } from '@/lib/analytics/posthog';
 
-export function CategoryCards() {
+interface CategoryCardsProps {
+  onCardClick: (category: string) => void;
+}
+
+export function CategoryCards({ onCardClick }: CategoryCardsProps) {
   const categories = [
     {
       emoji: '💼',
@@ -60,8 +64,7 @@ export function CategoryCards() {
       location: 'category_cards_section',
     });
 
-    // TODO: Open waitlist form with pre-selected category
-    console.log('Clicked category:', category);
+    onCardClick(category);
   };
 
   return (
