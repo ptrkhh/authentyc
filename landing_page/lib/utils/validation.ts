@@ -28,4 +28,5 @@ export const waitlistSchema = z.object({
  */
 export const analyzeRequestSchema = z.object({
   shareUrl: z.string().url('Invalid URL'),
+  category: z.enum(['hiring', 'dating', 'founder']),
 });

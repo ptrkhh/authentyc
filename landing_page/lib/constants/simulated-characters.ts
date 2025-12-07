@@ -8,7 +8,7 @@
 
 import type { SimulatedCharacter, Category } from '@/components/landing/SimulationResults';
 
-interface CharacterTemplate {
+export interface CharacterTemplate {
   names: string[];
   roles: string[];
   avatarColors: string[];
@@ -18,7 +18,7 @@ interface CharacterTemplate {
 }
 
 // Character templates by category
-const CHARACTER_TEMPLATES: Record<Category, CharacterTemplate> = {
+export const CHARACTER_TEMPLATES: Record<Category, CharacterTemplate> = {
   hiring: {
     names: [
       'TechNova Solutions',

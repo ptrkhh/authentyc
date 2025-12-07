@@ -32,12 +32,14 @@ export function ChatAnalyzer() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
-  const [simulatedCharacters, setSimulatedCharacters] = useState<SimulatedCharacter[] | null>(null);
+  const [characters, setCharacters] = useState<SimulatedCharacter[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     setLoading(true);
     setError(null);
+    setResults(null);
+    setCharacters(null);
 
     try {
       const response = await fetch('/api/analyze-chat', {
@@ -52,14 +54,9 @@ export function ChatAnalyzer() {
         throw new Error(data.error || 'Analysis failed');
       }
 
+      // Set both results and characters immediately from single API response
       setResults(data.analysis);
-
-      // Generate simulated characters after successful analysis
-      // In the future, this could be done server-side based on the analysis
-      setTimeout(() => {
-        const characters = generateSimulatedCharacters(category);
-        setSimulatedCharacters(characters);
-      }, 800); // Small delay for better UX
+      setCharacters(data.characters);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       setError(errorMessage);
@@ -70,7 +67,7 @@ export function ChatAnalyzer() {
 
   const handleReset = () => {
     setResults(null);
-    setSimulatedCharacters(null);
+    setCharacters(null);
     setUrl('');
     setError(null);
   };
@@ -99,18 +96,22 @@ export function ChatAnalyzer() {
           See how our matching works - get simulated character matches based on your communication style
         </p>
 
-        {/* Simulated Results State */}
-        {simulatedCharacters && (
+        {/* Results State - Show both insights and characters together */}
+        {results && characters && (
           <SimulationResults
-            characters={simulatedCharacters}
+            characters={characters}
             category={category}
             onReset={handleReset}
+            insights={{
+              overall_vibe: results.overall_vibe,
+              insights: results.insights || [],
+            }}
           />
         )}
 
         {/* Initial State */}
-        {!results && !loading && !simulatedCharacters && (
-          <div className="max-w-3xl mx-auto space-y-6">
+        {!results && !loading && !characters && (
+          <div className="max-w-3xl mx-auto space-y-6 min-h-[800px]">
             {/* Category Selector */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -213,41 +214,15 @@ export function ChatAnalyzer() {
 
         {/* Loading State */}
         {loading && (
-          <div className="max-w-3xl mx-auto text-center py-12">
+          <div className="max-w-3xl mx-auto text-center min-h-[800px] flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4"></div>
             <p className="text-gray-600">Analyzing your conversation patterns...</p>
             <p className="text-sm text-gray-500 mt-2">Generating your personalized matches...</p>
           </div>
         )}
 
-        {/* Results State - Show before simulated characters appear */}
-        {results && !loading && !simulatedCharacters && (
-          <div className="max-w-3xl mx-auto space-y-6">
-            <div className="bg-brand-primary/10 p-6 rounded-lg">
-              <h3 className="text-2xl font-bold mb-2">Overall Vibe</h3>
-              <p className="text-lg">{results.overall_vibe}</p>
-            </div>
-
-            <div className="grid gap-4">
-              {results.insights?.map((insight: string, idx: number) => (
-                <div key={idx} className="bg-white border border-gray-200 p-4 rounded-lg">
-                  <p className="text-gray-700">{insight}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center py-8">
-              <div className="animate-pulse">
-                <p className="text-lg font-medium text-brand-primary">
-                  Generating your {getCategoryLabel(category).toLowerCase()} matches...
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Error State */}
-        {error && !simulatedCharacters && (
+        {error && !characters && (
           <div className="max-w-3xl mx-auto bg-red-50 border border-red-200 p-4 rounded-lg">
             <p className="text-red-700">{error}</p>
             <button

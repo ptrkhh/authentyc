@@ -14,6 +14,9 @@ import { parseChatGPTShareHTML, validateParsedConversation } from '@/lib/chatgpt
 import { gemini } from '@/lib/openai/client';
 import { buildQuickAnalysisPrompt } from '@/lib/openai/prompts';
 import { supabaseServer } from '@/lib/supabase/server';
+import { generatePersonalizedCharacters } from '@/lib/openai/character-generator';
+import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
+import type { Category } from '@/components/landing/SimulationResults';
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -28,26 +31,27 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
-    const { shareUrl } = analyzeRequestSchema.parse(body);
+    const { shareUrl, category } = analyzeRequestSchema.parse(body);
 
     const urlHash = hashShareUrl(shareUrl);
 
-    // Check cache for existing analysis
+    // Check cache for existing analysis with this category
     const { data: existing } = await supabaseServer
       .from('chat_analyses')
       .select('*')
       .eq('share_url_hash', urlHash)
+      .eq('category', category)
       .single();
 
-    if (existing) {
+    if (existing && existing.generated_characters) {
       return NextResponse.json({
         success: true,
         cached: true,
         analysis: {
-          summary: existing.personality_summary,
+          overall_vibe: existing.personality_summary,
           insights: existing.traits,
-          confidence: existing.confidence_score,
         },
+        characters: existing.generated_characters,
       });
     }
 
@@ -120,13 +124,44 @@ export async function POST(request: NextRequest) {
 
     const analysis = JSON.parse(analysisText);
 
-    // Store results in database
+    // Generate personalized characters after successful personality analysis
+    const characterGenStartTime = Date.now();
+    let generatedCharacters;
+    let usedFallback = false;
+
+    try {
+      generatedCharacters = await generatePersonalizedCharacters({
+        personalityAnalysis: {
+          overall_vibe: analysis.overall_vibe,
+          insights: analysis.insights,
+        },
+        category,
+        conversationSample: parsed.messages
+          .slice(0, 3)
+          .map(message => `${message.role}: ${message.content}`)
+          .join('\n')
+          .substring(0, 500),
+      });
+    } catch (error) {
+      console.error('[analyze-chat] Character generation failed, using fallback:', error);
+      // Fallback to template-based generation
+      generatedCharacters = generateSimulatedCharacters(category);
+      usedFallback = true;
+    }
+
+    const characterGenTime = Date.now() - characterGenStartTime;
+
+    // Store results in database with characters
     await supabaseServer.from('chat_analyses').insert({
       share_url_hash: urlHash,
+      category,
       personality_summary: analysis.overall_vibe || 'Analysis complete',
       traits: analysis.insights || {},
+      generated_characters: generatedCharacters,
       processing_time_ms: Date.now() - startTime,
+      character_generation_time_ms: characterGenTime,
       message_count: parsed.messageCount,
+      used_fallback_templates: usedFallback,
     });
 
     return NextResponse.json({
@@ -135,8 +170,13 @@ export async function POST(request: NextRequest) {
       analysis: {
         insights: analysis.insights || [],
         overall_vibe: analysis.overall_vibe || '',
+      },
+      characters: generatedCharacters,
+      metadata: {
         message_count: parsed.messageCount,
         quality: parsed.estimatedQuality,
+        processing_time_ms: Date.now() - startTime,
+        used_fallback: usedFallback,
       },
     });
   } catch (error: any) {

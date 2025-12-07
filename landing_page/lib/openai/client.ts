@@ -19,7 +19,7 @@ export const gemini = genAI.getGenerativeModel({
   model: MODEL,
   generationConfig: {
     temperature: 0.7,
-    maxOutputTokens: 2048, // Increased to allow for thinking tokens + JSON output
+    maxOutputTokens: 4096, // Increased to allow full character generation without truncation
     responseMimeType: "application/json",
   },
 });

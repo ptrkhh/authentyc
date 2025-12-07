@@ -18,9 +18,18 @@ interface SimulationResultsProps {
     characters: SimulatedCharacter[];
     category: Category;
     onReset: () => void;
+    insights: {
+        overall_vibe: string;
+        insights: string[];
+    };
 }
 
-export function SimulationResults({ characters, category, onReset }: SimulationResultsProps) {
+export function SimulationResults({
+    characters,
+    category,
+    onReset,
+    insights
+}: SimulationResultsProps) {
     const getCategoryIcon = () => {
         switch (category) {
             case 'hiring': return <Briefcase className="w-5 h-5" />;
@@ -39,14 +48,56 @@ export function SimulationResults({ characters, category, onReset }: SimulationR
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Insights Section at Top */}
+            <div className="max-w-4xl mx-auto space-y-4 mb-8">
+                <div className="bg-gradient-to-r from-brand-primary/10 to-brand-primary/5 p-6 rounded-xl border border-brand-primary/20">
+                    <h3 className="text-xl font-bold mb-2 text-gray-900 flex items-center gap-2">
+                        <span className="text-2xl">✨</span>
+                        Your Personality Analysis
+                    </h3>
+                    <p className="text-lg text-gray-800 font-medium">{insights.overall_vibe}</p>
+                </div>
+
+                <div className="grid gap-3">
+                    {insights.insights?.map((insight: string, index: number) => (
+                        <div
+                            key={index}
+                            className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                        >
+                            <div className="flex items-start gap-3">
+                                <span className="text-brand-primary font-bold text-lg mt-0.5">
+                                    {index + 1}
+                                </span>
+                                <p className="text-gray-700 flex-1">{insight}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Divider */}
+            <div className="max-w-4xl mx-auto">
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                        <span className="bg-white px-4 text-sm text-gray-500 font-medium">
+                            Based on your personality, here are your matches
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Character Matches Section */}
             <div className="text-center space-y-2">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary font-medium text-sm">
                     {getCategoryIcon()}
                     <span>{getCategoryLabel()}</span>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900">Your Simulated Matches</h3>
+                <h3 className="text-3xl font-bold text-gray-900">Your Personalized Matches</h3>
                 <p className="text-gray-600 max-w-2xl mx-auto">
-                    Based on your communication style, here are 5 diverse profiles and how you&apos;d likely interact with them.
+                    These matches are generated based on your unique communication style and personality.
                 </p>
             </div>
 
