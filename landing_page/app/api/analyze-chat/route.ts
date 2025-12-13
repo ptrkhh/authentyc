@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
+    console.log('[analyze-chat] Received request:', { body });
     const { shareUrl, category } = analyzeRequestSchema.parse(body);
 
     const urlHash = hashShareUrl(shareUrl);
@@ -56,8 +57,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch ChatGPT share link HTML
+    console.log('[analyze-chat] Fetching share link:', shareUrl);
     const fetchResult = await fetchChatGPTShareLink(shareUrl);
+    console.log('[analyze-chat] Fetch result:', { success: fetchResult.success, error: fetchResult.error, htmlLength: fetchResult.html?.length });
+
     if (!fetchResult.success || !fetchResult.html) {
+      console.error('[analyze-chat] Fetch failed:', fetchResult.error);
       return NextResponse.json(
         { error: fetchResult.error || 'Failed to fetch' },
         { status: 400 }
@@ -180,9 +185,13 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('Analysis error:', error);
+    console.error('[analyze-chat] Analysis error:', error);
+    console.error('[analyze-chat] Error stack:', error.stack);
+    console.error('[analyze-chat] Error name:', error.name);
+    console.error('[analyze-chat] Error message:', error.message);
 
     if (error.name === 'ZodError') {
+      console.error('[analyze-chat] Zod validation error:', JSON.stringify(error.errors, null, 2));
       return NextResponse.json(
         { error: 'Invalid request', details: error.errors },
         { status: 400 }
@@ -190,7 +199,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: 'Failed to analyze. Please try again.' },
+      { error: error.message || 'Failed to analyze. Please try again.' },
       { status: 500 }
     );
   }
