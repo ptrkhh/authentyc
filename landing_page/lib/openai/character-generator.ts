@@ -30,7 +30,7 @@ interface GeminiCharacterResponse {
 }
 
 /**
- * Generate 5 personalized characters using Gemini
+ * Generate 6 personalized characters using Gemini
  *
  * @throws Error if generation fails (caller should handle fallback)
  */
@@ -80,8 +80,8 @@ export async function generatePersonalizedCharacters(
     throw new Error('Invalid response structure: missing characters array');
   }
 
-  if (parsed.characters.length !== 5) {
-    throw new Error(`Expected 5 characters, got ${parsed.characters.length}`);
+  if (parsed.characters.length !== 6) {
+    throw new Error(`Expected 6 characters, got ${parsed.characters.length}`);
   }
 
   // Transform to SimulatedCharacter format

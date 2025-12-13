@@ -65,7 +65,7 @@ function getTemplateExamples(category: Category): SimulatedCharacter[] {
 }
 
 /**
- * Build prompt for generating 5 personalized character matches
+ * Build prompt for generating 6 personalized character matches
  *
  * Design Principles:
  * - Reference existing templates as structural examples (few-shot learning)
@@ -115,13 +115,13 @@ ${personalityAnalysis.insights.map((insight, index) => `${index + 1}. ${insight}
 CONVERSATION SAMPLE:
 ${conversationSample}
 
-TASK: Generate 5 diverse ${guidance.entityType} that would match this person's personality with varying compatibility levels.
+TASK: Generate 6 diverse ${guidance.entityType} that would match this person's personality with varying compatibility levels.
 
 CRITICAL REQUIREMENTS:
 1. DIVERSE MATCH SCORES: Generate scores distributed across the range ${guidance.matchScoreRange[0]}-${guidance.matchScoreRange[1]}%
    - 1 high match (${guidance.matchScoreRange[1] - 5} to ${guidance.matchScoreRange[1]}%)
    - 2 good matches (${guidance.matchScoreRange[1] - 15} to ${guidance.matchScoreRange[1] - 8}%)
-   - 1 medium match (${Math.floor((guidance.matchScoreRange[0] + guidance.matchScoreRange[1]) / 2) - 5} to ${Math.floor((guidance.matchScoreRange[0] + guidance.matchScoreRange[1]) / 2) + 5}%)
+   - 2 medium matches (${Math.floor((guidance.matchScoreRange[0] + guidance.matchScoreRange[1]) / 2) - 5} to ${Math.floor((guidance.matchScoreRange[0] + guidance.matchScoreRange[1]) / 2) + 5}%)
    - 1 lower match (${guidance.matchScoreRange[0]} to ${guidance.matchScoreRange[0] + 10}%)
 
 2. REALISTIC NAMES: Use real-sounding names/company names (not generic like "John Doe" or "Acme Corp")
@@ -136,7 +136,7 @@ CRITICAL REQUIREMENTS:
    - NOT dealbreakers (these are workable challenges)
    - Framed constructively ("may need to...", "could differ on...")
 
-5. DIVERSITY: Ensure the 5 characters represent diverse:
+5. DIVERSITY: Ensure the 6 characters represent diverse:
    - Match scores (as specified above)
    - Personality types (e.g., introverted vs extroverted, analytical vs creative)
    - ${category === 'hiring' ? 'Company cultures and role types' : category === 'dating' ? 'Lifestyle and communication styles' : 'Founder archetypes and skill sets'}
@@ -154,13 +154,13 @@ OUTPUT FORMAT (valid JSON):
       "alignment": ["string", "string", "string"],
       "challenges": ["string", "string"]
     }
-    // ... 4 more characters
+    // ... 5 more characters
   ]
 }
 
 IMPORTANT:
 - Return ONLY valid JSON
-- Exactly 5 characters
+- Exactly 6 characters
 - Match scores distributed as specified
 - Each character unique and personalized to the personality analysis
 - Alignment and challenges directly reference the personality insights when relevant`;
