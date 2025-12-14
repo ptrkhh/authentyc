@@ -56,17 +56,54 @@ export async function POST(request: NextRequest) {
     });
     const position = positionData || 1;
 
-    // Send welcome email via Resend
+    // Send welcome email via Resend with job tracking
     if (process.env.RESEND_API_KEY) {
-      await sendEmail({
-        to: data.email,
-        subject: `Welcome to Authentyc [#${position} on the waitlist]`,
-        html: getWelcomeEmailHTML({
-          email: data.email,
-          waitlistPosition: position,
-          primaryInterest: data.primary_interest,
-        }),
+      const emailJobId = crypto.randomUUID();
+      const emailSubject = `Welcome to Authentyc [#${position} on the waitlist]`;
+      const emailHtml = getWelcomeEmailHTML({
+        email: data.email,
+        waitlistPosition: position,
+        primaryInterest: data.primary_interest,
       });
+
+      await supabaseServer.from('email_jobs').insert({
+        id: emailJobId,
+        waitlist_lead_id: lead.id,
+        email_type: 'welcome',
+        recipient_email: data.email,
+        status: 'queued',
+      });
+
+      try {
+        const emailResult = await sendEmail({
+          to: data.email,
+          subject: emailSubject,
+          html: emailHtml,
+        });
+
+        await supabaseServer
+          .from('email_jobs')
+          .update({
+            status: emailResult.success ? 'sent' : 'failed',
+            resend_email_id: emailResult.emailId || null,
+            sent_at: emailResult.success ? new Date().toISOString() : null,
+            error_message: emailResult.success ? null : emailResult.error,
+          })
+          .eq('id', emailJobId);
+
+        if (!emailResult.success) {
+          console.error('[waitlist] Email sending failed:', emailResult.error);
+        }
+      } catch (emailError: any) {
+        console.error('[waitlist] Email error:', emailError);
+        await supabaseServer
+          .from('email_jobs')
+          .update({
+            status: 'failed',
+            error_message: emailError.message,
+          })
+          .eq('id', emailJobId);
+      }
     }
 
     // TODO: Track conversion in PostHog server-side

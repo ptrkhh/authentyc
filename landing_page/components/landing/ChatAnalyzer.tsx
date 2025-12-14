@@ -34,6 +34,8 @@ export function ChatAnalyzer() {
   const [results, setResults] = useState<AnalysisResult | null>(null);
   const [characters, setCharacters] = useState<SimulatedCharacter[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showManualPaste, setShowManualPaste] = useState(false);
+  const [manualText, setManualText] = useState('');
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -60,6 +62,23 @@ export function ChatAnalyzer() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       setError(errorMessage);
+
+      const parserFailureIndicators = [
+        'empty',
+        'invalid conversation',
+        'no messages',
+        'failed to fetch',
+        'failed to parse',
+        'parsing failed'
+      ];
+
+      const isParserFailure = parserFailureIndicators.some(indicator =>
+        errorMessage.toLowerCase().includes(indicator)
+      );
+
+      if (isParserFailure) {
+        setShowManualPaste(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -70,6 +89,8 @@ export function ChatAnalyzer() {
     setCharacters(null);
     setUrl('');
     setError(null);
+    setShowManualPaste(false);
+    setManualText('');
   };
 
   const getCategoryIcon = (cat: Category) => {
@@ -223,17 +244,84 @@ export function ChatAnalyzer() {
 
         {/* Error State */}
         {error && !characters && (
-          <div className="max-w-3xl mx-auto bg-red-50 border border-red-200 p-4 rounded-lg">
-            <p className="text-red-700">{error}</p>
-            <button
-              onClick={() => {
-                setError(null);
-                setUrl('');
-              }}
-              className="mt-2 text-red-600 hover:text-red-800 font-medium"
-            >
-              Try again
-            </button>
+          <div className="max-w-3xl mx-auto space-y-4">
+            <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+              <p className="text-red-700">{error}</p>
+              <button
+                onClick={() => {
+                  setError(null);
+                  setUrl('');
+                  setShowManualPaste(false);
+                }}
+                className="mt-2 text-red-600 hover:text-red-800 font-medium"
+              >
+                Try again
+              </button>
+            </div>
+
+            {/* Manual Paste Fallback */}
+            {showManualPaste && (
+              <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg space-y-4">
+                <div>
+                  <h3 className="font-semibold text-blue-900 mb-2">
+                    Alternative: Paste Your Conversation Text
+                  </h3>
+                  <p className="text-sm text-blue-700 mb-4">
+                    Having trouble with the link? You can paste the conversation text directly below.
+                    Just copy all the messages from your ChatGPT conversation and paste them here.
+                  </p>
+                </div>
+
+                <textarea
+                  value={manualText}
+                  onChange={(e) => setManualText(e.target.value)}
+                  placeholder="Paste your entire conversation here (both your questions and ChatGPT's responses)..."
+                  className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[200px] font-mono text-sm"
+                />
+
+                <button
+                  onClick={async () => {
+                    if (!manualText.trim()) {
+                      return;
+                    }
+
+                    setLoading(true);
+                    setError(null);
+                    setShowManualPaste(false);
+
+                    try {
+                      const response = await fetch('/api/analyze-chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          shareUrl: url,
+                          category,
+                          manualText: manualText.trim()
+                        }),
+                      });
+
+                      const data = await response.json();
+
+                      if (!response.ok) {
+                        throw new Error(data.error || 'Analysis failed');
+                      }
+
+                      setResults(data.analysis);
+                      setCharacters(data.characters);
+                    } catch (err) {
+                      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+                      setError(errorMessage);
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={!manualText.trim()}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all disabled:opacity-50"
+                >
+                  Analyze Pasted Text
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

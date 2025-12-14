@@ -9,6 +9,7 @@
  */
 
 import * as cheerio from 'cheerio';
+import { CONVERSATION_PROMPTS } from '../constants/conversation-prompts';
 
 export interface ParsedConversation {
   messages: Array<{
@@ -19,6 +20,20 @@ export interface ParsedConversation {
   title?: string;
   hasPersonalityPrompt: boolean;
   estimatedQuality: 'high' | 'medium' | 'low';
+}
+
+/**
+ * Parsed response from ChatGPT API containing the user profile summary and completeness rating
+ */
+export interface ParsedChatGPTResponse {
+  summary: string;
+  completenessRating: number | null;
+  assessmentDetails?: {
+    rating: number;
+    evidence: string;
+    questionsAnswered: string;
+    questionsNeeded: string;
+  };
 }
 
 /**
@@ -208,6 +223,54 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
 }
 
 /**
+ * Validate that the first message matches exactly one of the predefined prompts
+ */
+export function validatePromptExactMatch(parsed: ParsedConversation): {
+  valid: boolean;
+  reason?: string;
+} {
+  if (parsed.messages.length === 0) {
+    return { valid: false, reason: 'No messages found in conversation.' };
+  }
+
+  const firstUserMessage = parsed.messages.find(m => m.role === 'user');
+
+  if (!firstUserMessage) {
+    return { valid: false, reason: 'No user message found in conversation.' };
+  }
+
+  // Normalize whitespace for comparison
+  // This handles copy-paste variations while maintaining structure
+  const normalizeText = (text: string) => {
+    return text
+      .trim()
+      .replace(/\r\n/g, '\n') // Normalize line endings
+      .split('\n') // Process line by line
+      .map(line => line.trim()) // Trim each line
+      .join('\n') // Rejoin
+      .replace(/\n{3,}/g, '\n\n') // Collapse 3+ newlines to 2
+      .replace(/ {2,}/g, ' '); // Collapse multiple spaces to single space
+  };
+
+  const normalizedUserPrompt = normalizeText(firstUserMessage.content);
+
+  // Check if it matches any of the predefined prompts exactly
+  const matchesPrompt = CONVERSATION_PROMPTS.some(prompt => {
+    const normalizedPredefinedPrompt = normalizeText(prompt.prompt);
+    return normalizedUserPrompt === normalizedPredefinedPrompt;
+  });
+
+  if (!matchesPrompt) {
+    return {
+      valid: false,
+      reason: 'The prompt in this conversation has been modified. Please go back to the instructions page and copy-paste the predefined prompt exactly without any modifications. This ensures consistent and accurate personality analysis.'
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
  * Validate parsed conversation quality
  */
 export function validateParsedConversation(parsed: ParsedConversation): {
@@ -236,5 +299,148 @@ export function validateParsedConversation(parsed: ParsedConversation): {
     };
   }
 
+  // Validate that the prompt matches exactly one of the predefined prompts
+  const promptValidation = validatePromptExactMatch(parsed);
+  if (!promptValidation.valid) {
+    return promptValidation;
+  }
+
   return { valid: true };
+}
+
+/**
+ * Extract the summary text from ChatGPT output
+ * Removes the rating line and assessment section, returning only the final summary
+ */
+function extractSummary(chatGPTOutput: string): string {
+  let text = chatGPTOutput;
+
+  // Remove the assessment section if present
+  const assessmentPattern = /--- COMPLETENESS ASSESSMENT ---[\s\S]*?--- END ASSESSMENT ---/;
+  text = text.replace(assessmentPattern, '').trim();
+
+  // Remove the final rating line if present
+  const ratingLinePattern = /COMPLETENESS RATING: \d+\/10\s*$/;
+  text = text.replace(ratingLinePattern, '').trim();
+
+  // Remove any leading/trailing whitespace
+  return text.trim();
+}
+
+/**
+ * Validate that rating is within expected range (1-10)
+ * Returns null if invalid, otherwise returns the validated rating
+ */
+function validateRating(rating: number | null): number | null {
+  if (rating === null) {
+    return null;
+  }
+
+  const MINIMUM_RATING = 1;
+  const MAXIMUM_RATING = 10;
+
+  if (rating < MINIMUM_RATING || rating > MAXIMUM_RATING) {
+    console.error(`[parser] Invalid rating: ${rating}. Expected ${MINIMUM_RATING}-${MAXIMUM_RATING}.`);
+    return null;
+  }
+
+  return rating;
+}
+
+/**
+ * Parse ChatGPT API response to extract summary, rating, and assessment details
+ * Extracts the completeness rating from the final line and optional assessment from earlier phases
+ */
+export function parseResponse(chatGPTOutput: string): ParsedChatGPTResponse {
+  console.log('[parser] Parsing ChatGPT response for rating and assessment');
+  console.log('[parser] Response length:', chatGPTOutput.length);
+
+  // Extract rating from final summary line using multiple regex patterns for robustness
+  const ratingPatterns = [
+    /COMPLETENESS RATING:\s*(\d+)\/10/i,
+    /RATING:\s*(\d+)\/10/i,
+    /(\d+)\s*\/\s*10/,
+    /score[:\s]+(\d+)/i,
+  ];
+
+  let rawRating: number | null = null;
+  let matchedPattern: string | null = null;
+
+  for (const pattern of ratingPatterns) {
+    const match = chatGPTOutput.match(pattern);
+    if (match) {
+      rawRating = parseInt(match[1], 10);
+      matchedPattern = pattern.source;
+      console.log('[parser] Rating matched pattern:', matchedPattern);
+      break;
+    }
+  }
+
+  const completenessRating = validateRating(rawRating);
+
+  if (completenessRating === null) {
+    console.warn('[parser] Failed to extract completeness rating');
+    console.warn('[parser] Response preview:', chatGPTOutput.substring(0, 200));
+    console.warn('[parser] Response ending:', chatGPTOutput.substring(Math.max(0, chatGPTOutput.length - 200)));
+  } else {
+    console.log('[parser] Extracted completeness rating:', completenessRating);
+  }
+
+  // Extract assessment details if present (from initial phases)
+  const assessmentPattern = /--- COMPLETENESS ASSESSMENT ---\s*RATING: (\d+)\/10\s*EVIDENCE FROM PAST CHATS:\s*([\s\S]*?)\s*QUESTIONS I CAN ALREADY ANSWER:\s*([\s\S]*?)\s*QUESTIONS I NEED TO ASK:\s*([\s\S]*?)\s*--- END ASSESSMENT ---/;
+  const assessmentMatch = chatGPTOutput.match(assessmentPattern);
+
+  let assessmentDetails;
+  if (assessmentMatch) {
+    const assessmentRating = parseInt(assessmentMatch[1], 10);
+    assessmentDetails = {
+      rating: assessmentRating,
+      evidence: assessmentMatch[2].trim(),
+      questionsAnswered: assessmentMatch[3].trim(),
+      questionsNeeded: assessmentMatch[4].trim(),
+    };
+    console.log('[parser] Extracted assessment details with rating:', assessmentRating);
+  } else {
+    console.log('[parser] No assessment details found in response');
+  }
+
+  // Extract summary (everything after questions, before rating line)
+  const summary = extractSummary(chatGPTOutput);
+  console.log('[parser] Extracted summary length:', summary.length);
+
+  return {
+    summary,
+    completenessRating,
+    assessmentDetails,
+  };
+}
+
+/**
+ * Rating thresholds for categorizing completeness ratings
+ * Used to determine messaging and UI display for different rating levels
+ */
+export const RATING_THRESHOLDS = {
+  EXCELLENT: 9,
+  GOOD: 7,
+  MINIMAL: 4,
+  INSUFFICIENT: 1,
+} as const;
+
+export type RatingCategory = keyof typeof RATING_THRESHOLDS;
+
+/**
+ * Determine the category for a given completeness rating
+ * Categories determine the messaging and UI treatment for the user
+ */
+export function getRatingCategory(rating: number): RatingCategory {
+  if (rating >= RATING_THRESHOLDS.EXCELLENT) {
+    return 'EXCELLENT';
+  }
+  if (rating >= RATING_THRESHOLDS.GOOD) {
+    return 'GOOD';
+  }
+  if (rating >= RATING_THRESHOLDS.MINIMAL) {
+    return 'MINIMAL';
+  }
+  return 'INSUFFICIENT';
 }
