@@ -1,43 +1,52 @@
 /**
- * Footer
+ * Footer - Dark Design
  *
- * Site footer with links.
- * Copy from LANDING_PAGE_PLAN.md lines 500-513
- *
- * TODO: Update social media links before launch
- * TODO: Verify email address (hello@authentyc.ai)
+ * Site footer with emerald accents and premium styling.
  */
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 px-4">
+    <footer className="relative border-t border-white/10 py-16 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center space-y-4">
-          <h3 className="text-2xl font-bold text-white">Authentyc</h3>
-          <p>Match people by who they really are.</p>
+        <div className="text-center space-y-6">
+          <h3 className="text-3xl font-bold text-white font-display">Authentyc</h3>
+          <p className="text-gray-400 text-lg">Match people by who they really are.</p>
 
-          <div className="flex justify-center space-x-6 pt-4">
-            {/* TODO: Replace with actual Twitter URL */}
-            <a href="#" className="hover:text-white transition-colors">
+          <div className="flex justify-center space-x-8 pt-6">
+            <a
+              href="#"
+              className="text-gray-400 hover:text-brand-primary transition-colors duration-300"
+            >
               Twitter
             </a>
-            {/* TODO: Replace with actual LinkedIn URL */}
-            <a href="#" className="hover:text-white transition-colors">
+            <a
+              href="#"
+              className="text-gray-400 hover:text-brand-primary transition-colors duration-300"
+            >
               LinkedIn
             </a>
-            <a href="mailto:hello@authentyc.ai" className="hover:text-white transition-colors">
+            <a
+              href="mailto:hello@authentyc.ai"
+              className="text-gray-400 hover:text-brand-primary transition-colors duration-300"
+            >
               Email
             </a>
           </div>
 
-          <div className="pt-6 border-t border-gray-700 text-sm">
-            <p>© 2025 Authentyc AI, Inc.</p>
-            <div className="flex justify-center space-x-4 mt-2">
-              <a href="/privacy" className="hover:text-white transition-colors">
+          <div className="pt-8 border-t border-white/10 text-sm">
+            <p className="text-gray-500">© 2025 Authentyc AI, Inc.</p>
+            <div className="flex justify-center space-x-6 mt-3">
+              <a
+                href="/privacy"
+                className="text-gray-500 hover:text-brand-primary transition-colors duration-300"
+              >
                 Privacy Policy
               </a>
-              <span>•</span>
-              <a href="/terms" className="hover:text-white transition-colors">
+              <span className="text-gray-700">•</span>
+              <a
+                href="/terms"
+                className="text-gray-500 hover:text-brand-primary transition-colors duration-300"
+              >
                 Terms of Service
               </a>
             </div>

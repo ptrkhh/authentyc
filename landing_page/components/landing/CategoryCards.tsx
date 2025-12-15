@@ -1,106 +1,148 @@
 /**
- * Category Cards Section
+ * Category Cards Section - Bento Box Layout
  *
- * 3 large cards for choosing category (Hiring/Dating/Teams).
- * Each card opens waitlist form with pre-selected category.
- * Copy from LANDING_PAGE_PLAN.md lines 215-296
+ * Asymmetric grid with varying card sizes for visual interest.
+ * First card is featured and larger. Each card opens waitlist form.
  */
 
 'use client';
 
+import { motion } from 'framer-motion';
+import { SurfaceCard } from '@/components/ui/surface-card';
+import { PremiumButton } from '@/components/ui/premium-button';
+import { GradientText } from '@/components/ui/gradient-text';
 import { trackEvent } from '@/lib/analytics/posthog';
 
 interface CategoryCardsProps {
   onCardClick: (category: string) => void;
 }
 
-export function CategoryCards({ onCardClick }: CategoryCardsProps) {
-  const categories = [
-    {
-      emoji: '💼',
-      title: 'For Hiring',
-      tagline: 'Find talent who can actually do the job, not just interview well.',
-      benefits: [
-        'See real problem-solving ability',
-        'Assess communication clarity',
-        'Evaluate learning velocity',
-        'Reduce bad hires by 30%+',
-      ],
-      audience: 'For recruiters, hiring managers, & job seekers',
-      category: 'hiring',
-    },
-    {
-      emoji: '❤️',
-      title: 'For Dating',
-      tagline: 'Find someone you actually vibe with, not someone who looks good on paper.',
-      benefits: [
-        'Match on authentic personality',
-        'Assess emotional compatibility',
-        'Understand communication styles',
-        'Skip the small talk theater',
-      ],
-      audience: 'For singles tired of surface-level dating apps',
-      category: 'dating',
-    },
-    {
-      emoji: '🚀',
-      title: 'For Founders & Teams',
-      tagline: 'Find your co-founder or mastermind group that actually fits.',
-      benefits: [
-        'Assess collaboration styles',
-        'Match on values & ambition',
-        'Evaluate follow-through patterns',
-        'Build teams that actually work',
-      ],
-      audience: 'For founders, operators, & builders',
-      category: 'teams',
-    },
-  ];
+const CATEGORIES = [
+  {
+    id: 'hiring',
+    icon: '💼',
+    title: 'Hiring',
+    tagline: 'Find teammates who think like you',
+    benefits: ['See real problem-solving', 'Assess culture fit', 'Skip the resume theater'],
+  },
+  {
+    id: 'dating',
+    icon: '💝',
+    title: 'Dating',
+    tagline: 'Match on your true personality, not performative bios',
+    benefits: ['Authentic compatibility', 'Communication chemistry', 'Values alignment'],
+  },
+  {
+    id: 'teams',
+    icon: '🤝',
+    title: 'Team Building',
+    tagline: 'Build cohesive squads',
+    benefits: ['Personality balance', 'Conflict prevention', 'Optimal pairings'],
+  },
+];
 
-  const handleCardClick = (category: string) => {
-    // Track category click
+export function CategoryCards({ onCardClick }: CategoryCardsProps) {
+  const handleCardClick = (categoryId: string) => {
     trackEvent('category_card_clicked', {
-      category,
+      category: categoryId,
       location: 'category_cards_section',
     });
-
-    onCardClick(category);
+    onCardClick(categoryId);
   };
 
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">What Are You Looking For?</h2>
+    <section className="relative py-36 px-4">
+      <div className="max-w-7xl mx-auto">
+        <motion.h2
+          className="font-display text-5xl lg:text-hero font-bold text-center mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          Built for <GradientText>Every Match</GradientText>
+        </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {categories.map((cat) => (
-            <div
-              key={cat.category}
-              className="bg-white border-2 border-gray-200 rounded-lg p-8 hover:border-brand-primary hover:shadow-lg transition-all cursor-pointer"
-              onClick={() => handleCardClick(cat.category)}
-            >
-              <div className="text-5xl mb-4">{cat.emoji}</div>
-              <h3 className="text-2xl font-bold mb-3">{cat.title}</h3>
-              <p className="text-gray-700 mb-6">{cat.tagline}</p>
+        {/* Bento Grid - Responsive with different layouts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {CATEGORIES.map((category, index) => {
+            const isFeatured = index === 0;
 
-              <ul className="space-y-2 mb-6">
-                {cat.benefits.map((benefit) => (
-                  <li key={benefit} className="flex items-start text-sm text-gray-600">
-                    <span className="text-brand-primary mr-2">•</span>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="text-sm text-gray-500 mb-6">{cat.audience}</p>
-
-              <button className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold px-4 py-2 rounded-lg transition-all">
-                Join Waitlist →
-              </button>
-            </div>
-          ))}
+            return (
+              <motion.div
+                key={category.id}
+                className={isFeatured ? 'md:col-span-2 lg:col-span-1' : ''}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <CategoryCard
+                  category={category}
+                  featured={isFeatured}
+                  onClick={() => handleCardClick(category.id)}
+                />
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
+  );
+}
+
+interface CategoryCardProps {
+  category: typeof CATEGORIES[0];
+  featured: boolean;
+  onClick: () => void;
+}
+
+function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
+  return (
+    <SurfaceCard className="h-full flex flex-col cursor-pointer" featured={featured}>
+      {/* Icon with glow */}
+      <div
+        className={`mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
+          border border-white/10 flex items-center justify-center
+          group-hover:shadow-[0_0_60px_var(--brand-primary-glow)] transition-all
+          ${featured ? 'w-24 h-24 text-5xl' : 'w-16 h-16 text-3xl'}`}
+      >
+        {category.icon}
+      </div>
+
+      {/* Content */}
+      <h3 className={`font-bold mb-4 ${featured ? 'text-4xl' : 'text-2xl'}`}>
+        {category.title}
+      </h3>
+      <p className={`text-gray-400 mb-8 ${featured ? 'text-xl' : 'text-base'}`}>
+        {category.tagline}
+      </p>
+
+      {/* Benefits */}
+      <ul className="space-y-3 mb-auto">
+        {category.benefits.map((benefit, index) => (
+          <li key={index} className="flex items-start text-gray-400">
+            <svg
+              className="w-5 h-5 text-brand-primary mr-3 mt-0.5 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {benefit}
+          </li>
+        ))}
+      </ul>
+
+      {/* CTA */}
+      <div className="mt-8">
+        <PremiumButton size={featured ? 'lg' : 'md'} onClick={onClick} className="w-full">
+          Join Waitlist →
+        </PremiumButton>
+      </div>
+    </SurfaceCard>
   );
 }

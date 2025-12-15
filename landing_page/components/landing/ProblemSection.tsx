@@ -1,48 +1,69 @@
 /**
- * Problem Section
+ * Problem Section - Surface Cards Design
  *
- * 3-column grid explaining the problems with traditional matching.
- * Copy from LANDING_PAGE_PLAN.md lines 86-134
+ * Three-column grid with frosted glass surface cards.
+ * Highlights pain points with traditional matching methods.
  */
+
+'use client';
+
+import { motion } from 'framer-motion';
+import { SurfaceCard } from '@/components/ui/surface-card';
+import { GradientText } from '@/components/ui/gradient-text';
+import { VARIANTS } from '@/lib/animations/constants';
+
+const PROBLEMS = [
+  {
+    icon: '📄',
+    title: 'Resumes Lie',
+    description: 'Polished profiles hide authentic communication patterns and problem-solving approaches.',
+  },
+  {
+    icon: '🎭',
+    title: 'Interviews Mislead',
+    description: 'Rehearsed answers don\'t reveal how someone thinks under real pressure.',
+  },
+  {
+    icon: '🎲',
+    title: 'Gut Feel Fails',
+    description: 'Intuition without data leads to costly mismatches and regrettable hires.',
+  },
+];
 
 export function ProblemSection() {
   return (
-    <section className="py-20 px-4 bg-gray-50">
+    <section className="relative py-36 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">The Problem With Matching</h2>
+        <motion.h2
+          className="font-display text-5xl lg:text-hero font-bold text-center mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          The Problem With <GradientText>Matching</GradientText>
+        </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Card 1 */}
-          <div className="bg-white p-8 rounded-lg shadow-sm">
-            <div className="text-4xl mb-4">📄</div>
-            <h3 className="text-xl font-semibold mb-3">Resumes lie</h3>
-            <p className="text-gray-600">
-              People exaggerate skills, experience, and results.
-            </p>
-          </div>
+        <motion.div
+          className="grid md:grid-cols-3 gap-8"
+          variants={VARIANTS.stagger}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+        >
+          {PROBLEMS.map((problem, index) => (
+            <SurfaceCard key={index}>
+              {/* Icon with glow effect */}
+              <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
+                border border-white/10 flex items-center justify-center text-3xl
+                group-hover:shadow-[0_0_40px_var(--brand-primary-glow)] transition-all">
+                {problem.icon}
+              </div>
 
-          {/* Card 2 */}
-          <div className="bg-white p-8 rounded-lg shadow-sm">
-            <div className="text-4xl mb-4">🎭</div>
-            <h3 className="text-xl font-semibold mb-3">Profiles perform</h3>
-            <p className="text-gray-600">
-              Dating bios show best photos & curated personalities.
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-white p-8 rounded-lg shadow-sm">
-            <div className="text-4xl mb-4">❓</div>
-            <h3 className="text-xl font-semibold mb-3">Interviews are theater</h3>
-            <p className="text-gray-600">
-              Everyone rehearses their answers to look good.
-            </p>
-          </div>
-        </div>
-
-        <p className="text-center text-lg text-gray-700 mt-12">
-          You waste time, money, and emotional energy on mismatches you could have avoided.
-        </p>
+              <h3 className="text-2xl font-semibold mb-4">{problem.title}</h3>
+              <p className="text-gray-400 leading-relaxed">{problem.description}</p>
+            </SurfaceCard>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

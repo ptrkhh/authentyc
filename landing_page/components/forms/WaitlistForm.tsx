@@ -28,7 +28,7 @@ const formSchema = z.object({
     'other',
   ]),
   other_interest_detail: z.string().optional(),
-  has_ai_history: z.enum(['extensive', 'some', 'none']).optional(),
+  has_ai_history: z.enum(['extensive', 'some', 'willing', 'none']).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -157,23 +157,50 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
           {/* Primary Interest */}
           <div>
             <Label>{"I'm"} most interested in:</Label>
-            <div className="space-y-2 mt-2">
+            <div className="space-y-3 mt-2">
               {[
-                { value: 'hiring_recruiter', label: "Hiring - I'm recruiting/hiring" },
-                { value: 'hiring_jobseeker', label: "Hiring - I'm job seeking" },
-                { value: 'dating', label: 'Dating - Finding a relationship' },
-                { value: 'cofounder', label: 'Co-founder matching' },
-                { value: 'mastermind', label: 'Mastermind / accountability group' },
-                { value: 'other', label: 'Other' },
+                {
+                  value: 'hiring_recruiter',
+                  label: "Hiring - I'm recruiting candidates",
+                  description: "Find candidates who can actually do the job, not just interview well"
+                },
+                {
+                  value: 'hiring_jobseeker',
+                  label: "Hiring - I'm seeking a job",
+                  description: "Showcase your real capabilities and find roles that truly fit"
+                },
+                {
+                  value: 'dating',
+                  label: "Dating - I'm looking for a relationship",
+                  description: "Match on authentic personality and communication style"
+                },
+                {
+                  value: 'cofounder',
+                  label: "Founding - I'm seeking a co-founder",
+                  description: "Find a long-term business partner to start a company with"
+                },
+                {
+                  value: 'mastermind',
+                  label: "Mastermind - I'm joining a peer group",
+                  description: "Join a peer support network for advice, feedback, and accountability"
+                },
+                {
+                  value: 'other',
+                  label: "Other - I'm interested in something else",
+                  description: "Something else in mind? Let us know"
+                },
               ].map((option) => (
-                <label key={option.value} className="flex items-center">
+                <label key={option.value} className="flex items-start cursor-pointer">
                   <input
                     type="radio"
                     {...register('primary_interest')}
                     value={option.value}
-                    className="mr-2"
+                    className="mr-3 mt-1 cursor-pointer"
                   />
-                  {option.label}
+                  <div className="flex-1">
+                    <div className="font-medium">{option.label}</div>
+                    <div className="text-sm text-gray-600 mt-0.5">{option.description}</div>
+                  </div>
                 </label>
               ))}
             </div>
@@ -184,9 +211,10 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
             <Label>(Optional) Have you used ChatGPT or Claude extensively?</Label>
             <div className="space-y-2 mt-2">
               {[
-                { value: 'extensive', label: 'Yes, I have extensive conversation history' },
-                { value: 'some', label: 'Some, but not extensively' },
-                { value: 'none', label: "No, but I'm interested" },
+                { value: 'extensive', label: 'Yes, 50+ conversations or 6+ months of regular use' },
+                { value: 'some', label: 'Some, maybe 10-50 conversations' },
+                { value: 'willing', label: "No, but I'm willing to build up history" },
+                { value: 'none', label: 'New to AI assistants' },
               ].map((option) => (
                 <label key={option.value} className="flex items-center">
                   <input

@@ -36,6 +36,7 @@ export function ChatAnalyzer() {
   const [error, setError] = useState<string | null>(null);
   const [showManualPaste, setShowManualPaste] = useState(false);
   const [manualText, setManualText] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -172,18 +173,27 @@ export function ChatAnalyzer() {
                 </p>
 
                 {/* Copyable prompt */}
-                <div className="bg-white p-4 rounded border border-gray-200 relative group">
+                <div className="space-y-2">
+                  <textarea
+                    readOnly
+                    value={getPromptByCategory(category).prompt}
+                    rows={6}
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded text-gray-700 text-xs leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                  />
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(getPromptByCategory(category).prompt);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
                     }}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-brand-primary text-white px-3 py-1 rounded text-xs"
+                    className={`w-full font-semibold px-4 py-2.5 rounded transition-all shadow-sm hover:shadow-md ${
+                      copied
+                        ? 'bg-green-600 hover:bg-green-700'
+                        : 'bg-brand-primary hover:bg-brand-primary-hover'
+                    } text-white`}
                   >
-                    Copy
+                    {copied ? '✓ Copied!' : '📋 Copy Prompt'}
                   </button>
-                  <p className="text-gray-700 text-xs leading-relaxed">
-                    {getPromptByCategory(category).prompt}
-                  </p>
                 </div>
                 <p className="text-gray-600 mt-2 text-xs">
                   💡 Tip: Have a natural back-and-forth conversation (5-10 messages) for best results
