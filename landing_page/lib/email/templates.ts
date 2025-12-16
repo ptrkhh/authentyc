@@ -10,21 +10,35 @@
 export interface WelcomeEmailData {
   email: string;
   waitlistPosition: number;
-  primaryInterest: string;
+  interests: string[];
 }
 
 /**
  * Welcome email template for new waitlist signups
  */
 export function getWelcomeEmailHTML(data: WelcomeEmailData): string {
-  const interestText = {
+  const interestLabels: Record<string, string> = {
     hiring_recruiter: 'hiring/recruiting',
     hiring_jobseeker: 'job seeking',
     dating: 'dating',
     cofounder: 'co-founder matching',
     mastermind: 'mastermind groups',
-    other: 'our platform',
-  }[data.primaryInterest] || 'our platform';
+    other: 'exploring Authentyc',
+  };
+
+  // Format multiple interests into a readable string
+  const interestTexts = data.interests.map(i => interestLabels[i] || 'our platform');
+  let interestText: string;
+
+  if (interestTexts.length === 1) {
+    interestText = interestTexts[0];
+  } else if (interestTexts.length === 2) {
+    interestText = `${interestTexts[0]} and ${interestTexts[1]}`;
+  } else {
+    const last = interestTexts[interestTexts.length - 1];
+    const rest = interestTexts.slice(0, -1).join(', ');
+    interestText = `${rest}, and ${last}`;
+  }
 
   return `
 <!DOCTYPE html>
@@ -102,7 +116,7 @@ export function getWelcomeEmailHTML(data: WelcomeEmailData): string {
     <p>— The Authentyc Team</p>
 
     <p style="font-size: 14px; color: #6b7280; margin-top: 30px;">
-      P.S. We're testing all three categories (hiring, dating, founder matching) to identify which provides the strongest signal. Your category preference helps us decide which to launch first. Hit reply if you have thoughts!
+      P.S. We're testing multiple categories (hiring, dating, founder matching, and more) to identify which provides the strongest signal. Your preferences help us decide which to launch first. Hit reply if you have thoughts!
     </p>
   </div>
 

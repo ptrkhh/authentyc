@@ -17,19 +17,37 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { trackEvent } from '@/lib/analytics/posthog';
 
-const formSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  primary_interest: z.enum([
-    'hiring_recruiter',
-    'hiring_jobseeker',
-    'dating',
-    'cofounder',
-    'mastermind',
-    'other',
-  ]),
-  other_interest_detail: z.string().optional(),
-  has_ai_history: z.enum(['extensive', 'some', 'willing', 'none']).optional(),
-});
+const formSchema = z
+  .object({
+    email: z.string().email('Invalid email address'),
+    interests: z
+      .array(
+        z.enum([
+          'hiring_recruiter',
+          'hiring_jobseeker',
+          'dating',
+          'cofounder',
+          'mastermind',
+          'other',
+        ])
+      )
+      .min(1, 'Please select at least one interest'),
+    other_interest_detail: z.string().optional(),
+    has_ai_history: z.enum(['extensive', 'some', 'willing', 'none']).optional(),
+  })
+  .refine(
+    (data) => {
+      // If 'other' is selected, other_interest_detail must be provided
+      if (data.interests.includes('other')) {
+        return data.other_interest_detail && data.other_interest_detail.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: 'Please describe what you\'re interested in',
+      path: ['other_interest_detail'],
+    }
+  );
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -43,17 +61,24 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
   const [submitted, setSubmitted] = useState(false);
   const [position, setPosition] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(
+    preselectedCategory ? [preselectedCategory] : []
+  );
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      primary_interest: preselectedCategory as any,
+      interests: preselectedCategory ? [preselectedCategory as any] : [],
     },
   });
+
+  const watchedInterests = watch('interests', []);
 
   // Track form open/close for abandonment funnel
   useEffect(() => {
@@ -90,7 +115,8 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
       // Track successful form submission
       trackEvent('waitlist_form_submitted', {
         preselected_category: preselectedCategory || 'none',
-        primary_interest: data.primary_interest,
+        interests: data.interests,
+        interests_count: data.interests.length,
         has_ai_history: data.has_ai_history || 'not_specified',
         waitlist_position: result.position,
       });
@@ -134,12 +160,12 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>Get Early Access</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
           {/* Email */}
           <div>
             <Label htmlFor="email">Email</Label>
@@ -154,10 +180,10 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
             )}
           </div>
 
-          {/* Primary Interest */}
+          {/* Interests */}
           <div>
-            <Label>{"I'm"} most interested in:</Label>
-            <div className="space-y-3 mt-2">
+            <Label className="text-sm sm:text-base">{"I'm"} interested in: (select all that apply)</Label>
+            <div className="space-y-2 sm:space-y-3 mt-2">
               {[
                 {
                   value: 'hiring_recruiter',
@@ -192,31 +218,50 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
               ].map((option) => (
                 <label key={option.value} className="flex items-start cursor-pointer">
                   <input
-                    type="radio"
-                    {...register('primary_interest')}
+                    type="checkbox"
+                    {...register('interests')}
                     value={option.value}
-                    className="mr-3 mt-1 cursor-pointer"
+                    className="mr-2 sm:mr-3 mt-1 cursor-pointer"
                   />
                   <div className="flex-1">
-                    <div className="font-medium">{option.label}</div>
-                    <div className="text-sm text-gray-600 mt-0.5">{option.description}</div>
+                    <div className="font-medium text-sm sm:text-base">{option.label}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 mt-0.5 hidden sm:block">{option.description}</div>
                   </div>
                 </label>
               ))}
             </div>
+            {errors.interests && (
+              <p className="text-sm text-red-600 mt-1">{errors.interests.message}</p>
+            )}
           </div>
+
+          {/* Other Interest Detail - Conditional */}
+          {watchedInterests.includes('other') && (
+            <div>
+              <Label htmlFor="other_interest_detail">What are you interested in?</Label>
+              <Input
+                id="other_interest_detail"
+                type="text"
+                {...register('other_interest_detail')}
+                placeholder="Please describe what you're interested in..."
+              />
+              {errors.other_interest_detail && (
+                <p className="text-sm text-red-600 mt-1">{errors.other_interest_detail.message}</p>
+              )}
+            </div>
+          )}
 
           {/* AI History */}
           <div>
-            <Label>(Optional) Have you used ChatGPT or Claude extensively?</Label>
-            <div className="space-y-2 mt-2">
+            <Label className="text-sm sm:text-base">Have you used ChatGPT or Claude extensively?</Label>
+            <div className="space-y-1.5 sm:space-y-2 mt-2">
               {[
                 { value: 'extensive', label: 'Yes, 50+ conversations or 6+ months of regular use' },
                 { value: 'some', label: 'Some, maybe 10-50 conversations' },
                 { value: 'willing', label: "No, but I'm willing to build up history" },
                 { value: 'none', label: 'New to AI assistants' },
               ].map((option) => (
-                <label key={option.value} className="flex items-center">
+                <label key={option.value} className="flex items-center text-sm sm:text-base">
                   <input
                     type="radio"
                     {...register('has_ai_history')}
@@ -230,16 +275,16 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 p-3 rounded">
-              <p className="text-red-700 text-sm">{error}</p>
+            <div className="bg-red-50 border border-red-200 p-2 sm:p-3 rounded">
+              <p className="text-red-700 text-xs sm:text-sm">{error}</p>
             </div>
           )}
 
-          <Button type="submit" disabled={isSubmitting} className="w-full">
+          <Button type="submit" disabled={isSubmitting} className="w-full text-sm sm:text-base">
             {isSubmitting ? 'Joining...' : 'Get Early Access'}
           </Button>
 
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-500 text-center !mt-2 sm:!mt-4">
             By joining, you'll get invite-only early access, updates on our launch progress, and
             the chance to shape the product.
           </p>

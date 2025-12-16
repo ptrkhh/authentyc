@@ -69,7 +69,7 @@ async function testDatabaseConnection() {
       .from('waitlist_leads')
       .insert({
         email: 'test-connection@example.com',
-        primary_interest: 'dating',
+        interests: ['dating'],
         has_ai_history: 'some'
       })
       .select()

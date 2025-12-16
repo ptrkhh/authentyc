@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       const emailHtml = getWelcomeEmailHTML({
         email: data.email,
         waitlistPosition: position,
-        primaryInterest: data.primary_interest,
+        interests: data.interests,
       });
 
       await supabaseServer.from('email_jobs').insert({

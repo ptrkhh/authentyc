@@ -139,7 +139,7 @@ function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
 
       {/* CTA */}
       <div className="mt-8">
-        <PremiumButton size={featured ? 'lg' : 'md'} onClick={onClick} className="w-full">
+        <PremiumButton size="md" onClick={onClick} className="w-full">
           Join Waitlist →
         </PremiumButton>
       </div>

@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
       parsed = parseChatGPTShareHTML(fetchResult.html);
     }
 
-    const validation = validateParsedConversation(parsed);
+    const validation = await validateParsedConversation(parsed);
 
     if (!validation.valid) {
       console.error('[analyze-chat] Validation failed:', {
@@ -240,8 +240,8 @@ export async function POST(request: NextRequest) {
       console.warn('[analyze-chat] No assistant message found in conversation');
     }
 
-    // Analyze with Gemini
-    const prompt = buildQuickAnalysisPrompt(parsed);
+    // Analyze with Gemini (prompt now fetched from database)
+    const prompt = await buildQuickAnalysisPrompt(parsed);
     const fullPrompt = `You are a personality analysis expert.\n\n${prompt}`;
 
     console.log('[analyze-chat] Sending prompt to Gemini, length:', fullPrompt.length);

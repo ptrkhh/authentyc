@@ -9,7 +9,7 @@
  */
 
 import * as cheerio from 'cheerio';
-import { CONVERSATION_PROMPTS } from '../constants/conversation-prompts';
+import { getConversationPrompts } from '../constants/conversation-prompts';
 
 export interface ParsedConversation {
   messages: Array<{
@@ -225,10 +225,10 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
 /**
  * Validate that the first message matches exactly one of the predefined prompts
  */
-export function validatePromptExactMatch(parsed: ParsedConversation): {
+export async function validatePromptExactMatch(parsed: ParsedConversation): Promise<{
   valid: boolean;
   reason?: string;
-} {
+}> {
   if (parsed.messages.length === 0) {
     return { valid: false, reason: 'No messages found in conversation.' };
   }
@@ -237,6 +237,13 @@ export function validatePromptExactMatch(parsed: ParsedConversation): {
 
   if (!firstUserMessage) {
     return { valid: false, reason: 'No user message found in conversation.' };
+  }
+
+  // Fetch prompts from database
+  const conversationPrompts = await getConversationPrompts();
+
+  if (!conversationPrompts || conversationPrompts.length === 0) {
+    throw new Error('Failed to load conversation prompts from database');
   }
 
   // Normalize whitespace for comparison
@@ -255,7 +262,7 @@ export function validatePromptExactMatch(parsed: ParsedConversation): {
   const normalizedUserPrompt = normalizeText(firstUserMessage.content);
 
   // Check if it matches any of the predefined prompts exactly
-  const matchesPrompt = CONVERSATION_PROMPTS.some(prompt => {
+  const matchesPrompt = conversationPrompts.some(prompt => {
     const normalizedPredefinedPrompt = normalizeText(prompt.prompt);
     return normalizedUserPrompt === normalizedPredefinedPrompt;
   });
@@ -273,10 +280,10 @@ export function validatePromptExactMatch(parsed: ParsedConversation): {
 /**
  * Validate parsed conversation quality
  */
-export function validateParsedConversation(parsed: ParsedConversation): {
+export async function validateParsedConversation(parsed: ParsedConversation): Promise<{
   valid: boolean;
   reason?: string;
-} {
+}> {
   if (parsed.messageCount === 0) {
     return {
       valid: false,
@@ -300,7 +307,7 @@ export function validateParsedConversation(parsed: ParsedConversation): {
   }
 
   // Validate that the prompt matches exactly one of the predefined prompts
-  const promptValidation = validatePromptExactMatch(parsed);
+  const promptValidation = await validatePromptExactMatch(parsed);
   if (!promptValidation.valid) {
     return promptValidation;
   }

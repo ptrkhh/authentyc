@@ -39,8 +39,8 @@ export async function generatePersonalizedCharacters(
 ): Promise<SimulatedCharacter[]> {
   const { personalityAnalysis, category, conversationSample } = input;
 
-  // Build prompt
-  const prompt = buildCharacterGenerationPrompt(
+  // Build prompt (now async - fetches from database)
+  const prompt = await buildCharacterGenerationPrompt(
     personalityAnalysis,
     category,
     conversationSample

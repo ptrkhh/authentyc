@@ -16,8 +16,8 @@
 
 'use client';
 
-import { useState } from 'react';
-import { CONVERSATION_PROMPTS, getPromptByCategory } from '@/lib/constants/conversation-prompts';
+import { useState, useEffect } from 'react';
+import type { ConversationPrompt } from '@/lib/constants/conversation-prompts';
 import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
 import { SimulationResults, type Category, type SimulatedCharacter } from './SimulationResults';
 import { Briefcase, Heart, Rocket } from 'lucide-react';
@@ -37,6 +37,39 @@ export function ChatAnalyzer() {
   const [showManualPaste, setShowManualPaste] = useState(false);
   const [manualText, setManualText] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // Fetch prompts from database on mount
+  const [prompts, setPrompts] = useState<ConversationPrompt[]>([]);
+  const [promptsLoading, setPromptsLoading] = useState(true);
+  const [promptsError, setPromptsError] = useState(false);
+
+  useEffect(() => {
+    async function fetchPrompts() {
+      try {
+        const response = await fetch('/api/prompts');
+        if (response.ok) {
+          const data = await response.json();
+          setPrompts(data.prompts);
+          setPromptsError(false);
+        } else {
+          console.error('[ChatAnalyzer] Failed to fetch prompts from API');
+          setPromptsError(true);
+        }
+      } catch (error) {
+        console.error('[ChatAnalyzer] Error fetching prompts:', error);
+        setPromptsError(true);
+      } finally {
+        setPromptsLoading(false);
+      }
+    }
+
+    fetchPrompts();
+  }, []);
+
+  // Helper to get prompt by category
+  const getPromptByCategory = (cat: Category): ConversationPrompt | undefined => {
+    return prompts.find(p => p.category === cat);
+  };
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -168,36 +201,55 @@ export function ChatAnalyzer() {
               <div>
                 <h4 className="font-semibold text-gray-900 mb-2">Step 1: Copy the conversation prompt</h4>
 
-                <p className="text-gray-600 text-xs mb-2">
-                  {getPromptByCategory(category).description}
-                </p>
+                {promptsLoading && (
+                  <div className="text-gray-600 text-xs py-4">
+                    Loading prompts...
+                  </div>
+                )}
 
-                {/* Copyable prompt */}
-                <div className="space-y-2">
-                  <textarea
-                    readOnly
-                    value={getPromptByCategory(category).prompt}
-                    rows={6}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded text-gray-700 text-xs leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
-                  />
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(getPromptByCategory(category).prompt);
-                      setCopied(true);
-                      setTimeout(() => setCopied(false), 2000);
-                    }}
-                    className={`w-full font-semibold px-4 py-2.5 rounded transition-all shadow-sm hover:shadow-md ${
-                      copied
-                        ? 'bg-green-600 hover:bg-green-700'
-                        : 'bg-brand-primary hover:bg-brand-primary-hover'
-                    } text-white`}
-                  >
-                    {copied ? '✓ Copied!' : '📋 Copy Prompt'}
-                  </button>
-                </div>
-                <p className="text-gray-600 mt-2 text-xs">
-                  💡 Tip: Have a natural back-and-forth conversation (5-10 messages) for best results
-                </p>
+                {promptsError && (
+                  <div className="text-red-600 text-xs py-4">
+                    Failed to load prompts. Please refresh the page.
+                  </div>
+                )}
+
+                {!promptsLoading && !promptsError && getPromptByCategory(category) && (
+                  <>
+                    <p className="text-gray-600 text-xs mb-2">
+                      {getPromptByCategory(category)?.description}
+                    </p>
+
+                    {/* Copyable prompt */}
+                    <div className="space-y-2">
+                      <textarea
+                        readOnly
+                        value={getPromptByCategory(category)?.prompt || ''}
+                        rows={6}
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded text-gray-700 text-xs leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                      />
+                      <button
+                        onClick={() => {
+                          const prompt = getPromptByCategory(category);
+                          if (prompt) {
+                            navigator.clipboard.writeText(prompt.prompt);
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
+                          }
+                        }}
+                        className={`w-full font-semibold px-4 py-2.5 rounded transition-all shadow-sm hover:shadow-md ${
+                          copied
+                            ? 'bg-green-600 hover:bg-green-700'
+                            : 'bg-brand-primary hover:bg-brand-primary-hover'
+                        } text-white`}
+                      >
+                        {copied ? '✓ Copied!' : '📋 Copy Prompt'}
+                      </button>
+                    </div>
+                    <p className="text-gray-600 mt-2 text-xs">
+                      💡 Tip: Have a natural back-and-forth conversation (5-10 messages) for best results
+                    </p>
+                  </>
+                )}
               </div>
 
               <div>
