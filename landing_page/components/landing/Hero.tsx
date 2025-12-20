@@ -71,7 +71,7 @@ export function Hero({ onCTAClick }: HeroProps) {
             className="text-base lg:text-lg text-gray-500 max-w-xl"
             variants={VARIANTS.fadeIn}
           >
-            AI-powered conversation analysis reveals authentic compatibility for hiring, dating, and team matching.
+            AI-powered conversation analysis reveals authentic compatibility for hiring, dating, and co-founder matching.
           </motion.p>
 
           <motion.div variants={VARIANTS.fadeIn}>

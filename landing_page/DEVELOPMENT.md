@@ -8,8 +8,8 @@ Located in `.env.local` (never commit this file!)
 
 Key variables:
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Public Supabase key
-- `SUPABASE_SERVICE_ROLE_KEY` - Private Supabase key (server-only)
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` - Public Supabase publishable key
+- `SUPABASE_SECRET_KEY` - Private Supabase secret key (server-only)
 - `GEMINI_API_KEY` - Gemini API for chat analysis
 - `RESEND_API_KEY` - Resend for email delivery
 - `RESEND_FROM_DOMAIN` - Verified email domain (authentyc.dpdns.org)

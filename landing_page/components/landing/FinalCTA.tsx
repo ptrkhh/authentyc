@@ -70,8 +70,8 @@ export function FinalCTA({ onCTAClick }: FinalCTAProps) {
           transition={{ delay: 0.1 }}
         >
           {waitlistCount !== null
-            ? `Join ${waitlistCount}+ people getting early access to authentic matching for hiring, dating, and teams.`
-            : 'Join ambitious people getting early access to authentic matching for hiring, dating, and teams.'}
+            ? `Join ${waitlistCount}+ people getting early access to authentic matching for hiring, dating, and co-founder matching.`
+            : 'Join ambitious people getting early access to authentic matching for hiring, dating, and co-founder matching.'}
         </motion.p>
 
         <motion.div

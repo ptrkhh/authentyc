@@ -141,7 +141,7 @@
 
 ### Environment Variables
 - [ ] Add all env vars to Vercel dashboard
-- [ ] Mark `SUPABASE_SERVICE_ROLE_KEY` as sensitive
+- [ ] Mark `SUPABASE_SECRET_KEY` as sensitive
 - [ ] Mark `OPENAI_API_KEY` as sensitive
 - [ ] Update `NEXT_PUBLIC_SITE_URL` to production
 

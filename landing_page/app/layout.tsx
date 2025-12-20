@@ -18,14 +18,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Authentyc - Match people by who they really are, not who they claim to be',
   description:
-    'AI conversation analysis reveals authentic compatibility for hiring, dating, and team matching. See how people really think before you commit.',
+    'AI conversation analysis reveals authentic compatibility for hiring, dating, and co-founder matching. See how people really think before you commit.',
   keywords: [
     'AI matching',
     'personality analysis',
     'ChatGPT analysis',
     'hiring',
     'dating',
-    'team building',
+    'co-founder matching',
+    'founder compatibility',
     'authentic compatibility',
   ],
   authors: [{ name: 'Authentyc AI, Inc.' }],

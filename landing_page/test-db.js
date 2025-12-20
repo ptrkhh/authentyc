@@ -12,19 +12,19 @@ async function testDatabaseConnection() {
 
   // Check environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const secretKey = process.env.SUPABASE_SECRET_KEY;
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!supabaseUrl || !secretKey) {
     console.error('❌ Missing environment variables!');
     console.log('NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl ? '✓ Set' : '✗ Missing');
-    console.log('SUPABASE_SERVICE_ROLE_KEY:', serviceRoleKey ? '✓ Set' : '✗ Missing');
+    console.log('SUPABASE_SECRET_KEY:', secretKey ? '✓ Set' : '✗ Missing');
     process.exit(1);
   }
 
   console.log('✅ Environment variables found\n');
 
   // Create Supabase client
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const supabase = createClient(supabaseUrl, secretKey);
 
   try {
     // Test 1: Check waitlist_leads table

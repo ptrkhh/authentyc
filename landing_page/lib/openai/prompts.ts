@@ -99,7 +99,7 @@ export async function buildCharacterGenerationPrompt(
       matchContext: 'match',
       diversityDimension: 'Lifestyle and communication styles',
     },
-    founder: {
+    cofounder: {
       entityType: 'co-founders',
       roleExamples: ['Technical Co-founder', 'Growth Expert', 'Product Visionary'],
       focusAreas: 'decision-making style, risk tolerance, work pace, complementary skills',

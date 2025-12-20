@@ -61,9 +61,24 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
   const [submitted, setSubmitted] = useState(false);
   const [position, setPosition] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(
-    preselectedCategory ? [preselectedCategory] : []
-  );
+
+  // Map card categories to form interests
+  const getDefaultInterests = (category?: string): string[] => {
+    if (!category) return [];
+
+    // Map broad categories from cards to specific form interests
+    switch (category) {
+      case 'hiring':
+        return []; // Let user choose recruiter vs jobseeker
+      case 'dating':
+        return ['dating'];
+      case 'cofounder':
+        return ['cofounder']; // Pre-select cofounder (mastermind still available)
+      default:
+        // If it's already a specific interest, use it
+        return [category];
+    }
+  };
 
   const {
     register,
@@ -74,7 +89,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      interests: preselectedCategory ? [preselectedCategory as any] : [],
+      interests: getDefaultInterests(preselectedCategory) as any,
     },
   });
 

@@ -11,7 +11,7 @@
 import { getPrompts } from '@/lib/prompts/service';
 
 export interface ConversationPrompt {
-  category: 'hiring' | 'dating' | 'founder';
+  category: 'hiring' | 'dating' | 'cofounder';
   title: string;
   prompt: string;
   description: string;
@@ -21,12 +21,12 @@ export interface ConversationPrompt {
  * Fetch all conversation starter prompts from database
  */
 export async function getConversationPrompts(): Promise<ConversationPrompt[]> {
-  const promptKeys = ['conversation-hiring', 'conversation-dating', 'conversation-founder'];
+  const promptKeys = ['conversation-hiring', 'conversation-dating', 'conversation-cofounder'];
   const prompts = await getPrompts(promptKeys);
 
   const conversationPrompts: ConversationPrompt[] = [];
 
-  const categories: Array<'hiring' | 'dating' | 'founder'> = ['hiring', 'dating', 'founder'];
+  const categories: Array<'hiring' | 'dating' | 'cofounder'> = ['hiring', 'dating', 'cofounder'];
   categories.forEach((category) => {
     const key = `conversation-${category}`;
     const prompt = prompts.get(key);
@@ -48,7 +48,7 @@ export async function getConversationPrompts(): Promise<ConversationPrompt[]> {
  * Get prompt by category
  */
 export async function getPromptByCategory(
-  category: 'hiring' | 'dating' | 'founder'
+  category: 'hiring' | 'dating' | 'cofounder'
 ): Promise<ConversationPrompt | null> {
   const prompts = await getConversationPrompts();
   return prompts.find((p) => p.category === category) || null;

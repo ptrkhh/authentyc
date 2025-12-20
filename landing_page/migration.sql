@@ -30,23 +30,7 @@ CREATE TABLE waitlist_leads (
   notes TEXT,
 
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
-
-  -- Constraint to validate interests array values
-  CONSTRAINT interests_valid_values CHECK (
-    interests @> '[]'::jsonb AND
-    (
-      SELECT bool_and(elem::text IN (
-        '"hiring_recruiter"',
-        '"hiring_jobseeker"',
-        '"dating"',
-        '"cofounder"',
-        '"mastermind"',
-        '"other"'
-      ))
-      FROM jsonb_array_elements(interests) elem
-    )
-  )
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE INDEX idx_waitlist_created ON waitlist_leads(created_at DESC);
@@ -73,7 +57,7 @@ CREATE TABLE chat_analyses (
   completeness_rating INTEGER CHECK (completeness_rating BETWEEN 1 AND 10),
 
   -- Character generation feature
-  category TEXT CHECK (category IN ('hiring', 'dating', 'founder')),
+  category TEXT CHECK (category IN ('hiring', 'dating', 'cofounder')),
   generated_characters JSONB,
   character_generation_time_ms INTEGER,
   used_fallback_templates BOOLEAN DEFAULT false,
@@ -100,7 +84,7 @@ CREATE INDEX idx_analyses_category ON chat_analyses(category);
 CREATE INDEX idx_analyses_completeness_rating ON chat_analyses(completeness_rating);
 
 -- Column comments
-COMMENT ON COLUMN chat_analyses.category IS 'The matching category: hiring, dating, or founder';
+COMMENT ON COLUMN chat_analyses.category IS 'The matching category: hiring, dating, or cofounder';
 COMMENT ON COLUMN chat_analyses.generated_characters IS 'Array of 5 AI-generated character matches in JSON format';
 COMMENT ON COLUMN chat_analyses.character_generation_time_ms IS 'Time taken to generate characters via Gemini API';
 COMMENT ON COLUMN chat_analyses.used_fallback_templates IS 'Whether template-based fallback was used instead of AI generation';
@@ -429,9 +413,9 @@ Begin with PHASE 1 assessment.',
   true
 );
 
--- Conversation Starter: Founder
+-- Conversation Starter: Co-Founder
 INSERT INTO prompts (key, version, content, metadata, is_active) VALUES (
-  'conversation-founder',
+  'conversation-cofounder',
   1,
   'PRIMARY DIRECTIVE: Follow this process exactly.
 
@@ -509,7 +493,7 @@ THE 7 QUESTIONS:
 7. What would be a dealbreaker for you in a co-founder or early team member?
 
 Begin with PHASE 1 assessment.',
-  '{"title": "Startup & Team Fit", "description": "Reveals collaboration style, decision-making patterns, and leadership approach", "category": "founder", "type": "conversation"}'::jsonb,
+  '{"title": "Startup & Team Fit", "description": "Reveals collaboration style, decision-making patterns, and leadership approach", "category": "cofounder", "type": "conversation"}'::jsonb,
   true
 );
 
@@ -606,7 +590,7 @@ IMPORTANT:
 );
 
 -- ============================================
--- 8. HELPER FUNCTIONS
+-- 9. HELPER FUNCTIONS
 -- ============================================
 CREATE OR REPLACE FUNCTION get_waitlist_position(lead_id UUID)
 RETURNS INTEGER AS $$

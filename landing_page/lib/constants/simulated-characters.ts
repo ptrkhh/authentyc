@@ -183,7 +183,7 @@ export const CHARACTER_TEMPLATES: Record<Category, CharacterTemplate> = {
     ],
     matchScoreRange: [58, 92]
   },
-  founder: {
+  cofounder: {
     names: [
       'David Park',
       'Maya Santos',

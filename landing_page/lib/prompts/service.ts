@@ -104,7 +104,7 @@ export async function trackPromptUsage(
  * Get all prompts by category (for conversation starters)
  */
 export async function getPromptsByCategory(
-  category: 'hiring' | 'dating' | 'founder'
+  category: 'hiring' | 'dating' | 'cofounder'
 ): Promise<PromptRecord[]> {
   const { data, error } = await supabaseServer
     .from('prompts')

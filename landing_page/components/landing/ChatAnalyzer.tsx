@@ -131,7 +131,7 @@ export function ChatAnalyzer() {
     switch (cat) {
       case 'hiring': return <Briefcase className="w-5 h-5" />;
       case 'dating': return <Heart className="w-5 h-5" />;
-      case 'founder': return <Rocket className="w-5 h-5" />;
+      case 'cofounder': return <Rocket className="w-5 h-5" />;
     }
   };
 
@@ -139,7 +139,7 @@ export function ChatAnalyzer() {
     switch (cat) {
       case 'hiring': return 'Hiring & Jobs';
       case 'dating': return 'Dating & Relationships';
-      case 'founder': return 'Co-founder Matching';
+      case 'cofounder': return 'Co-Founder Matching';
     }
   };
 
@@ -147,9 +147,12 @@ export function ChatAnalyzer() {
     <section className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">Try It Yourself</h2>
-        <p className="text-center text-gray-600 mb-8">
-          See how our matching works - get simulated character matches based on your communication style
+        <p className="text-center text-gray-400 mb-8">
+          See how our matching works! Get simulated character matches based on your communication style
         </p>
+
+        {/* Dark mode card container with glow emphasis */}
+        <div className="bg-dark-850 rounded-2xl shadow-[0_0_60px_rgba(16,185,129,0.3)] border-2 border-brand-primary/30 overflow-hidden p-8 md:p-12 relative before:absolute before:inset-0 before:rounded-2xl before:p-[2px] before:bg-gradient-to-br before:from-brand-primary/40 before:via-transparent before:to-brand-primary/20 before:-z-10">
 
         {/* Results State - Show both insights and characters together */}
         {results && characters && (
@@ -169,25 +172,25 @@ export function ChatAnalyzer() {
           <div className="max-w-3xl mx-auto space-y-6 min-h-[800px]">
             {/* Category Selector */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-gray-200 mb-3">
                 I&apos;m interested in:
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {(['hiring', 'dating', 'founder'] as Category[]).map((cat) => (
+                {(['hiring', 'dating', 'cofounder'] as Category[]).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setCategory(cat)}
                     className={`p-4 rounded-lg border-2 transition-all ${
                       category === cat
-                        ? 'border-brand-primary bg-brand-primary/5 shadow-sm'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                        ? 'border-brand-primary bg-brand-primary/10 shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+                        : 'border-white/10 hover:border-brand-primary/50 bg-dark-800 hover:bg-dark-800/80'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`${category === cat ? 'text-brand-primary' : 'text-gray-400'}`}>
                         {getCategoryIcon(cat)}
                       </div>
-                      <span className={`font-medium ${category === cat ? 'text-brand-primary' : 'text-gray-700'}`}>
+                      <span className={`font-medium ${category === cat ? 'text-brand-primary' : 'text-gray-300'}`}>
                         {getCategoryLabel(cat)}
                       </span>
                     </div>
@@ -197,25 +200,25 @@ export function ChatAnalyzer() {
             </div>
 
             {/* Instructions - Always Visible */}
-            <div className="p-6 bg-gray-50 rounded-lg space-y-4 text-sm">
+            <div className="p-6 bg-dark-800/50 border border-brand-primary/20 rounded-lg space-y-4 text-sm">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Step 1: Copy the conversation prompt</h4>
+                <h4 className="font-semibold text-gray-100 mb-2">Step 1: Copy the conversation prompt</h4>
 
                 {promptsLoading && (
-                  <div className="text-gray-600 text-xs py-4">
+                  <div className="text-gray-400 text-xs py-4">
                     Loading prompts...
                   </div>
                 )}
 
                 {promptsError && (
-                  <div className="text-red-600 text-xs py-4">
+                  <div className="text-red-400 text-xs py-4">
                     Failed to load prompts. Please refresh the page.
                   </div>
                 )}
 
                 {!promptsLoading && !promptsError && getPromptByCategory(category) && (
                   <>
-                    <p className="text-gray-600 text-xs mb-2">
+                    <p className="text-gray-400 text-xs mb-2">
                       {getPromptByCategory(category)?.description}
                     </p>
 
@@ -225,7 +228,7 @@ export function ChatAnalyzer() {
                         readOnly
                         value={getPromptByCategory(category)?.prompt || ''}
                         rows={6}
-                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded text-gray-700 text-xs leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                        className="w-full px-4 py-3 bg-dark-900 border border-white/10 rounded text-gray-300 text-xs leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
                       />
                       <button
                         onClick={() => {
@@ -236,7 +239,7 @@ export function ChatAnalyzer() {
                             setTimeout(() => setCopied(false), 2000);
                           }
                         }}
-                        className={`w-full font-semibold px-4 py-2.5 rounded transition-all shadow-sm hover:shadow-md ${
+                        className={`w-full font-semibold px-4 py-2.5 rounded transition-all shadow-sm hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] ${
                           copied
                             ? 'bg-green-600 hover:bg-green-700'
                             : 'bg-brand-primary hover:bg-brand-primary-hover'
@@ -245,7 +248,7 @@ export function ChatAnalyzer() {
                         {copied ? '✓ Copied!' : '📋 Copy Prompt'}
                       </button>
                     </div>
-                    <p className="text-gray-600 mt-2 text-xs">
+                    <p className="text-gray-400 mt-2 text-xs">
                       💡 Tip: Have a natural back-and-forth conversation (5-10 messages) for best results
                     </p>
                   </>
@@ -253,17 +256,17 @@ export function ChatAnalyzer() {
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Step 2: Paste into ChatGPT and answer the questions</h4>
-                <ol className="list-decimal list-inside space-y-1 text-gray-600">
-                  <li>Go to <a href="https://chatgpt.com" target="_blank" className="text-brand-primary underline">chatgpt.com</a></li>
+                <h4 className="font-semibold text-gray-100 mb-2">Step 2: Paste into ChatGPT and answer the questions</h4>
+                <ol className="list-decimal list-inside space-y-1 text-gray-400">
+                  <li>Go to <a href="https://chatgpt.com" target="_blank" className="text-brand-primary underline hover:text-brand-primary-hover">chatgpt.com</a></li>
                   <li>Paste the prompt and press Enter</li>
                   <li>ChatGPT will ask you questions - just answer naturally (5-7 exchanges)</li>
                 </ol>
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Step 3: Share your conversation</h4>
-                <ol className="list-decimal list-inside space-y-1 text-gray-600">
+                <h4 className="font-semibold text-gray-100 mb-2">Step 3: Share your conversation</h4>
+                <ol className="list-decimal list-inside space-y-1 text-gray-400">
                   <li>Click the share icon (↗) in the top-right corner</li>
                   <li>Click &quot;Copy link&quot;</li>
                   <li>Paste the link below and click &quot;Analyze My Communication Style&quot;</li>
@@ -282,12 +285,12 @@ export function ChatAnalyzer() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://chatgpt.com/share/..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                className="w-full px-4 py-3 bg-dark-900 border border-white/10 text-gray-200 placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary/50"
               />
               <button
                 onClick={handleAnalyze}
                 disabled={!url}
-                className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold px-6 py-3 rounded-lg transition-all disabled:opacity-50"
+                className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:shadow-none"
               >
                 Analyze My Communication Style
               </button>
@@ -298,24 +301,24 @@ export function ChatAnalyzer() {
         {/* Loading State */}
         {loading && (
           <div className="max-w-3xl mx-auto text-center min-h-[800px] flex flex-col items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Analyzing your conversation patterns...</p>
-            <p className="text-sm text-gray-500 mt-2">Generating your personalized matches...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4 shadow-[0_0_30px_rgba(16,185,129,0.4)]"></div>
+            <p className="text-gray-300">Analyzing your conversation patterns...</p>
+            <p className="text-sm text-gray-400 mt-2">Generating your personalized matches...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && !characters && (
           <div className="max-w-3xl mx-auto space-y-4">
-            <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-              <p className="text-red-700">{error}</p>
+            <div className="bg-red-950/30 border border-red-500/30 p-4 rounded-lg">
+              <p className="text-red-300">{error}</p>
               <button
                 onClick={() => {
                   setError(null);
                   setUrl('');
                   setShowManualPaste(false);
                 }}
-                className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                className="mt-2 text-red-400 hover:text-red-300 font-medium"
               >
                 Try again
               </button>
@@ -323,12 +326,12 @@ export function ChatAnalyzer() {
 
             {/* Manual Paste Fallback */}
             {showManualPaste && (
-              <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg space-y-4">
+              <div className="bg-blue-950/30 border border-blue-500/30 p-6 rounded-lg space-y-4">
                 <div>
-                  <h3 className="font-semibold text-blue-900 mb-2">
+                  <h3 className="font-semibold text-blue-200 mb-2">
                     Alternative: Paste Your Conversation Text
                   </h3>
-                  <p className="text-sm text-blue-700 mb-4">
+                  <p className="text-sm text-blue-300 mb-4">
                     Having trouble with the link? You can paste the conversation text directly below.
                     Just copy all the messages from your ChatGPT conversation and paste them here.
                   </p>
@@ -338,7 +341,7 @@ export function ChatAnalyzer() {
                   value={manualText}
                   onChange={(e) => setManualText(e.target.value)}
                   placeholder="Paste your entire conversation here (both your questions and ChatGPT's responses)..."
-                  className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[200px] font-mono text-sm"
+                  className="w-full px-4 py-3 bg-dark-900 border border-white/10 text-gray-300 placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 min-h-[200px] font-mono text-sm"
                 />
 
                 <button
@@ -378,7 +381,7 @@ export function ChatAnalyzer() {
                     }
                   }}
                   disabled={!manualText.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all disabled:opacity-50"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] disabled:opacity-50 disabled:shadow-none"
                 >
                   Analyze Pasted Text
                 </button>
@@ -386,6 +389,7 @@ export function ChatAnalyzer() {
             )}
           </div>
         )}
+        </div>
       </div>
     </section>
   );

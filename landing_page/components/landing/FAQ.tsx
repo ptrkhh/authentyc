@@ -30,11 +30,11 @@ const FAQS = [
   },
   {
     q: 'When will this launch?',
-    a: "We're launching invite-only in Q1 2026, starting with early waitlist members. We'll focus on the category with strongest demand first, then expand to others.",
+    a: "We're launching invite-only in Q1 2026, starting with early waitlist members. We'll launch the category with strongest demand first, validate product-market fit, then expand to other categories.",
   },
   {
     q: 'How much does it cost?',
-    a: "Pricing isn't finalized yet. For individual users (dating/founder matching), we're exploring freemium models with premium features. For companies (B2B hiring in Phase 2), expect $30K-75K/year. Early waitlist members will get founding member pricing.",
+    a: "We're testing three categories in Phase 1 (hiring, dating, co-founder matching) to find the strongest product-market fit. Pricing will depend on which category launches first and its business model. Early waitlist members will receive special founding member rates and priority access.",
   },
   {
     q: "What if I don't have extensive ChatGPT history?",

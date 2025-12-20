@@ -22,6 +22,7 @@ import { generatePersonalizedCharacters } from '@/lib/openai/character-generator
 import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
 import type { Category } from '@/components/landing/SimulationResults';
 import { checkRateLimit } from '@/lib/utils/ratelimit';
+import {getConversationPrompts} from "@/lib/constants/conversation-prompts";
 
 const geminiApiTimeoutMilliseconds = 30000;
 const geminiApiMaxRetries = 3;
@@ -124,7 +125,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    const rateLimitMaxRequests = 3;
+    const rateLimitMaxRequests = 10;
     const rateLimitWindowMilliseconds = 60 * 60 * 1000;
 
     const rateLimit = await checkRateLimit(
@@ -390,3 +391,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

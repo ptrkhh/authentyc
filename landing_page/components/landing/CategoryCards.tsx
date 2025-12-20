@@ -29,15 +29,15 @@ const CATEGORIES = [
     id: 'dating',
     icon: '💝',
     title: 'Dating',
-    tagline: 'Match on your true personality, not performative bios',
+    tagline: 'Match on who you really are, not your bio',
     benefits: ['Authentic compatibility', 'Communication chemistry', 'Values alignment'],
   },
   {
-    id: 'teams',
-    icon: '🤝',
-    title: 'Team Building',
-    tagline: 'Build cohesive squads',
-    benefits: ['Personality balance', 'Conflict prevention', 'Optimal pairings'],
+    id: 'cofounder',
+    icon: '🚀',
+    title: 'Co-Founder Matching',
+    tagline: 'Find your ideal founding partner',
+    benefits: ['Complementary skill sets', 'Aligned vision & values', 'Long-term partnership chemistry'],
   },
 ];
 
@@ -101,19 +101,19 @@ function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
     <SurfaceCard className="h-full flex flex-col cursor-pointer" featured={featured}>
       {/* Icon with glow */}
       <div
-        className={`mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
+        className="mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
           border border-white/10 flex items-center justify-center
           group-hover:shadow-[0_0_60px_var(--brand-primary-glow)] transition-all
-          ${featured ? 'w-24 h-24 text-5xl' : 'w-16 h-16 text-3xl'}`}
+          w-16 h-16 text-3xl"
       >
         {category.icon}
       </div>
 
       {/* Content */}
-      <h3 className={`font-bold mb-4 ${featured ? 'text-4xl' : 'text-2xl'}`}>
+      <h3 className="font-bold mb-4 text-2xl">
         {category.title}
       </h3>
-      <p className={`text-gray-400 mb-8 ${featured ? 'text-xl' : 'text-base'}`}>
+      <p className="text-gray-400 mb-8 text-base">
         {category.tagline}
       </p>
 

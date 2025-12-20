@@ -16,7 +16,7 @@ const STEPS = [
     number: 1,
     title: 'Select & Create',
     description:
-      'Choose your category (hiring, dating, or founder matching) and create your basic profile.',
+      'Choose your category (hiring, dating, or co-founder matching) and create your basic profile.',
     icon: '🎯',
   },
   {

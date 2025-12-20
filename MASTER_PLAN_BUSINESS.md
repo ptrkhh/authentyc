@@ -95,18 +95,52 @@ Month 19-24: Formalize or deploy multi-LLM backup
 
 ## User Flows
 
-**Phase 1 - All Categories (Dating, Hiring, Founder Matching)**:
-1. User swipes through potential person/job matches
-2. After ~5 swipes, user must create a profile: name, photo, category-specific info
-2. Copy personality prompt → Paste in ChatGPT → Get your profile
-3. Share the ChatGPT link with us
-4. Consent screen → Submit share link
-5. We analyze and give a compatibility summary with the previous matches
-6. From now on, each swipe & match contains an LLM summary of your compatibility
+### CRITICAL: Two Different Flows
 
-**Phase 2 - B2B Hiring (TalentSignal)**:
-- Recruiters: Company setup → Post roles → Access candidate compatibility scores
-- Candidates: Share link + job preferences → Get matched to compatible roles
+**Landing Page Flow (What We ADVERTISE - Pre-Launch Waitlist)**:
+```
+1. Browse landing page → Learn about product
+2. Click "Get Early Access" → Enter email + select interests
+3. Join waitlist → Receive confirmation
+4. Wait for invite (Q1 2026)
+```
+*Simple, straightforward, honest. No mention of the psychological hooks.*
+
+**Product Flow (What We BUILD - Actual App Experience)**:
+```
+1. User lands on app → Sees enticing preview of potential matches
+2. Browse/swipe through 5 potential matches (no login required)
+   - For Dating: See attractive profiles, interesting bios
+   - For Hiring: See relevant job postings or candidates
+   - For Co-Founder: See potential founding partners with complementary skills
+3. After ~5 swipes → "Want to see your compatibility scores?"
+4. Paywall appears → Must create profile to continue
+5. User thinks: "Well, I already invested time swiping 5 matches..."
+6. Create profile: name, photo, basic info
+7. Copy personality prompt → Paste in ChatGPT → Get analysis
+8. Share ChatGPT link with us
+9. Consent screen → Submit share link
+10. We analyze and show compatibility summary with those 5 matches they swiped
+11. From now on: Each swipe shows real-time LLM compatibility analysis
+```
+
+**Why This Works (Psychological Hook)**:
+- **Sunk Cost Fallacy**: After 5 swipes, users feel invested and don't want to "waste" their time
+- **Curiosity Gap**: "I already saw these 5 people... I NEED to know our compatibility"
+- **Gradual Commitment**: Browse → Swipe → Create Profile → Share Data (small steps)
+- **Social Proof**: Seeing real matches first proves the concept before asking for data
+
+**Important**: NEVER advertise the swipe-first trick. Landing page should position as simple "sign up → share data → get matches" flow. The psychological hook is a product feature, not a marketing message.
+
+**Cold Start Solution (Initial Match Seeding)**:
+To enable the swipe-first experience from day 1, you need pre-populated profiles: Recruit 20-30 early users per category before public launch, get their ChatGPT profiles, use them as initial match pool. New users see these seeded profiles for their first 5 swipes, then graduate to the real user pool once they submit their own profile.
+
+---
+
+### Phase 2 - B2B Hiring (TalentSignal)
+
+**Recruiters**: Company setup → Post roles → Access candidate compatibility scores
+**Candidates**: Share link + job preferences → Get matched to compatible roles
 
 ## Success Metrics (Phase-Gated)
 
@@ -138,10 +172,12 @@ TBD
 
 ## Development Timeline (Concierge MVP)
 
-**Sprint 0 (Week 0-1)**: Landing page, waitlist, manual outreach to 10-15 testers
-**Sprint 1 (Week 2-3)**: Share link submission, manual analysis emails to 20 testers
-**Sprint 2 (Week 4-5)**: Swipe preview, concierge matching, track engagement
+**Sprint 0 (Week 0-1)**: Landing page (ADVERTISE flow), waitlist, manual outreach to 10-15 testers
+**Sprint 1 (Week 2-3)**: Share link submission, manual analysis emails to 20 testers, seed initial profiles
+**Sprint 2 (Week 4-5)**: Swipe preview (BUILD flow), concierge matching, track engagement
 **Sprint 3 (Week 6-7)**: Automate proven steps, profile management, pick strongest segment
+
+**Note**: Sprint 0 builds the landing page with simple "sign up → get matched" messaging. Sprint 2 builds the actual app with swipe-first psychological hooks. These are intentionally different.
 
 ## Legal & Privacy (MVP)
 - **User warrants**: Right to share, no third-party private info, consent to analysis
