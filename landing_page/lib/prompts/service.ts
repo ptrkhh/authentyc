@@ -44,22 +44,34 @@ export async function getPrompt(key: string): Promise<PromptRecord | null> {
  * Fetch multiple prompts by keys
  */
 export async function getPrompts(keys: string[]): Promise<Map<string, PromptRecord>> {
-  const { data, error } = await supabaseServer
-    .from('prompts')
-    .select('id, key, version, content, metadata')
-    .in('key', keys)
-    .eq('is_active', true);
+  console.log('[prompts/service] Fetching prompts with keys:', keys);
 
-  if (error) {
-    console.error('[prompts] Error fetching prompts:', error);
-    return new Map();
+  // WORKAROUND: .in() query has a bug where it doesn't return conversation-cofounder
+  // even though individual queries work fine. Fetch each key individually instead.
+  const prompts = new Map<string, PromptRecord>();
+
+  for (const key of keys) {
+    const { data, error } = await supabaseServer
+      .from('prompts')
+      .select('id, key, version, content, metadata')
+      .eq('key', key)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`[prompts/service] Error fetching prompt "${key}":`, error.message);
+      continue;
+    }
+
+    if (data) {
+      console.log(`[prompts/service] ✓ Fetched "${key}" (${data.content?.length || 0} chars)`);
+      prompts.set(data.key, data);
+    } else {
+      console.log(`[prompts/service] ✗ Not found: "${key}"`);
+    }
   }
 
-  const prompts = new Map<string, PromptRecord>();
-  data?.forEach((prompt) => {
-    prompts.set(prompt.key, prompt);
-  });
-
+  console.log(`[prompts/service] Total prompts fetched: ${prompts.size}/${keys.length}`);
   return prompts;
 }
 
