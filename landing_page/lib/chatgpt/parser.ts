@@ -32,9 +32,7 @@ export interface ParsedChatGPTResponse {
     completenessRating: number | null;
     assessmentDetails?: {
         rating: number;
-        evidence: string;
-        questionsAnswered: string;
-        questionsNeeded: string;
+        analysis: string;
     };
 }
 
@@ -380,12 +378,17 @@ export async function validateParsedConversation(parsed: ParsedConversation): Pr
  * Extract the summary text from ChatGPT output
  */
 function extractSummary(chatGPTOutput: string): string {
+    // Try to extract from new format (ANALYSIS section)
+    const analysisMatch = chatGPTOutput.match(/ANALYSIS:\s*([\s\S]*?)--- END ASSESSMENT ---/);
+    if (analysisMatch) {
+        return analysisMatch[1].trim();
+    }
+
+    // Fallback: remove entire assessment section if present
     let text = chatGPTOutput;
+    text = text.replace(/--- ASSESSMENT ---[\s\S]*?--- END ASSESSMENT ---/, '').trim();
 
-    // Remove assessment section
-    text = text.replace(/--- COMPLETENESS ASSESSMENT ---[\s\S]*?--- END ASSESSMENT ---/, '').trim();
-
-    // Remove rating line
+    // Remove legacy rating line if present
     text = text.replace(/COMPLETENESS RATING: \d+\/10\s*$/, '').trim();
 
     return text;
@@ -410,9 +413,10 @@ function validateRating(rating: number | null): number | null {
 export function parseResponse(chatGPTOutput: string): ParsedChatGPTResponse {
     console.log('[parser] Parsing response, length:', chatGPTOutput.length);
 
-    // Try multiple rating patterns for robustness
+    // Try multiple rating patterns for robustness (ordered by priority)
     const ratingPatterns = [
-        /COMPLETENESS RATING:\s*(\d+)\/10/i,
+        /OVERALL COMPLETENESS:\s*(\d+)\/10/i,  // New format (highest priority)
+        /COMPLETENESS RATING:\s*(\d+)\/10/i,   // Legacy format
         /RATING:\s*(\d+)\/10/i,
         /(\d+)\s*\/\s*10/,
         /score[:\s]+(\d+)/i,
@@ -435,19 +439,18 @@ export function parseResponse(chatGPTOutput: string): ParsedChatGPTResponse {
         console.log('[parser] Rating:', completenessRating);
     }
 
-    // Extract assessment details if present
-    const assessmentPattern = /--- COMPLETENESS ASSESSMENT ---\s*RATING: (\d+)\/10\s*EVIDENCE FROM PAST CHATS:\s*([\s\S]*?)\s*QUESTIONS I CAN ALREADY ANSWER:\s*([\s\S]*?)\s*QUESTIONS I NEED TO ASK:\s*([\s\S]*?)\s*--- END ASSESSMENT ---/;
+    // Extract assessment details if present (new format)
+    const assessmentPattern = /--- ASSESSMENT ---\s*OVERALL COMPLETENESS:\s*(\d+)\/10\s*(?:Rating Criteria:[\s\S]*?)?\s*ANALYSIS:\s*([\s\S]*?)--- END ASSESSMENT ---/;
     const assessmentMatch = chatGPTOutput.match(assessmentPattern);
 
     let assessmentDetails;
     if (assessmentMatch) {
         assessmentDetails = {
             rating: parseInt(assessmentMatch[1], 10),
-            evidence: assessmentMatch[2].trim(),
-            questionsAnswered: assessmentMatch[3].trim(),
-            questionsNeeded: assessmentMatch[4].trim(),
+            analysis: assessmentMatch[2].trim(),
         };
         console.log('[parser] Assessment rating:', assessmentDetails.rating);
+        console.log('[parser] Analysis length:', assessmentDetails.analysis.length);
     }
 
     const summary = extractSummary(chatGPTOutput);
