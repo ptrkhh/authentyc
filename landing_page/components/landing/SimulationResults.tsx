@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, AlertTriangle, Briefcase, Heart, Rocket } from 'lucide-react';
+import { Check, AlertTriangle, Briefcase, Heart, Rocket, Sparkles } from 'lucide-react';
 
 export type Category = 'hiring' | 'dating' | 'cofounder';
 
@@ -103,9 +103,15 @@ export function SimulationResults({
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {characters.map((char) => (
-                    <div key={char.id} className="bg-dark-800/50 border border-white/10 rounded-xl overflow-hidden hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] hover:border-brand-primary/30 transition-all duration-300 flex flex-col">
+                    <div key={char.id} className="relative bg-dark-800/50 border border-white/10 rounded-xl overflow-hidden hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] hover:border-brand-primary/30 transition-all duration-300 flex flex-col">
+                        {/* Example Badge */}
+                        <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-700/90 backdrop-blur-sm border border-gray-600/50 shadow-lg">
+                            <Sparkles className="w-3.5 h-3.5 text-gray-300" />
+                            <span className="text-xs font-semibold text-gray-200 tracking-wide">EXAMPLE</span>
+                        </div>
+
                         {/* Header */}
-                        <div className={`p-4 ${char.avatarColor} bg-opacity-20 flex items-center gap-4 border-b border-white/10`}>
+                        <div className={`pt-12 p-4 ${char.avatarColor} bg-opacity-20 flex items-center gap-4 border-b border-white/10`}>
                             <div className={`w-12 h-12 rounded-full ${char.avatarColor} flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(0,0,0,0.3)]`}>
                                 {char.name.charAt(0)}
                             </div>
