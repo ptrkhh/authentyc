@@ -351,21 +351,6 @@ export async function validateParsedConversation(parsed: ParsedConversation): Pr
         };
     }
 
-    if (parsed.messageCount < 2) {
-        return {
-            valid: false,
-            reason: 'This conversation is too short. Please have at least 5-10 message exchanges for accurate analysis.'
-        };
-    }
-
-    const totalContent = parsed.messages.reduce((sum, m) => sum + m.content.length, 0);
-    if (totalContent < 100) {
-        return {
-            valid: false,
-            reason: 'This conversation doesn\'t have enough content. Try having a longer, more detailed conversation (5-10 exchanges).'
-        };
-    }
-
     const promptValidation = await validatePromptExactMatch(parsed);
     if (!promptValidation.valid) {
         return promptValidation;
