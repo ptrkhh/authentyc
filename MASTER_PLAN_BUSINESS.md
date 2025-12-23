@@ -13,6 +13,47 @@ We're not building another insights tool. We're building the **protocol for veri
 
 **Think**: OpenAI is the intelligence layer. Stripe is the payments layer. **Authentyc is the authenticity layer.**
 
+## Operations Strategy: Indonesia-Based, Globally-Focused
+
+### The Arbitrage Advantage
+
+**Where We Build**: Indonesia (engineering, operations, legal entity)
+**Who We Serve**: Global markets (US, Europe, Asia-Pacific)
+**Result**: Global product quality at Indonesian cost structure
+
+### Why This Works
+
+**Cost Advantage (40-60% capital efficiency)**:
+- Indonesian senior engineers: $30K-50K/year vs $150K-200K in US
+- Operations costs: 3-5x cheaper (office, legal, HR, infrastructure)
+- **Same revenue targets, 40-60% less capital required**
+- Extended runway: 24-36 months on $5M vs 18-24 months for US-based startups
+
+**Global Market Access**:
+- Product indistinguishable from US/EU startups (English-first, world-class quality)
+- Global pricing maintained: $30K-75K enterprise contracts, $10-30/mo consumer
+- US entity for customer contracts and fundraising (see MASTER_PLAN_LEGAL.md)
+- Payment processing in USD via Stripe/standard processors
+
+**Investor Narrative Enhancement**:
+> "We achieve the same milestones as US competitors with 40-60% less capital. Same TAM, same pricing, better unit economics."
+
+### Critical Success Factors
+
+1. **Product Quality**: Must be indistinguishable from top-tier US startups
+2. **Legal Structure**: US entity (Delaware C-Corp) + Indonesian PT (see MASTER_PLAN_LEGAL.md)
+3. **Timezone Management**: Sales team coverage for US business hours
+4. **Team Composition**:
+   - Core engineering: Indonesia-based (cost advantage)
+   - Sales/partnerships: US hours coverage (remote or US-based as revenue grows)
+   - Leadership: Flexible timezone management
+
+### What Customers See
+
+**They experience**: World-class product, US-standard support, global brand
+**They don't know/care**: Team is Indonesia-based (unless we choose to highlight cost efficiency)
+**Position as**: "Global company" not "Indonesian startup"
+
 ## The Opportunity
 
 **The Problem**: We've entered the era of AI-saturated identity. Every profile is performative. Every resume is polished. Every interview is rehearsed. Meanwhile, AI-generated content makes distinguishing real humans from synthetic personas nearly impossible. Modern profiles are curated fiction — resumes, dating bios, and interviews are all performative. Truth hides in ChatGPT chats where people reveal authentic thinking.
@@ -130,13 +171,11 @@ We analyze candidates' authentic AI conversation histories (ChatGPT, Claude, Gem
 
 ### Sequential Revenue Strategy
 
-**Phase 1**: Consumer subscriptions only ($10-30/mo)
-
-**Phase 2**: SaaS-first approach
+**Phase 1**: SaaS-first approach
 - **100% focus**: Direct enterprise sales, $30K-75K annual contracts
 - **Pilot API**: 1-2 strategic partnerships to validate model (<5% revenue)
 
-**Phase 2b**: Layer in API once SaaS proven ($2M+ ARR)
+**Phase 2**: Layer in API once SaaS proven ($2M+ ARR)
 - **80% SaaS contracts**: Proven enterprise sales motion
 - **20% API licensing**: Usage-based pricing for platforms
   - Tier 1: $0.50/verification (high volume: 10K+/mo)
@@ -256,6 +295,12 @@ To enable the swipe-first experience from day 1, you need pre-populated profiles
 | Competitors copy | Move fast, network effects, enterprise integrations, proprietary data moat |
 | Ethical concerns | Ethics board, use case limits, refuse unethical contracts |
 | API complexity distracts from SaaS | Delay API until $2M ARR proven, start with 1-2 pilot partners only |
+| **Indonesia-based perceived as "lower quality"** | **Never mention location in marketing; product must be world-class; position as "global company"; use US entity for contracts** |
+| **Cross-border legal complexity** | **Engage cross-border tax/legal counsel early (Month 1); set up US entity by Month 6-9; see MASTER_PLAN_LEGAL.md** |
+| **Timezone challenges for US sales** | **Hire sales team comfortable with US hours; use async communication; founder covers US hours during early stage** |
+| **Payment processing issues** | **Use Stripe via US entity; maintain USD pricing; handle forex internally** |
+| **US customers won't contract with Indonesian entity** | **Use US Delaware C-Corp for all customer contracts; Indonesian PT is operational entity only** |
+| **Talent retention in Indonesia** | **Offer equity (via US entity stock options); competitive local salaries (top 10%); remote-first culture; global mission** |
 
 ## Development Timeline (Concierge MVP)
 
@@ -290,41 +335,148 @@ To enable the swipe-first experience from day 1, you need pre-populated profiles
 
 ## Fundraising Strategy
 
-### Target: $5M-10M Seed Round
+### Two-Path Approach
 
-**Why this range supports our strategy**:
-- $5M = Minimum to build proven SaaS model, hire 15-20 people, 18-24 month runway
-- $10M = Optimal to establish category leadership, begin multi-LLM platform, strategic partnerships
-- Below $5M = Forces pure consumer play, limits "infrastructure" narrative credibility
-- Above $10M = Requires full infrastructure play ($1B+ ambition), different investor profile
+**Path A: Bootstrap → Regional → US VCs** (Recommended for capital efficiency)
+1. **Phase 1 (Months 1-12)**: Bootstrap on $30K-50K personal capital
+   - Build MVP with 2-3 Indonesian engineers ($10K-15K/month burn)
+   - Reach 500-1K users, prove product-market fit
+   - Cost: $120K-180K to reach initial traction
+2. **Phase 2 (Months 13-18)**: Raise $1M-2M from SEA investors
+   - Investors: East Ventures, Alpha JWC, Surge, 500 Global Indonesia
+   - Use to reach $500K ARR
+   - 18-24 month runway at $50K-80K/month burn
+3. **Phase 3 (Months 19-24)**: Series A from US VCs ($5M-10M)
+   - Proven traction: $500K-1M ARR
+   - Enter with stronger negotiating position
+   - Use US entity for Delaware C-Corp structure
 
-### Use of Funds (Based on $7M raise)
-- **Product/Engineering** (50% / $3.5M): Core team (5-7 engineers), SaaS product, multi-LLM integration, early API/SDK groundwork
-- **Sales/GTM** (25% / $1.75M): Enterprise sales team (3-4 reps), partnerships/BD, marketing
-- **Data/AI** (15% / $1M): ML engineers, dataset curation, model fine-tuning, accuracy validation
-- **Operations** (10% / $700K): Legal/compliance, HR, finance, infrastructure
+**Path B: US VCs from Start** (Higher dilution, faster scale)
+1. **Bootstrap to traction** (Months 1-9): Reach 500-1K users on personal capital
+2. **Seed round** (Month 10-12): Raise $5M-10M from US VCs
+   - Pitch: "Same milestones, 40-60% less capital due to Indonesia cost base"
+   - 24-36 month runway vs 18-24 for US-based competitors
+   - Must have US entity established (Delaware C-Corp)
+
+### Target: $5M-10M Seed Round (Path B) or $1M-2M (Path A)
+
+**Why Path A is recommended**:
+- Less dilution in early stages (give up 15-20% vs 20-30% for seed)
+- Prove model before high valuations matter
+- SEA investors understand Indonesia cost advantage
+- Can still access US VCs for Series A with proven traction
+
+**Why Path B works**:
+- Faster scale if you have strong network/traction
+- Access to better-connected investors early
+- Immediate credibility from tier-1 VCs
+- Better for competitive/fast-moving markets
+
+### Use of Funds (Indonesia-Based Operations)
+
+**Based on $5M raise (Path B)**:
+- **Monthly burn: $120K-150K** (vs $300K-400K for US-based startup)
+- **Runway: 30-36 months** (vs 18-24 months)
+
+**Allocation**:
+- **Product/Engineering** (50% / $2.5M):
+  - 12-15 Indonesian engineers @ $30K-50K/year = $450K-750K/year
+  - Engineering infrastructure, tools, SaaS subscriptions = $100K/year
+  - 3+ year runway on engineering
+- **Sales/GTM** (25% / $1.25M):
+  - 2-3 sales reps (remote, US hours) @ $80K-120K + commission = $250K-400K/year
+  - Marketing, demand gen, conferences = $100K-150K/year
+  - Partnerships/BD lead = $80K-100K/year
+- **Data/AI** (15% / $750K):
+  - 2-3 ML engineers (Indonesia) @ $40K-60K/year = $120K-180K/year
+  - Model training, API costs (OpenAI, Anthropic) = $50K-100K/year
+  - Dataset curation and labeling = $30K-50K/year
+- **Operations** (10% / $500K):
+  - Legal (cross-border, US + Indonesia) = $50K-80K/year
+  - Accounting/tax (transfer pricing, multi-entity) = $30K-50K/year
+  - HR, office, infrastructure = $40K-60K/year
+  - Compliance, insurance = $20K-30K/year
+
+**Cost Comparison: Indonesia vs US-Based**
+
+| Category | Indonesia-Based | US-Based | Savings |
+|----------|-----------------|----------|---------|
+| Senior Engineer | $40K-50K | $150K-200K | 70-75% |
+| Sales Rep (remote) | $80K-120K | $120K-180K | 30-40% |
+| ML Engineer | $50K-60K | $160K-200K | 65-70% |
+| Monthly Burn (15 people) | $120K-150K | $350K-450K | 60-65% |
+| Runway on $5M | 30-36 months | 11-14 months | 2-3x longer |
+
+**Based on $1M raise (Path A - SEA investors)**:
+- **Monthly burn: $50K-70K**
+- **Runway: 14-20 months** (enough to reach $500K ARR)
+- Allocation: 60% engineering (8-10 engineers), 20% sales (1-2 reps), 10% AI/data, 10% ops
 
 ### Timeline to Raise
-- **Month 6-9**: Prepare materials (500+ users, case studies, press, product demo)
-- **Month 10-12**: Active fundraising (6-8 week process)
-- **Month 13**: Close round, begin hiring for Phase 2
+
+**Path A (Bootstrap → SEA → US)**:
+- **Month 1-6**: Bootstrap MVP, 0-200 users, personal capital
+- **Month 7-12**: Reach 500-1K users, prepare fundraising materials
+- **Month 13-15**: Raise $1M-2M from SEA investors (Alpha JWC, East Ventures, Surge)
+- **Month 16-24**: Scale to $500K ARR
+- **Month 25-27**: Raise Series A ($5M-10M) from US VCs
+
+**Path B (Bootstrap → US Seed)**:
+- **Month 1-9**: Bootstrap to 500-1K users on personal capital ($30K-50K)
+- **Month 10-12**: Active fundraising from US VCs (6-8 week process)
+- **Month 13**: Close $5M-10M seed, begin aggressive hiring
+
+### Key Milestones Before Fundraising
+
+**For SEA Seed ($1M-2M)**:
+- 500+ active users
+- Clear category winner identified
+- Basic case studies (5-10 success stories)
+- Product demo ready
+- Legal structure in place (Indonesian PT minimum)
+
+**For US Seed ($5M-10M)**:
+- 1K+ active users
+- 60%+ prediction accuracy with strong case studies
+- Press coverage (regional tech media minimum)
+- 3-5 enterprise LOIs or pilot interest
+- US entity established (Delaware C-Corp)
+- Clear data moat demonstrated
 
 ### Target Investor Profile
 
-Match infrastructure positioning to investors who back **infrastructure-lite** plays:
+**Southeast Asia / Regional Investors (Path A - Seed $1M-2M)**:
+
+| Investor Type | Why They Fit | Example Firms |
+|---------------|--------------|---------------|
+| **SEA Tech VCs** | Understand Indonesia cost advantage + global ambitions | East Ventures, Alpha JWC, Intudo Ventures |
+| **Accelerators** | Proven global scale path, mentor network | Surge (Sequoia SEA), 500 Global Indonesia, Y Combinator |
+| **Regional VCs** | Bet on SEA founders building for global markets | Openspace Ventures, Vertex Ventures, Golden Gate Ventures |
+| **Strategic Angels** | Ex-Gojek, Tokopedia, Sea Group founders who scaled regionally | Individual angels from unicorn exits |
+
+**US / Global Investors (Path B - Seed $5M-10M or Series A)**:
 
 | Investor Type | Why They Fit | Example Firms |
 |---------------|--------------|---------------|
 | **Future-of-Work VCs** | Understand HR tech + data moats | Bessemer, General Catalyst, Worklife Ventures |
 | **Future-of-Identity Funds** | Bet on verification/trust infrastructure | a16z, Variant, SignalFire |
 | **Data Infrastructure VCs** | Value proprietary datasets + network effects | Amplify, Cowboy Ventures, First Round |
+| **Global VCs with SEA presence** | Understand cost advantage + global GTM | Sequoia, Lightspeed, Accel (have SEA arms) |
 | **Strategic Angels** | Ex-LinkedIn, HR tech, dating founders who get the moat | Individual scouts from above firms |
 
-**Avoid**: Pure consumer VCs (won't get B2B pivot), pure enterprise VCs (want predictable SaaS only), crypto/web3 funds (wrong narrative fit)
+**Avoid**:
+- Pure consumer VCs (won't get B2B pivot)
+- Pure enterprise VCs (want predictable SaaS only)
+- Crypto/web3 funds (wrong narrative fit)
+- Indonesia-only investors without global portfolio (limit exit options)
 
 ### Pitch Narrative (30-second version)
 
-> "We're building the authenticity layer for conversational AI. In a world of performative profiles and AI-generated content, Authentyc verifies genuine human personality through private AI conversation analysis. We're starting with enterprise hiring—$500B market where traditional assessments are broken—and expanding to become the verification protocol across dating, teams, and security. We have a defensible data moat: every conversation analyzed creates proprietary training data competitors can't replicate. We're raising $7M to build the SaaS + API platform and capture the category before copycats emerge."
+**For US VCs (Path B)**:
+> "We're building the authenticity layer for conversational AI. In a world of performative profiles and AI-generated content, Authentyc verifies genuine human personality through private AI conversation analysis. We're starting with enterprise hiring—$500B market where traditional assessments are broken—and expanding to become the verification protocol across dating, teams, and security. We have a defensible data moat: every conversation analyzed creates proprietary training data competitors can't replicate. **We're Indonesia-based with global ambitions—same product quality, same markets, 60% better unit economics.** We're raising $5M-7M to build the SaaS + API platform and capture the category before copycats emerge."
+
+**For SEA VCs (Path A)**:
+> "We're a global SaaS company solving authenticity verification in the age of AI. Starting with enterprise hiring ($500B market), we analyze private ChatGPT conversations to reveal genuine personality—something traditional assessments can't fake. We're building from Indonesia to keep costs low while serving US/EU markets at global pricing. **$30K-75K annual contracts, but 1/3 the burn rate of US competitors.** We're raising $1M-2M to reach $500K ARR, then raising Series A from US VCs. This is the Stripe/Plaid playbook—build infrastructure that becomes the category standard."
 
 ### What Investors Need to See (Checklist)
 - ✅ 500-1K active users in Phase 1
@@ -371,7 +523,14 @@ Match infrastructure positioning to investors who back **infrastructure-lite** p
 
 **Fundraising**:
 - Solo founder or bring on co-founder (CTO/AI scientist) before raising?
-- Target $5M, $7M, or $10M seed round?
+- Path A (SEA seed → US Series A) vs Path B (US seed direct)?
+- Target $1M-2M (SEA) or $5M-10M (US) for initial raise?
+
+**Legal/Operations**:
+- Set up US entity immediately (Month 1) or wait until first revenue (Month 6-9)?
+- Delaware C-Corp vs LLC for US entity?
+- How to structure IP ownership between US and Indonesian entities?
+- When to hire cross-border tax accountant? (See MASTER_PLAN_LEGAL.md)
 
 ## Why This Works
 
