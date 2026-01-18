@@ -147,7 +147,7 @@ export function ChatAnalyzer() {
     <section className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">Try It Yourself</h2>
-        <p className="text-center text-gray-400 mb-8">
+        <p className="text-center text-gray-300 mb-8">
           See how our matching works! Get simulated character matches based on your communication style
         </p>
 
@@ -169,7 +169,7 @@ export function ChatAnalyzer() {
 
         {/* Initial State */}
         {!results && !loading && !characters && (
-          <div className="max-w-3xl mx-auto space-y-6 min-h-[800px]">
+          <div className="max-w-3xl mx-auto space-y-6 min-h-[400px] md:min-h-[500px]">
             {/* Category Selector */}
             <div>
               <label className="block text-sm font-semibold text-gray-200 mb-3">
@@ -300,7 +300,7 @@ export function ChatAnalyzer() {
 
         {/* Loading State */}
         {loading && (
-          <div className="max-w-3xl mx-auto text-center min-h-[800px] flex flex-col items-center justify-center">
+          <div className="max-w-3xl mx-auto text-center min-h-[600px] flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4 shadow-[0_0_30px_rgba(16,185,129,0.4)]"></div>
             <p className="text-gray-300">Analyzing your conversation patterns...</p>
             <p className="text-sm text-gray-400 mt-2">Generating your personalized matches...</p>

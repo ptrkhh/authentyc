@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { GradientText } from '@/components/ui/gradient-text';
 import { trackEvent } from '@/lib/analytics/posthog';
+import { LAUNCH_COPY } from '@/lib/constants';
 
 interface FinalCTAProps {
   onCTAClick: () => void;
@@ -18,19 +19,32 @@ interface FinalCTAProps {
 
 export function FinalCTA({ onCTAClick }: FinalCTAProps) {
   const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
+  const [showCount, setShowCount] = useState(false);
 
   useEffect(() => {
+    const MINIMUM_COUNT_THRESHOLD = 50;
+    const TIMEOUT_MS = 2000;
+
+    const timeout = setTimeout(() => {
+      setShowCount(false);
+    }, TIMEOUT_MS);
+
     // Fetch waitlist count on mount
     fetch('/api/waitlist/count')
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.count > 0) {
+        clearTimeout(timeout);
+        if (data.success && data.count >= MINIMUM_COUNT_THRESHOLD) {
           setWaitlistCount(data.count);
+          setShowCount(true);
         }
       })
       .catch(err => {
+        clearTimeout(timeout);
         console.error('Failed to fetch waitlist count:', err);
       });
+
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleCTAClick = () => {
@@ -63,13 +77,13 @@ export function FinalCTA({ onCTAClick }: FinalCTAProps) {
         </motion.h2>
 
         <motion.p
-          className="text-xl lg:text-2xl text-gray-400 mb-12 leading-relaxed"
+          className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
         >
-          {waitlistCount !== null
+          {showCount && waitlistCount !== null
             ? `Join ${waitlistCount}+ people getting early access to authentic matching for hiring, dating, and co-founder matching.`
             : 'Join ambitious people getting early access to authentic matching for hiring, dating, and co-founder matching.'}
         </motion.p>
@@ -87,13 +101,13 @@ export function FinalCTA({ onCTAClick }: FinalCTAProps) {
 
         {/* Trust indicator */}
         <motion.p
-          className="text-sm text-gray-500 mt-8"
+          className="text-sm text-gray-400 mt-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
         >
-          Launching Q1 2026 • 100% Private • No credit card required
+          {LAUNCH_COPY.FULL} • 100% Private • No credit card required
         </motion.p>
       </div>
     </section>

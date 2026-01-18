@@ -113,14 +113,14 @@ function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
       <h3 className="font-bold mb-4 text-2xl">
         {category.title}
       </h3>
-      <p className="text-gray-400 mb-8 text-base">
+      <p className="text-gray-300 mb-8 text-base">
         {category.tagline}
       </p>
 
       {/* Benefits */}
       <ul className="space-y-3 mb-auto">
         {category.benefits.map((benefit, index) => (
-          <li key={index} className="flex items-start text-gray-400">
+          <li key={index} className="flex items-start text-gray-300">
             <svg
               className="w-5 h-5 text-brand-primary mr-3 mt-0.5 flex-shrink-0"
               fill="currentColor"

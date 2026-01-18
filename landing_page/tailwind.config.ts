@@ -66,8 +66,8 @@ const config: Config = {
   			}
   		},
   		fontFamily: {
-  			sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-  			display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+  			sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
+  			display: ['var(--font-space-grotesk)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
   		},
   		fontSize: {
   			display: ['10rem', { lineHeight: '0.9', letterSpacing: '-0.04em' }],

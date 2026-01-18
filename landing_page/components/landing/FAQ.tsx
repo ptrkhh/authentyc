@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { GradientText } from '@/components/ui/gradient-text';
+import { LAUNCH_COPY } from '@/lib/constants';
 
 const FAQS = [
   {
@@ -22,7 +23,7 @@ const FAQS = [
   },
   {
     q: 'Is my data private?',
-    a: 'Yes. You share a ChatGPT conversation link that contains insights generated about your personality, not your private conversations. We only access what ChatGPT\'s analysis reveals, and you review it first. Your original chats stay private.',
+    a: 'Yes, 100% private. Here\'s how it works: (1) You have a conversation with ChatGPT where it analyzes your personality from your chat history. (2) You share that conversation link with us. (3) We extract only ChatGPT\'s personality insights about you, not your underlying chat history. (4) You review and approve everything before it\'s shared with potential matches. Your original chats with ChatGPT remain private and are never shared.',
   },
   {
     q: 'Which AI tools do you support?',
@@ -30,7 +31,7 @@ const FAQS = [
   },
   {
     q: 'When will this launch?',
-    a: "We're launching invite-only in Q1 2026, starting with early waitlist members. We'll launch the category with strongest demand first, validate product-market fit, then expand to other categories.",
+    a: `We're launching invite-only in ${LAUNCH_COPY.SHORT}, starting with early waitlist members. We'll launch the category with strongest demand first, validate product-market fit, then expand to other categories.`,
   },
   {
     q: 'How much does it cost?',
@@ -66,7 +67,7 @@ export function FAQ() {
                 <AccordionTrigger className="text-left font-semibold text-white hover:text-brand-primary transition-colors">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-400 leading-relaxed">
+                <AccordionContent className="text-gray-300 leading-relaxed">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { trackEvent } from '@/lib/analytics/posthog';
+import { LAUNCH_COPY, SOCIAL_LINKS } from '@/lib/constants';
 
 const formSchema = z
   .object({
@@ -61,6 +62,9 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
   const [submitted, setSubmitted] = useState(false);
   const [position, setPosition] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [formStartTime, setFormStartTime] = useState<number | null>(null);
+  const [emailCompleted, setEmailCompleted] = useState(false);
+  const [interestsCompleted, setInterestsCompleted] = useState(false);
 
   // Map card categories to form interests
   const getDefaultInterests = (category?: string): string[] => {
@@ -94,19 +98,76 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
   });
 
   const watchedInterests = watch('interests', []);
+  const watchedEmail = watch('email', '');
+  const watchedAiHistory = watch('has_ai_history');
 
-  // Track form open/close for abandonment funnel
+  // Track form open/close for abandonment funnel and start time
   useEffect(() => {
     if (open && !submitted) {
+      const startTime = Date.now();
+      setFormStartTime(startTime);
       trackEvent('waitlist_form_opened', {
         preselected_category: preselectedCategory || 'none',
+        timestamp: startTime,
       });
-    } else if (!open && !submitted) {
+    } else if (!open && !submitted && formStartTime) {
+      const timeSpent = Math.round((Date.now() - formStartTime) / 1000);
       trackEvent('waitlist_form_abandoned', {
         preselected_category: preselectedCategory || 'none',
+        time_spent_seconds: timeSpent,
       });
     }
-  }, [open, submitted, preselectedCategory]);
+  }, [open, submitted, preselectedCategory, formStartTime]);
+
+  // Track email section completion
+  useEffect(() => {
+    if (watchedEmail && watchedEmail.includes('@') && !emailCompleted) {
+      setEmailCompleted(true);
+      trackEvent('waitlist_form_section_completed', {
+        section: 'email',
+        time_spent_seconds: formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0,
+      });
+    }
+  }, [watchedEmail, emailCompleted, formStartTime]);
+
+  // Track interests section completion
+  useEffect(() => {
+    if (watchedInterests.length > 0 && !interestsCompleted) {
+      setInterestsCompleted(true);
+      trackEvent('waitlist_form_section_completed', {
+        section: 'interests',
+        interests_selected: watchedInterests,
+        interests_count: watchedInterests.length,
+        time_spent_seconds: formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0,
+      });
+    }
+  }, [watchedInterests, interestsCompleted, formStartTime]);
+
+  // Track AI history section completion
+  useEffect(() => {
+    if (watchedAiHistory) {
+      trackEvent('waitlist_form_section_completed', {
+        section: 'ai_history',
+        ai_history_level: watchedAiHistory,
+        time_spent_seconds: formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0,
+      });
+    }
+  }, [watchedAiHistory, formStartTime]);
+
+  // Track validation errors
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      Object.entries(errors).forEach(([field, error]) => {
+        if (error) {
+          trackEvent('waitlist_form_validation_error', {
+            field,
+            error_message: error.message || 'Validation error',
+            time_spent_seconds: formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0,
+          });
+        }
+      });
+    }
+  }, [errors, formStartTime]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -127,6 +188,8 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
       setPosition(result.position);
       setSubmitted(true);
 
+      const timeSpent = formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0;
+
       // Track successful form submission
       trackEvent('waitlist_form_submitted', {
         preselected_category: preselectedCategory || 'none',
@@ -134,14 +197,18 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
         interests_count: data.interests.length,
         has_ai_history: data.has_ai_history || 'not_specified',
         waitlist_position: result.position,
+        time_spent_seconds: timeSpent,
       });
     } catch (err: any) {
       setError(err.message);
+
+      const timeSpent = formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0;
 
       // Track form submission error
       trackEvent('waitlist_form_error', {
         error_message: err.message,
         preselected_category: preselectedCategory || 'none',
+        time_spent_seconds: timeSpent,
       });
     }
   };
@@ -156,13 +223,13 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
           <div className="space-y-4">
             <p>
               Thanks for joining. You're #{position} on the waitlist. We'll send you an invite as
-              soon as we launch in Q1 2026.
+              soon as we launch in {LAUNCH_COPY.SHORT}.
             </p>
             <p className="text-sm text-gray-600">
               In the meantime, follow our journey:
               <br />
-              <a href="#" className="text-brand-primary">Twitter</a> |{' '}
-              <a href="#" className="text-brand-primary">LinkedIn</a>
+              <a href={SOCIAL_LINKS.TWITTER} className="text-brand-primary">Twitter</a> |{' '}
+              <a href={SOCIAL_LINKS.LINKEDIN} className="text-brand-primary">LinkedIn</a>
             </p>
             <Button onClick={() => onOpenChange(false)} className="w-full">
               Close
@@ -175,7 +242,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent className="max-w-lg p-4 sm:p-6 h-full sm:h-auto max-h-none sm:max-h-[90vh] w-full sm:w-auto overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Get Early Access</DialogTitle>
         </DialogHeader>

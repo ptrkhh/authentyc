@@ -5,7 +5,7 @@
  */
 
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 
@@ -15,7 +15,14 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+});
+
 export const metadata: Metadata = {
+  metadataBase: new URL('https://authentyc.ai'),
   title: 'Authentyc - Match people by who they really are, not who they claim to be',
   description:
     'AI conversation analysis reveals authentic compatibility for hiring, dating, and co-founder matching. See how people really think before you commit.',
@@ -38,7 +45,7 @@ export const metadata: Metadata = {
     siteName: 'Authentyc',
     images: [
       {
-        url: '/og-image.png',
+        url: 'https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Authentyc - Match people by who they really are',
@@ -52,7 +59,7 @@ export const metadata: Metadata = {
     title: 'Authentyc - Authentic Compatibility Matching',
     description:
       'Stop guessing. Start knowing. We analyze AI conversations to reveal real personality, capability, and compatibility.',
-    images: ['/og-image.png'],
+    images: ['https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/og-image.jpg'],
     creator: '@authentyc_ai',
   },
   robots: {
@@ -78,7 +85,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Authentyc" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body className="antialiased font-sans">
         <Providers>{children}</Providers>
       </body>

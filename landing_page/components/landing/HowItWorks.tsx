@@ -71,7 +71,7 @@ export function HowItWorks() {
               <h3 className="text-2xl font-semibold mb-4 text-white">
                 {step.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed">{step.description}</p>
+              <p className="text-gray-300 leading-relaxed">{step.description}</p>
             </SurfaceCard>
           ))}
         </motion.div>

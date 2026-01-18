@@ -57,12 +57,12 @@
 ## Phase 4: Asset Creation
 **Time**: 2-4 hours
 
-- [ ] Create `favicon.ico` (32x32)
-- [ ] Create `apple-touch-icon.png` (180x180)
-- [ ] Create `og-image.png` (1200x630)
-- [ ] Create `logo.svg`
-- [ ] Upload all assets to `/public/`
-- [ ] Verify favicon appears in browser
+- [x] Create `favicon.ico` (32x32)
+- [x] Create `apple-touch-icon.png` (180x180)
+- [x] Create `og-image.png` (1200x630)
+- [x] Create `logo.svg`
+- [x] Upload all assets to Supabase e.g. https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/something.svg
+- [x] Verify favicon appears in browser
 
 ---
 
@@ -158,8 +158,8 @@
 - [ ] Verify HTTPS enabled
 
 ### Production Testing
-- [ x Test production URL loads
-- [ x Test ChatGPT analyzer on production
+- [ ] Test production URL loads
+- [ ] Test ChatGPT analyzer on production
 - [ ] Test waitlist signup on production
 - [ ] Verify email delivery from production
 - [ ] Check analytics in production

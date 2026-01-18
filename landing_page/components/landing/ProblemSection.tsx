@@ -60,7 +60,7 @@ export function ProblemSection() {
               </div>
 
               <h3 className="text-2xl font-semibold mb-4">{problem.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{problem.description}</p>
+              <p className="text-gray-300 leading-relaxed">{problem.description}</p>
             </SurfaceCard>
           ))}
         </motion.div>

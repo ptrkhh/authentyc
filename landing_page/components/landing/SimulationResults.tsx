@@ -96,7 +96,7 @@ export function SimulationResults({
                     <span>{getCategoryLabel()}</span>
                 </div>
                 <h3 className="text-3xl font-bold text-gray-100">Your Personalized Matches</h3>
-                <p className="text-gray-400 max-w-2xl mx-auto">
+                <p className="text-gray-300 max-w-2xl mx-auto">
                     These matches are generated based on your unique communication style and personality.
                 </p>
             </div>
@@ -134,7 +134,7 @@ export function SimulationResults({
                                 </h5>
                                 <ul className="space-y-2">
                                     {char.alignment.map((point, idx) => (
-                                        <li key={idx} className="text-sm text-gray-400 leading-relaxed pl-2 border-l-2 border-green-500/30">
+                                        <li key={idx} className="text-sm text-gray-300 leading-relaxed pl-2 border-l-2 border-green-500/30">
                                             {point}
                                         </li>
                                     ))}
@@ -148,7 +148,7 @@ export function SimulationResults({
                                 </h5>
                                 <ul className="space-y-2">
                                     {char.challenges.map((point, idx) => (
-                                        <li key={idx} className="text-sm text-gray-400 leading-relaxed pl-2 border-l-2 border-amber-500/30">
+                                        <li key={idx} className="text-sm text-gray-300 leading-relaxed pl-2 border-l-2 border-amber-500/30">
                                             {point}
                                         </li>
                                     ))}

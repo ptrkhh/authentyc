@@ -8,6 +8,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { GradientText } from '@/components/ui/gradient-text';
 import { VARIANTS } from '@/lib/animations/constants';
 
@@ -34,7 +35,7 @@ export function SolutionSection() {
               Reveal <GradientText>Authentic Patterns</GradientText>
             </h2>
 
-            <p className="text-lg lg:text-xl text-gray-400 mb-8 leading-relaxed">
+            <p className="text-lg lg:text-xl text-gray-300 mb-8 leading-relaxed">
               Analyze real conversations to see how someone actually thinks and communicates. No performance, no rehearsal.
             </p>
 
@@ -69,12 +70,12 @@ export function SolutionSection() {
               ))}
             </motion.ul>
 
-            <p className="text-gray-500 mt-8 text-base">
+            <p className="text-gray-400 mt-8 text-base">
               All from conversations they've already had—no extra hoops, no performance pressure.
             </p>
           </motion.div>
 
-          {/* Visual element placeholder */}
+          {/* Analyzer Screenshot */}
           <motion.div
             className="h-96 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-transparent
               border border-white/10 flex items-center justify-center relative overflow-hidden group"
@@ -85,6 +86,15 @@ export function SolutionSection() {
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-transparent
               opacity-50 group-hover:opacity-70 transition-opacity duration-700" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+            {/* Screenshot */}
+            <div className="relative z-10 w-full h-full p-6">
+              <Image
+                src="https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/screenshot-analyzer.png"
+                alt="Chat analyzer showing personality insights and compatibility matches"
+                fill
+                className="object-contain"
+              />
+            </div>
           </motion.div>
         </div>
       </div>

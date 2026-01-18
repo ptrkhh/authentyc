@@ -9,6 +9,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { GradientText } from '@/components/ui/gradient-text';
 import { SPRING_CONFIGS, VARIANTS } from '@/lib/animations/constants';
@@ -61,14 +62,14 @@ export function Hero({ onCTAClick }: HeroProps) {
           </motion.h1>
 
           <motion.p
-            className="text-xl lg:text-2xl text-gray-400 leading-relaxed"
+            className="text-xl lg:text-2xl text-gray-300 leading-relaxed"
             variants={VARIANTS.fadeIn}
           >
             See how someone really thinks, communicates, and solves problems before you commit.
           </motion.p>
 
           <motion.p
-            className="text-base lg:text-lg text-gray-500 max-w-xl"
+            className="text-base lg:text-lg text-gray-400 max-w-xl"
             variants={VARIANTS.fadeIn}
           >
             AI-powered conversation analysis reveals authentic compatibility for hiring, dating, and co-founder matching.
@@ -94,7 +95,7 @@ export function Hero({ onCTAClick }: HeroProps) {
           </motion.div>
         </motion.div>
 
-        {/* Visual Element - Enhanced gradient surface */}
+        {/* Visual Element - Personality Discovery Illustration */}
         <motion.div
           className="hidden lg:block h-[600px] relative"
           initial={{ opacity: 0, x: 60 }}
@@ -102,11 +103,21 @@ export function Hero({ onCTAClick }: HeroProps) {
           transition={SPRING_CONFIGS.gentle}
         >
           <div className="w-full h-full rounded-2xl bg-gradient-to-br from-brand-primary/10 to-transparent
-            border border-white/10 flex items-center justify-center relative overflow-hidden group">
+            border border-white/10 flex items-center justify-center relative overflow-hidden group p-12">
             {/* Animated gradient layers */}
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-primary/20
               opacity-50 group-hover:opacity-70 transition-opacity duration-700" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+            {/* Illustration */}
+            <div className="relative z-10 w-full h-full">
+              <Image
+                src="https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/personality-discovery.svg"
+                alt="Personality discovery through conversation analysis"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
         </motion.div>
       </div>
