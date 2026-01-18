@@ -18,7 +18,6 @@
 
 import { useState, useEffect } from 'react';
 import type { ConversationPrompt } from '@/lib/constants/conversation-prompts';
-import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
 import { SimulationResults, type Category, type SimulatedCharacter } from './SimulationResults';
 import { Briefcase, Heart, Rocket } from 'lucide-react';
 

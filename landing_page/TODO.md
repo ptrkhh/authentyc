@@ -84,12 +84,12 @@
 - [x] Monitor for parsing errors
 
 ### Waitlist Form
-- [ ] Submit form with test email
-- [ ] Verify data in `waitlist_leads` table
-- [ ] Verify welcome email received
-- [ ] Test email in Gmail
-- [ ] Test email in Outlook
-- [ ] Test email on mobile
+- [x] Submit form with test email
+- [x] Verify data in `waitlist_leads` table
+- [x] Verify welcome email received
+- [x] Test email in Gmail
+- [x] Test email in Outlook
+- [x] Test email on mobile
 
 ### Analytics
 - [x] Add PostHog key to `.env.local`

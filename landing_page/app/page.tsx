@@ -23,6 +23,7 @@ import { SolutionSection } from '@/components/landing/SolutionSection';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { PageAnalytics } from '@/components/analytics/PageAnalytics';
 import { WaitlistForm } from '@/components/forms/WaitlistForm';
+import { LAUNCH_COPY } from '@/lib/constants';
 
 const ChatAnalyzer = dynamic(() => import('@/components/landing/ChatAnalyzer').then(mod => ({ default: mod.ChatAnalyzer })), {
   loading: () => <div className="h-96 animate-pulse bg-dark-850" />
@@ -86,7 +87,7 @@ export default function Home() {
         "name": "When will this launch?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We're launching invite-only in Q1 2026, starting with early waitlist members. We'll launch the category with strongest demand first, validate product-market fit, then expand to other categories."
+          "text": `We're launching invite-only in ${LAUNCH_COPY.SHORT}, starting with early waitlist members. We'll launch the category with strongest demand first, validate product-market fit, then expand to other categories.`
         }
       },
       {

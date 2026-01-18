@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
+import { COMPANY_INFO } from '@/lib/constants';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,7 +24,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://authentyc.ai'),
-  title: 'Authentyc - Match people by who they really are, not who they claim to be',
+  title: `${COMPANY_INFO.NAME} - ${COMPANY_INFO.TAGLINE.replace('.', ', not who they claim to be')}`,
   description:
     'AI conversation analysis reveals authentic compatibility for hiring, dating, and co-founder matching. See how people really think before you commit.',
   keywords: [
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
         url: 'https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Authentyc - Match people by who they really are',
+        alt: `${COMPANY_INFO.NAME} - ${COMPANY_INFO.TAGLINE}`,
       },
     ],
     locale: 'en_US',

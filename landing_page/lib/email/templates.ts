@@ -7,6 +7,8 @@
  * TODO: Consider using React Email or MJML for better templating
  */
 
+import { SOCIAL_LINKS, LAUNCH_COPY, COMPANY_INFO } from '@/lib/constants';
+
 export interface WelcomeEmailData {
   email: string;
   waitlistPosition: number;
@@ -99,14 +101,14 @@ export function getWelcomeEmailHTML(data: WelcomeEmailData): string {
 
     <p><strong>Here's what happens next:</strong></p>
     <ul>
-      <li>We'll email you when we launch invite-only access (Q1 2026)</li>
+      <li>We'll email you when we launch invite-only access (${LAUNCH_COPY.SHORT})</li>
       <li>You'll get first access to ${interestText}</li>
       <li>We might reach out for early feedback (optional, with perks)</li>
     </ul>
 
     <p><strong>In the meantime, you can:</strong></p>
     <ul>
-      <li>Follow our journey on Twitter <a href="https://twitter.com/authentyc_ai">@authentyc_ai</a></li>
+      <li>Follow our journey on Twitter <a href="${SOCIAL_LINKS.TWITTER}">@authentyc_ai</a></li>
       <!-- TODO: Verify Twitter handle exists before launch -->
       <li>Share with friends who'd benefit from authentic matching</li>
     </ul>
@@ -121,7 +123,7 @@ export function getWelcomeEmailHTML(data: WelcomeEmailData): string {
   </div>
 
   <div class="footer">
-    <p>© 2025 Authentyc AI, Inc.</p>
+    <p>© ${COMPANY_INFO.YEAR} ${COMPANY_INFO.LEGAL_NAME}</p>
     <!-- TODO: Verify domain authentyc.ai is configured before launch -->
     <p>
       <a href="https://authentyc.ai/privacy">Privacy Policy</a> |

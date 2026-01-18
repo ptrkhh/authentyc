@@ -32,5 +32,5 @@ export const COMPANY_INFO = {
   TAGLINE: 'Match people by who they really are.',
   EMAIL: 'hello@authentyc.ai',
   LEGAL_NAME: 'Authentyc AI, Inc.',
-  YEAR: '2025',
+  YEAR: '2026',
 } as const;
