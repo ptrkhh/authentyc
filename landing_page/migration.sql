@@ -14,7 +14,7 @@ CREATE TABLE waitlist_leads (
   -- Multiple interests support (JSONB array)
   interests JSONB NOT NULL,
   other_interest_detail TEXT,
-  has_ai_history TEXT CHECK (has_ai_history IN ('extensive', 'some', 'none')),
+  has_ai_history TEXT CHECK (has_ai_history IN ('extensive', 'some', 'willing', 'none')),
 
   -- UTM tracking
   utm_source TEXT,

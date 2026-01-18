@@ -43,8 +43,16 @@ export async function POST(request: NextRequest) {
       // Check for duplicate email (unique constraint violation)
       if (error.code === '23505') {
         return NextResponse.json(
-          { error: 'Email already on waitlist' },
+          { error: 'This email is already registered on our waitlist' },
           { status: 409 }
+        );
+      }
+      // Check constraint violations (e.g., invalid has_ai_history value)
+      if (error.code === '23514') {
+        console.error('Database constraint violation:', error);
+        return NextResponse.json(
+          { error: 'Invalid form data. Please refresh the page and try again.' },
+          { status: 400 }
         );
       }
       throw error;

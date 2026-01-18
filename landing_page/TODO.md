@@ -110,9 +110,9 @@
 
 ### Error Handling
 - [x] Test with invalid ChatGPT links
-- [ ] Test duplicate email signup
+- [x] Test duplicate email signup
 - [ ] Test rate limiting
-- [ ] Verify error messages are user-friendly
+- [x] Verify error messages are user-friendly
 
 ---
 
@@ -136,7 +136,7 @@
 ### Vercel Setup
 - [x] Create Vercel account
 - [x] Install Vercel CLI
-- [ ] Connect GitHub repository
+- [x] Connect GitHub repository
 - [x] Deploy to Vercel
 
 ### Environment Variables
