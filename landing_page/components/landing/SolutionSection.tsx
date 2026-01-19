@@ -92,7 +92,8 @@ export function SolutionSection() {
                 src="https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/screenshot-analyzer.png"
                 alt="Chat analyzer showing personality insights and compatibility matches"
                 fill
-                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
               />
             </div>
           </motion.div>

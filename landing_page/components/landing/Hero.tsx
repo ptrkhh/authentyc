@@ -31,7 +31,7 @@ export function Hero({ onCTAClick }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center px-4 overflow-hidden">
       {/* Animated background orbs for atmospheric depth */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0">
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-primary/20 rounded-full blur-3xl"
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -44,8 +44,33 @@ export function Hero({ onCTAClick }: HeroProps) {
         />
       </div>
 
+      {/* Background Image - Personality Discovery Illustration */}
+      <motion.div
+        className="absolute inset-0 z-10 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={SPRING_CONFIGS.gentle}
+      >
+        <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
+          {/* Animated gradient layers */}
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-primary/20
+            opacity-50 transition-opacity duration-700" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+          {/* Illustration */}
+          <div className="absolute inset-0">
+            <Image
+              src="https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/personality-discovery.svg"
+              alt="Personality discovery through conversation analysis"
+              fill
+              className="object-cover opacity-30"
+              priority
+            />
+          </div>
+        </div>
+      </motion.div>
+
       {/* Content - Asymmetric grid layout */}
-      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-20 max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
         <motion.div
           className="space-y-8"
           variants={VARIANTS.stagger}
@@ -93,32 +118,6 @@ export function Hero({ onCTAClick }: HeroProps) {
               <strong className="text-white">100% Private</strong>: Your data is encrypted, never sold, and you control what's shared
             </span>
           </motion.div>
-        </motion.div>
-
-        {/* Visual Element - Personality Discovery Illustration */}
-        <motion.div
-          className="hidden lg:block h-[600px] relative"
-          initial={{ opacity: 0, x: 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={SPRING_CONFIGS.gentle}
-        >
-          <div className="w-full h-full rounded-2xl bg-gradient-to-br from-brand-primary/10 to-transparent
-            border border-white/10 flex items-center justify-center relative overflow-hidden group p-12">
-            {/* Animated gradient layers */}
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-primary/20
-              opacity-50 group-hover:opacity-70 transition-opacity duration-700" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
-            {/* Illustration */}
-            <div className="relative z-10 w-full h-full">
-              <Image
-                src="https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/personality-discovery.svg"
-                alt="Personality discovery through conversation analysis"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
         </motion.div>
       </div>
     </section>
