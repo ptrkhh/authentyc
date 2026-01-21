@@ -1,42 +1,11 @@
   # Social Media Strategy & Content Plan for Authentyc
 
+  > **Note:** Ensure all launch dates ("Q1 2026") align with `LAUNCH_COPY` in `landing_page/lib/constants/index.ts`.
+
   ## Strategic Decision: Waitlist vs. Awareness
+  
+  *Decision made: Hybrid Strategy (70-20-10) is adopted. Previous analysis removed for brevity.*
 
-  ### Option A: Build Waitlist (Conversion Focus)
-  **Pros:**
-  - Measurable success metric (signup count)
-  - Validates product-market fit before Q1 2026 launch
-  - Creates urgency ("founding member rates")
-  - Direct ROI - every signup is a potential customer
-  - Gives you email list to nurture pre-launch
-
-  **Cons:**
-  - Smaller reach - asks for commitment immediately
-  - Limits viral potential (CTAs reduce shareability)
-  - May feel salesy/pushy for new accounts
-  - Harder to build community early
-
-  **Best for:** When you have product validation and need scale
-
-  ---
-
-  ### Option B: Build Awareness (Reach Focus)
-  **Pros:**
-  - Higher viral potential - entertaining/educational content spreads
-  - Builds trust and credibility before the ask
-  - Grows follower base organically
-  - Creates "top of mind" positioning
-  - More shareable, less transactional
-
-  **Cons:**
-  - Vanity metrics (likes/follows) don't equal signups
-  - Harder to measure real business impact
-  - May delay conversion/launch momentum
-  - Could build wrong audience (entertainment seekers vs. users)
-
-  **Best for:** When you need brand recognition first
-
-  ---
 
   ### ✅ RECOMMENDED: Hybrid "Awareness → Conversion" Strategy
 
@@ -180,13 +149,13 @@
   ```
   want to see your personality insights in 5 minutes?
 
-  paste any ChatGPT conversation into our analyzer.
+  run our 5-minute personality probe, then paste the link.
 
-  get matched with 5 compatible people.
+  see 5 example matches.
 
   try it: [link to ChatAnalyzer on authentyc.ai]
 
-  completely private. you control what's shared.
+  we never store your raw chat history. you control what's shared.
 
   #tryit #AI
   ```
@@ -202,7 +171,7 @@
   3. See your personality insights + 5 example matches
   4. Review compatibility scores and alignment points
 
-  It's completely private - we only extract ChatGPT's insights about you, not your raw chat history.
+  We never store your raw chat history - we only extract ChatGPT's insights about you.
 
   Try it yourself: [link]
 
@@ -372,7 +341,7 @@
   ✓ match on how you actually think
   ✓ see compatibility before you commit
   ✓ hiring, dating, co-founder matching
-  ✓ 100% private, you control the data
+  ✓ we never store your raw chat history
 
   founding member rates for early signups.
 
@@ -396,7 +365,7 @@
   3. Get matched with compatible people based on authentic personality insights
   4. Review compatibility before connecting
 
-  Privacy-first: You control what's shared. Your raw chat history stays private.
+  Privacy-first: We never store your raw chat history. You control what's shared.
 
   Early access perks:
   ✓ Founding member pricing
@@ -426,6 +395,11 @@
   5. Check engagement (replies, DMs)
   6. Respond to comments
   7. Reshare high-performing content
+
+  ### Visual Assets Note
+  *Algorithms heavily penalize text-only posts.*
+  - **Twitter:** Use screenshots of the analyzer, graphs of the 6 dimensions, or memes for "Problem Resonance" posts.
+  - **LinkedIn:** Use carousels (PDFs) for educational content and high-res diagrams for data storytelling.
 
   ---
 
