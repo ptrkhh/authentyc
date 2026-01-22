@@ -5,11 +5,10 @@
 
 /**
  * Social media links
- * TODO: Update these with actual social media profiles before launch
  */
 export const SOCIAL_LINKS = {
-  TWITTER: '#',
-  LINKEDIN: '#',
+  TWITTER: 'https://x.com/authentyc_ai',
+  LINKEDIN: 'https://www.linkedin.com/company/authentyc',
   EMAIL: 'mailto:hello@authentyc.ai',
 } as const;
 

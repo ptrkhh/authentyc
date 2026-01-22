@@ -1,7 +1,7 @@
 # Authentyc Landing Page - TODO
 
-**Last Updated**: December 2, 2025
-**Status**: Core Setup Complete → Ready for Testing
+**Last Updated**: January 23, 2026
+**Status**: Legal Pages Complete → Ready for Production Testing
 
 ---
 
@@ -102,12 +102,6 @@
 - [ ] Verify form submitted event
 - [ ] Check PostHog dashboard shows events
 
-### Performance
-- [ ] Run Lighthouse audit
-- [ ] Score >90 on performance
-- [ ] Test load time <2 seconds
-- [ ] Optimize images if needed
-
 ### Error Handling
 - [x] Test with invalid ChatGPT links
 - [x] Test duplicate email signup
@@ -116,17 +110,27 @@
 
 ---
 
-## Phase 6: Legal Pages
-**Time**: 2-4 hours
+## Phase 6: Legal Pages ✅
+**Time**: 2-4 hours | **Status**: COMPLETE
 
-- [ ] Review Privacy Policy placeholder
-- [ ] Customize Privacy Policy for actual practices
-- [ ] Add data retention details
-- [ ] Add third-party services list
-- [ ] Review Terms of Service placeholder
-- [ ] Customize Terms of Service
-- [ ] Add service availability terms
-- [ ] Get legal review (recommended)
+- [x] Review Privacy Policy placeholder
+- [x] Customize Privacy Policy for actual practices
+- [x] Add data retention details (30 days for analyses, indefinite for waitlist)
+- [x] Add third-party services list (Supabase, OpenAI, Gemini, Resend, PostHog, Vercel)
+- [x] Review Terms of Service placeholder
+- [x] Customize Terms of Service with AI disclaimers
+- [x] Add service availability terms (beta/no SLA)
+- [x] Add binding arbitration clause & liability protections
+- [ ] Get legal review from attorney (CRITICAL BEFORE LAUNCH - budget $1,500-$3,000)
+
+### What Was Delivered:
+- **Privacy Policy**: 12 comprehensive sections with GDPR/CCPA compliance
+- **Terms of Service**: 19 sections with strong AI disclaimers ("entertainment/experimental purposes only")
+- **Legal Protections**: Binding arbitration, $100 liability cap, warranty disclaimers
+- **Data Policies**: Clear retention (30-day auto-delete for analyses), user ownership of data
+- **Third-Party Disclosure**: Complete list with privacy policy links
+
+See: `app/privacy/page.tsx` and `app/terms/page.tsx`
 
 ---
 
@@ -164,6 +168,42 @@
 - [ ] Verify email delivery from production
 - [ ] Check analytics in production
 - [ ] Monitor Vercel Analytics
+
+---
+
+## 🚨 CRITICAL BEFORE LAUNCH (Legal Compliance)
+
+### Legal Email Addresses (REQUIRED)
+- [ ] Set up `privacy@authentyc.ai` email address
+  - Must be monitored DAILY for data deletion requests (GDPR/CCPA compliance)
+  - 30-day response time is legally required
+  - Configure email forwarding in Resend or email provider
+- [ ] Set up `legal@authentyc.ai` email address
+  - For terms violations, DMCA claims, dispute resolution
+  - Check at least 2-3 times per week
+  - Configure auto-responder with expected response time (5 business days)
+
+### Legal Review (HIGHLY RECOMMENDED)
+- [ ] Schedule attorney review of Privacy Policy
+  - Focus: GDPR/CCPA compliance, data retention policies
+  - Budget: $1,500-$3,000 for tech lawyer
+- [ ] Schedule attorney review of Terms of Service
+  - Focus: AI liability, arbitration clause, employment law implications (hiring use case)
+  - Ensure compliance with Delaware law and federal arbitration act
+- [ ] Review state-specific requirements (if targeting specific states)
+  - California: CCPA compliance verified
+  - EU/UK: GDPR compliance for international users
+  - Employment law: EEOC compliance for hiring use case
+
+### Optional Legal Enhancements
+- [ ] Add cookie consent banner (if targeting EU users)
+  - Required for PostHog analytics cookies under GDPR
+  - Library: `react-cookie-consent` or similar
+- [ ] Track terms acceptance version
+  - Add `terms_version` and `terms_accepted_at` to `waitlist_leads` table
+  - Log which version of Terms/Privacy Policy each user accepted
+- [ ] Obtain Data Processing Agreements (DPAs) from vendors
+  - Request DPAs from Supabase, OpenAI, Resend if needed for enterprise customers
 
 ---
 
@@ -205,6 +245,7 @@
 
 **Ready to launch when ALL checked:**
 
+### Core Functionality
 - [ ] All Phase 0-7 tasks completed
 - [ ] No errors in production
 - [ ] All environment variables configured
@@ -212,7 +253,6 @@
 - [ ] ChatGPT analyzer tested with 10+ links
 - [ ] Waitlist form + emails working
 - [ ] All assets created
-- [ ] Legal pages finalized
 - [ ] Production tested
 - [ ] Lighthouse score >90
 - [ ] Mobile tested on real devices
@@ -220,3 +260,21 @@
 - [ ] Analytics tracking verified
 - [ ] Error monitoring active
 - [ ] Billing alerts configured
+
+### Legal Compliance (CRITICAL)
+- [x] Legal pages finalized (Privacy Policy + Terms of Service)
+- [ ] Legal email addresses set up (`privacy@authentyc.ai`, `legal@authentyc.ai`)
+- [ ] Legal review completed OR risk accepted for beta launch
+- [ ] Terms acceptance tracking implemented (optional but recommended)
+- [ ] Cookie consent banner added (if targeting EU users)
+
+### Go/No-Go Decision
+**CANNOT LAUNCH WITHOUT:**
+- Legal email addresses (`privacy@authentyc.ai`, `legal@authentyc.ai`) ← MUST HAVE
+- Privacy Policy & Terms of Service published (DONE ✅)
+- Basic security measures (HTTPS, rate limiting, input validation)
+
+**SHOULD NOT LAUNCH WITHOUT:**
+- Attorney review of legal pages
+- Analytics tracking verified
+- Production testing complete
