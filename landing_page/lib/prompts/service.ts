@@ -44,8 +44,6 @@ export async function getPrompt(key: string): Promise<PromptRecord | null> {
  * Fetch multiple prompts by keys
  */
 export async function getPrompts(keys: string[]): Promise<Map<string, PromptRecord>> {
-  console.log('[prompts/service] Fetching prompts with keys:', keys);
-
   // WORKAROUND: .in() query has a bug where it doesn't return conversation-cofounder
   // even though individual queries work fine. Fetch each key individually instead.
   const prompts = new Map<string, PromptRecord>();
@@ -64,14 +62,10 @@ export async function getPrompts(keys: string[]): Promise<Map<string, PromptReco
     }
 
     if (data) {
-      console.log(`[prompts/service] ✓ Fetched "${key}" (${data.content?.length || 0} chars)`);
       prompts.set(data.key, data);
-    } else {
-      console.log(`[prompts/service] ✗ Not found: "${key}"`);
     }
   }
 
-  console.log(`[prompts/service] Total prompts fetched: ${prompts.size}/${keys.length}`);
   return prompts;
 }
 

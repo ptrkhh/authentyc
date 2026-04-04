@@ -6,11 +6,10 @@
  * 2. Problem Section
  * 3. Solution Section
  * 4. How It Works
- * 5. ChatGPT Analyzer (Interactive Feature)
- * 6. Category Cards
- * 7. FAQ
- * 8. Final CTA
- * 9. Footer
+ * 5. Category Cards (with embedded ChatGPT Analyzer)
+ * 6. FAQ
+ * 7. Final CTA
+ * 8. Footer
  */
 
 'use client';
@@ -24,10 +23,6 @@ import { HowItWorks } from '@/components/landing/HowItWorks';
 import { PageAnalytics } from '@/components/analytics/PageAnalytics';
 import { WaitlistForm } from '@/components/forms/WaitlistForm';
 import { LAUNCH_COPY } from '@/lib/constants';
-
-const ChatAnalyzer = dynamic(() => import('@/components/landing/ChatAnalyzer').then(mod => ({ default: mod.ChatAnalyzer })), {
-  loading: () => <div className="h-96 animate-pulse bg-dark-850" />
-});
 
 const CategoryCards = dynamic(() => import('@/components/landing/CategoryCards').then(mod => ({ default: mod.CategoryCards })), {
   loading: () => <div className="h-96 animate-pulse bg-dark-850" />
@@ -121,7 +116,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       {/* Structured Data for SEO */}
       <script
         type="application/ld+json"
@@ -147,11 +142,8 @@ export default function Home() {
       {/* How It Works */}
       <HowItWorks />
 
-      {/* Interactive ChatGPT Analyzer - Key Differentiator */}
-      <ChatAnalyzer />
-
-      {/* Category Selection Cards */}
-      <CategoryCards onCardClick={(category) => openForm(category)} />
+      {/* Category Selection Cards (with embedded ChatGPT Analyzer) */}
+      <CategoryCards />
 
       {/* FAQ Section */}
       <FAQ />

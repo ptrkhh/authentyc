@@ -37,6 +37,7 @@ export function PremiumButton({
         shadow-[0_0_40px_var(--brand-primary-glow)]
         transition-all duration-300 ease-smooth
         hover:shadow-[0_0_60px_var(--brand-primary-glow)]
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]
         active:scale-[0.98]
         overflow-hidden
         group

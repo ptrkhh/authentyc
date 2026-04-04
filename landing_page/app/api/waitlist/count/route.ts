@@ -26,7 +26,7 @@ export async function GET() {
     console.error('Waitlist count error:', error);
 
     return NextResponse.json(
-      { error: 'Failed to get waitlist count', count: 0 },
+      { success: false, count: 0 },
       { status: 500 }
     );
   }

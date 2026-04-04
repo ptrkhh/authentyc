@@ -1,11 +1,10 @@
 /**
  * Resend Email Client
  *
- * Wrapper for Resend API for email delivery.
+ * Uses the official Resend SDK for email delivery.
  */
 
-// TODO: Install resend package: npm install resend
-// For now, using fetch API directly
+import { Resend } from 'resend';
 
 export interface SendEmailParams {
   to: string;
@@ -20,44 +19,39 @@ export interface SendEmailResult {
   error?: string;
 }
 
-/**
- * Send email via Resend API
- */
-export async function sendEmail(params: SendEmailParams): Promise<SendEmailResult> {
+function getResendClient(): Resend {
   if (!process.env.RESEND_API_KEY) {
     throw new Error('Missing RESEND_API_KEY environment variable');
   }
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
+/**
+ * Send email via Resend SDK
+ */
+export async function sendEmail(params: SendEmailParams): Promise<SendEmailResult> {
+  const resend = getResendClient();
   const emailDomain = process.env.RESEND_FROM_DOMAIN || 'authentyc.ai';
   const fromEmail = params.from || `Authentyc <hello@${emailDomain}>`;
 
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: params.to,
-        subject: params.subject,
-        html: params.html,
-      }),
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to: params.to,
+      subject: params.subject,
+      html: params.html,
     });
 
-    if (!response.ok) {
-      const error = await response.text();
+    if (error) {
       return {
         success: false,
-        error: `Resend API error: ${error}`,
+        error: error.message,
       };
     }
 
-    const data = await response.json();
     return {
       success: true,
-      emailId: data.id,
+      emailId: data?.id,
     };
   } catch (error: any) {
     return {

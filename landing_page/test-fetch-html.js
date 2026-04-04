@@ -11,7 +11,7 @@ async function fetchAndSaveHTML() {
 
   const response = await fetch(shareUrl, {
     headers: {
-      'User-Agent': 'Authentyc Bot/1.0 (https://authentyc.ai; contact@authentyc.ai)',
+      'User-Agent': 'Authentyc Bot/1.0 (https://authentyc.ai; hello@authentyc.ai)',
       Accept: 'text/html,application/xhtml+xml',
       'Accept-Language': 'en-US,en;q=0.9',
     },

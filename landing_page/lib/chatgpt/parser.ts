@@ -118,9 +118,8 @@ async function debugSaveHTML(html: string, filename: string): Promise<void> {
         const {join} = await import('path');
         const filePath = join(process.cwd(), filename);
         await writeFile(filePath, html, 'utf-8');
-        console.log(`[parser] Debug: Saved ${filename}`);
     } catch (error) {
-        console.error(`[parser] Debug: Failed to save ${filename}:`, error);
+        // Debug file save failed — not critical
     }
 }
 
@@ -131,7 +130,6 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
     const $ = cheerio.load(html);
     const messages: ParsedConversation['messages'] = [];
 
-    console.log('[parser] Parsing HTML, length:', html.length);
     debugSaveHTML(html, 'parsed.txt');
 
     // Parse React Server Components format (ChatGPT as of Dec 2024)
@@ -144,7 +142,6 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
 
             // Look for large script tags with React Router context data
             if (scriptContent.includes('window.__reactRouterContext') && scriptContent.length > 10000) {
-                console.log(`[parser] Found React Router context in script ${i}`);
                 foundData = true;
 
                 // Extract all quoted strings from the script
@@ -152,7 +149,6 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
                 const allStringMatches = [...scriptContent.matchAll(stringPattern)];
                 const stringMatches = allStringMatches.filter(match => match[1].length >= 50);
 
-                console.log(`[parser] Found ${stringMatches.length} strings >= 50 chars (from ${allStringMatches.length} total)`);
 
                 const conversationMessages: string[] = [];
                 let processedCount = 0;
@@ -164,16 +160,14 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
 
                     // Check if this is a large JSON payload containing messages
                     if (unescaped.length > 10000 && (unescaped.startsWith('[{') || unescaped.startsWith('{"'))) {
-                        console.log(`[parser] Detected JSON payload (${unescaped.length} chars), parsing...`);
                         try {
                             const parsed = JSON.parse(unescaped);
                             const extractedMessages = extractMessagesFromJSON(parsed);
-                            console.log(`[parser] Extracted ${extractedMessages.length} messages from JSON`);
                             conversationMessages.push(...extractedMessages);
                             filteredOutCount++;
                             continue;
                         } catch (e) {
-                            console.log('[parser] Failed to parse as JSON, treating as regular string');
+                            // Not valid JSON, treat as regular string
                         }
                     }
 
@@ -186,20 +180,16 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
                     conversationMessages.push(unescaped);
                 }
 
-                console.log(`[parser] Processed ${processedCount} strings: ${conversationMessages.length} messages, ${filteredOutCount} filtered`);
-
                 // Assign roles alternating user/assistant (ChatGPT conversations always alternate)
                 conversationMessages.forEach((content, index) => {
                     const role = index % 2 === 0 ? 'user' : 'assistant';
                     messages.push({role, content});
                 });
-
-                console.log('[parser] Extracted', messages.length, 'messages');
             }
         });
 
         if (!foundData) {
-            console.log('[parser] No React Router context found');
+            console.warn('[parser] No React Router context found in HTML');
         }
     } catch (e) {
         console.error('[parser] Error during parsing:', e);
@@ -221,17 +211,6 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
             estimatedQuality = 'medium';
         }
     }
-
-    // Log final results
-    console.log('[parser] ========== PARSING COMPLETE ==========');
-    console.log('[parser] Messages:', messages.length);
-    console.log('[parser] Has personality prompt:', hasPersonalityPrompt);
-    console.log('[parser] Quality:', estimatedQuality);
-    console.log('[parser] Title:', $('title').text().trim());
-    if (messages.length > 0) {
-        console.log('[parser] First message:', messages[0].content.substring(0, 100) + '...');
-    }
-    console.log('[parser] ==========================================');
 
     return {
         messages,
@@ -304,20 +283,10 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
             const lengthDiff = userPrompt.length - prompt.prompt.length;
             const mismatchPos = findFirstMismatchPosition(userPrompt, prompt.prompt);
 
-            console.log('[validatePromptExactMatch] ❌ Mismatch with', prompt.category);
-            console.log('[validatePromptExactMatch] Length diff:', lengthDiff);
-
-            if (mismatchPos !== -1) {
-                console.log('[validatePromptExactMatch] Mismatch at position:', mismatchPos);
-                console.log('[validatePromptExactMatch] User:', getContextAroundPosition(userPrompt, mismatchPos));
-                console.log('[validatePromptExactMatch] Expected:', getContextAroundPosition(prompt.prompt, mismatchPos));
-
-                if (!detailedMismatchReason) {
-                    detailedMismatchReason = `Length: ${userPrompt.length} vs ${prompt.prompt.length} (diff: ${lengthDiff}). Mismatch at position ${mismatchPos}.`;
-                }
+            if (mismatchPos !== -1 && !detailedMismatchReason) {
+                detailedMismatchReason = `Length: ${userPrompt.length} vs ${prompt.prompt.length} (diff: ${lengthDiff}). Mismatch at position ${mismatchPos}.`;
             }
         } else {
-            console.log('[validatePromptExactMatch] ✅ Matched:', prompt.category);
             matchedPromptCategory = prompt.category;
         }
 
@@ -325,7 +294,6 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
     });
 
     if (!matchesPrompt) {
-        console.log('[validatePromptExactMatch] ❌ No prompt matched');
         return {
             valid: false,
             reason: 'The prompt in this conversation has been modified. Please go back to the instructions page and copy-paste the predefined prompt exactly without any modifications. This ensures consistent and accurate personality analysis.' +
@@ -333,7 +301,6 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
         };
     }
 
-    console.log('[validatePromptExactMatch] ✅ Matched category:', matchedPromptCategory);
     return {valid: true};
 }
 
@@ -396,8 +363,6 @@ function validateRating(rating: number | null): number | null {
  * Parse ChatGPT API response to extract summary, rating, and assessment details
  */
 export function parseResponse(chatGPTOutput: string): ParsedChatGPTResponse {
-    console.log('[parser] Parsing response, length:', chatGPTOutput.length);
-
     // Try multiple rating patterns for robustness (ordered by priority)
     const ratingPatterns = [
         /OVERALL COMPLETENESS:\s*(\d+)\/10/i,  // New format (highest priority)
@@ -412,17 +377,11 @@ export function parseResponse(chatGPTOutput: string): ParsedChatGPTResponse {
         const match = chatGPTOutput.match(pattern);
         if (match) {
             rawRating = parseInt(match[1], 10);
-            console.log('[parser] Rating matched pattern:', pattern.source);
             break;
         }
     }
 
     const completenessRating = validateRating(rawRating);
-    if (completenessRating === null) {
-        console.warn('[parser] Failed to extract rating');
-    } else {
-        console.log('[parser] Rating:', completenessRating);
-    }
 
     // Extract assessment details if present (new format)
     const assessmentPattern = /--- ASSESSMENT ---\s*OVERALL COMPLETENESS:\s*(\d+)\/10\s*(?:Rating Criteria:[\s\S]*?)?\s*ANALYSIS:\s*([\s\S]*?)--- END ASSESSMENT ---/;
@@ -434,12 +393,9 @@ export function parseResponse(chatGPTOutput: string): ParsedChatGPTResponse {
             rating: parseInt(assessmentMatch[1], 10),
             analysis: assessmentMatch[2].trim(),
         };
-        console.log('[parser] Assessment rating:', assessmentDetails.rating);
-        console.log('[parser] Analysis length:', assessmentDetails.analysis.length);
     }
 
     const summary = extractSummary(chatGPTOutput);
-    console.log('[parser] Summary length:', summary.length);
 
     return {
         summary,

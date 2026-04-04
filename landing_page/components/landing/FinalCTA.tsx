@@ -6,7 +6,7 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { GradientText } from '@/components/ui/gradient-text';
@@ -58,7 +58,7 @@ export function FinalCTA({ onCTAClick }: FinalCTAProps) {
   return (
     <section className="relative py-36 px-4 overflow-hidden">
       {/* Gradient background accent */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0" aria-hidden="true">
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-primary/20"
           animate={{ opacity: [0.3, 0.5, 0.3] }}
@@ -76,17 +76,23 @@ export function FinalCTA({ onCTAClick }: FinalCTAProps) {
           Ready to <GradientText>stop guessing?</GradientText>
         </motion.h2>
 
-        <motion.p
-          className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          {showCount && waitlistCount !== null
-            ? `Join ${waitlistCount}+ people getting early access to authentic matching for hiring, dating, and co-founder matching.`
-            : 'Join ambitious people getting early access to authentic matching for hiring, dating, and co-founder matching.'}
-        </motion.p>
+        <div className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={showCount && waitlistCount !== null ? 'count' : 'no-count'}
+              role="status"
+              aria-live="polite"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {showCount && waitlistCount !== null
+                ? `Join ${waitlistCount}+ people getting early access to authentic matching for hiring, dating, and co-founder matching.`
+                : 'Join ambitious people getting early access to authentic matching for hiring, dating, and co-founder matching.'}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

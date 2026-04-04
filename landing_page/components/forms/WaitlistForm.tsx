@@ -258,7 +258,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
               placeholder="you@example.com"
             />
             {errors.email && (
-              <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+              <p role="alert" className="text-sm text-red-600 mt-1">{errors.email.message}</p>
             )}
           </div>
 
@@ -298,12 +298,12 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
                   description: "Something else in mind? Let us know"
                 },
               ].map((option) => (
-                <label key={option.value} className="flex items-start cursor-pointer">
+                <label key={option.value} className="flex items-start cursor-pointer min-h-[44px] py-1">
                   <input
                     type="checkbox"
                     {...register('interests')}
                     value={option.value}
-                    className="mr-2 sm:mr-3 mt-1 cursor-pointer"
+                    className="mr-2 sm:mr-3 mt-1 cursor-pointer h-5 w-5 min-w-[20px] rounded border-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
                   />
                   <div className="flex-1">
                     <div className="font-medium text-sm sm:text-base">{option.label}</div>
@@ -313,7 +313,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
               ))}
             </div>
             {errors.interests && (
-              <p className="text-sm text-red-600 mt-1">{errors.interests.message}</p>
+              <p role="alert" className="text-sm text-red-600 mt-1">{errors.interests.message}</p>
             )}
           </div>
 
@@ -328,7 +328,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
                 placeholder="Please describe what you're interested in..."
               />
               {errors.other_interest_detail && (
-                <p className="text-sm text-red-600 mt-1">{errors.other_interest_detail.message}</p>
+                <p role="alert" className="text-sm text-red-600 mt-1">{errors.other_interest_detail.message}</p>
               )}
             </div>
           )}
@@ -343,12 +343,12 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
                 { value: 'willing', label: "No, but I'm willing to build up history" },
                 { value: 'none', label: 'New to AI assistants' },
               ].map((option) => (
-                <label key={option.value} className="flex items-center text-sm sm:text-base">
+                <label key={option.value} className="flex items-center text-sm sm:text-base min-h-[44px] cursor-pointer py-1">
                   <input
                     type="radio"
                     {...register('has_ai_history')}
                     value={option.value}
-                    className="mr-2"
+                    className="mr-2 h-5 w-5 min-w-[20px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
                   />
                   {option.label}
                 </label>
@@ -357,7 +357,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 p-2 sm:p-3 rounded">
+            <div role="alert" className="bg-red-50 border border-red-200 p-2 sm:p-3 rounded">
               <p className="text-red-700 text-xs sm:text-sm">{error}</p>
             </div>
           )}

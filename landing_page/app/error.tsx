@@ -57,13 +57,22 @@ export default function Error({ error, reset }: ErrorBoundaryProps) {
             fontSize: '1rem',
             fontWeight: '500',
             cursor: 'pointer',
-            transition: 'background-color 0.2s'
+            transition: 'background-color 0.2s, outline 0.2s',
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = '#2563eb';
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.backgroundColor = '#3b82f6';
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.backgroundColor = '#2563eb';
+            e.currentTarget.style.outline = '2px solid #60a5fa';
+            e.currentTarget.style.outlineOffset = '2px';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.backgroundColor = '#3b82f6';
+            e.currentTarget.style.outline = 'none';
           }}
         >
           Try again

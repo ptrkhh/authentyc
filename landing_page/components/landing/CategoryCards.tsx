@@ -2,20 +2,20 @@
  * Category Cards Section - Bento Box Layout
  *
  * Asymmetric grid with varying card sizes for visual interest.
- * First card is featured and larger. Each card opens waitlist form.
+ * First card is featured and larger. Each card has a "Try It Yourself"
+ * button that reveals the ChatGPT Analyzer inline below the grid.
  */
 
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SurfaceCard } from '@/components/ui/surface-card';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { GradientText } from '@/components/ui/gradient-text';
 import { trackEvent } from '@/lib/analytics/posthog';
-
-interface CategoryCardsProps {
-  onCardClick: (category: string) => void;
-}
+import { ChatAnalyzer } from './ChatAnalyzer';
+import type { Category } from './SimulationResults';
 
 const CATEGORIES = [
   {
@@ -41,13 +41,27 @@ const CATEGORIES = [
   },
 ];
 
-export function CategoryCards({ onCardClick }: CategoryCardsProps) {
-  const handleCardClick = (categoryId: string) => {
-    trackEvent('category_card_clicked', {
+export function CategoryCards() {
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const analyzerSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (expandedCategory && analyzerSectionRef.current) {
+      analyzerSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [expandedCategory]);
+
+  const handleTryItClick = (categoryId: string) => {
+    trackEvent('try_it_yourself_clicked', {
       category: categoryId,
       location: 'category_cards_section',
     });
-    onCardClick(categoryId);
+
+    if (expandedCategory === categoryId) {
+      setExpandedCategory(null);
+    } else {
+      setExpandedCategory(categoryId);
+    }
   };
 
   return (
@@ -79,12 +93,23 @@ export function CategoryCards({ onCardClick }: CategoryCardsProps) {
                 <CategoryCard
                   category={category}
                   featured={isFeatured}
-                  onClick={() => handleCardClick(category.id)}
+                  isExpanded={expandedCategory === category.id}
+                  onTryItClick={() => handleTryItClick(category.id)}
                 />
               </motion.div>
             );
           })}
         </div>
+
+        {/* Full-width analyzer section, shown below the card grid when a category is selected */}
+        {expandedCategory && (
+          <div ref={analyzerSectionRef} className="mt-12">
+            <ChatAnalyzer
+              key={expandedCategory}
+              category={expandedCategory as Category}
+            />
+          </div>
+        )}
       </div>
     </section>
   );
@@ -93,12 +118,13 @@ export function CategoryCards({ onCardClick }: CategoryCardsProps) {
 interface CategoryCardProps {
   category: typeof CATEGORIES[0];
   featured: boolean;
-  onClick: () => void;
+  isExpanded: boolean;
+  onTryItClick: () => void;
 }
 
-function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
+function CategoryCard({ category, featured, isExpanded, onTryItClick }: CategoryCardProps) {
   return (
-    <SurfaceCard className="h-full flex flex-col cursor-pointer" featured={featured}>
+    <SurfaceCard className={`h-full flex flex-col ${isExpanded ? 'ring-2 ring-brand-primary' : ''}`} featured={featured}>
       {/* Icon with glow */}
       <div
         className="mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
@@ -125,6 +151,7 @@ function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
               className="w-5 h-5 text-brand-primary mr-3 mt-0.5 flex-shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"
@@ -139,8 +166,8 @@ function CategoryCard({ category, featured, onClick }: CategoryCardProps) {
 
       {/* CTA */}
       <div className="mt-8">
-        <PremiumButton size="md" onClick={onClick} className="w-full">
-          Join Waitlist →
+        <PremiumButton size="md" onClick={onTryItClick} className="w-full">
+          {isExpanded ? 'Close Preview' : 'Try It Yourself →'}
         </PremiumButton>
       </div>
     </SurfaceCard>

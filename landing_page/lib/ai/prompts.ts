@@ -1,23 +1,39 @@
 /**
- * OpenAI Analysis Prompts
+ * AI Analysis Prompts
  *
  * Prompt templates for personality analysis of ChatGPT conversations.
  *
  * NOTE: Prompts are now fetched from the database for easy updates
  * without redeployment.
+ *
+ * Returns StructuredPrompt objects to separate system instructions from
+ * user-provided content, preventing prompt injection.
  */
 
 import { ParsedConversation } from '../chatgpt/parser';
 import { CHARACTER_TEMPLATES } from '@/lib/constants/simulated-characters';
 import type { Category, SimulatedCharacter } from '@/components/landing/SimulationResults';
 import { getPrompt, replacePlaceholders, trackPromptUsage } from '@/lib/prompts/service';
+import { sanitizeUserInput } from '@/lib/utils/validation';
+
+/**
+ * Structured prompt with separated system instruction and user content.
+ * Prevents user-provided conversation text from being interpreted as instructions.
+ */
+export interface StructuredPrompt {
+  systemInstruction: string;
+  userContent: string;
+}
 
 /**
  * Build a prompt for quick personality analysis (3 key insights)
+ *
+ * Returns separated system instruction and user content to prevent
+ * prompt injection from user conversation text.
  */
-export async function buildQuickAnalysisPrompt(conversation: ParsedConversation): Promise<string> {
+export async function buildQuickAnalysisPrompt(conversation: ParsedConversation): Promise<StructuredPrompt> {
   const conversationText = conversation.messages
-    .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
+    .map((m) => `${m.role.toUpperCase()}: ${sanitizeUserInput(m.content)}`)
     .join('\n\n');
 
   // Fetch prompt from database
@@ -27,12 +43,17 @@ export async function buildQuickAnalysisPrompt(conversation: ParsedConversation)
     throw new Error('Quick analysis prompt not found in database');
   }
 
-  // Replace placeholders
-  const prompt = replacePlaceholders(promptRecord.content, {
-    CONVERSATION: conversationText,
+  // The prompt template becomes the system instruction.
+  // User conversation data is passed separately as user content,
+  // so it cannot override or inject into system instructions.
+  const systemInstruction = replacePlaceholders(promptRecord.content, {
+    CONVERSATION: '[PROVIDED IN USER MESSAGE]',
   });
 
-  return prompt;
+  return {
+    systemInstruction,
+    userContent: `Here is the conversation to analyze:\n\n${conversationText}`,
+  };
 }
 
 /**
@@ -80,7 +101,7 @@ export async function buildCharacterGenerationPrompt(
   },
   category: Category,
   conversationSample: string
-): Promise<string> {
+): Promise<StructuredPrompt> {
   // Category-specific guidance
   const CATEGORY_GUIDANCE = {
     hiring: {
@@ -138,12 +159,13 @@ export async function buildCharacterGenerationPrompt(
   // Get template examples
   const templateExamples = JSON.stringify(getTemplateExamples(category), null, 2);
 
-  // Replace all placeholders
-  const prompt = replacePlaceholders(promptRecord.content, {
+  // Replace all placeholders. User-provided conversation sample is passed
+  // separately as user content to prevent prompt injection.
+  const systemInstruction = replacePlaceholders(promptRecord.content, {
     CATEGORY: category,
     OVERALL_VIBE: personalityAnalysis.overall_vibe,
     INSIGHTS: insightsFormatted,
-    CONVERSATION_SAMPLE: conversationSample,
+    CONVERSATION_SAMPLE: '[PROVIDED IN USER MESSAGE]',
     ENTITY_TYPE: guidance.entityType,
     SCORE_MIN: scoreMin,
     SCORE_MAX: scoreMax,
@@ -162,5 +184,8 @@ export async function buildCharacterGenerationPrompt(
     ROLE_EXAMPLE: guidance.roleExamples[0],
   });
 
-  return prompt;
+  return {
+    systemInstruction,
+    userContent: `Here is a sample of the conversation:\n\n${sanitizeUserInput(conversationSample)}`,
+  };
 }

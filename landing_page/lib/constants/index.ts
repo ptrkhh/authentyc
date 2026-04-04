@@ -7,20 +7,19 @@
  * Social media links
  */
 export const SOCIAL_LINKS = {
-  TWITTER: 'https://x.com/authentyc_ai',
+  TWITTER: 'https://x.com/AuthentycAI',
   LINKEDIN: 'https://www.linkedin.com/company/authentyc',
   EMAIL: 'mailto:hello@authentyc.ai',
 } as const;
 
 /**
  * Launch date information
- * TODO: Update launch date when finalized
  */
 export const LAUNCH_COPY = {
-  QUARTER: 'Q1 2026',
+  QUARTER: 'Q2 2026',
   YEAR: '2026',
-  FULL: 'Launching Q1 2026',
-  SHORT: 'Q1 2026',
+  FULL: 'Launching Q2 2026',
+  SHORT: 'Q2 2026',
 } as const;
 
 /**

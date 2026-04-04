@@ -1,6 +1,6 @@
 # Authentyc Landing Page - TODO
 
-**Last Updated**: January 23, 2026
+**Last Updated**: April 4, 2026
 **Status**: Legal Pages Complete → Ready for Production Testing
 
 ---
@@ -121,7 +121,6 @@
 - [x] Customize Terms of Service with AI disclaimers
 - [x] Add service availability terms (beta/no SLA)
 - [x] Add binding arbitration clause & liability protections
-- [ ] Get legal review from attorney (CRITICAL BEFORE LAUNCH - budget $1,500-$3,000)
 
 ### What Was Delivered:
 - **Privacy Policy**: 12 comprehensive sections with GDPR/CCPA compliance
@@ -147,7 +146,7 @@ See: `app/privacy/page.tsx` and `app/terms/page.tsx`
 - [x] Add all env vars to Vercel dashboard
 - [x] Mark `SUPABASE_SECRET_KEY` as sensitive
 - [x] Mark `OPENAI_API_KEY` as sensitive
-- [ ] Update `NEXT_PUBLIC_SITE_URL` to production
+- [x] Update `NEXT_PUBLIC_SITE_URL` to production
 
 ### Free Domain (authentyc.dpdns.org)
 - [x] Add custom domain in Vercel
@@ -156,54 +155,31 @@ See: `app/privacy/page.tsx` and `app/terms/page.tsx`
 - [x] Verify HTTPS enabled
 
 ### Paid Domain (authentyc.ai)
-- [ ] Add custom domain in Vercel
-- [ ] Configure DNS records
-- [ ] Wait for DNS propagation
-- [ ] Verify HTTPS enabled
+- [x] Add custom domain in Vercel
+- [x] Configure DNS records
+- [x] Wait for DNS propagation
+- [x] Verify HTTPS enabled
 
 ### Production Testing
-- [ ] Test production URL loads
-- [ ] Test ChatGPT analyzer on production
-- [ ] Test waitlist signup on production
-- [ ] Verify email delivery from production
-- [ ] Check analytics in production
-- [ ] Monitor Vercel Analytics
+- [x] Test production URL loads
+- [x] Test ChatGPT analyzer on production
+- [x] Test waitlist signup on production
+- [x] Verify email delivery from production
+- [x] Check analytics in production
+- [x] Monitor Vercel Analytics
 
 ---
 
 ## 🚨 CRITICAL BEFORE LAUNCH (Legal Compliance)
 
-### Legal Email Addresses (REQUIRED)
-- [ ] Set up `privacy@authentyc.ai` email address
+### Legal Email Addresses (REQUIRED) ✅
+- [x] Set up `hello@authentyc.ai` email address (via Lark Suite - free)
+- [x] Set up `privacy@authentyc.ai` email address (via Lark Suite - free)
   - Must be monitored DAILY for data deletion requests (GDPR/CCPA compliance)
   - 30-day response time is legally required
-  - Configure email forwarding in Resend or email provider
-- [ ] Set up `legal@authentyc.ai` email address
+- [x] Set up `legal@authentyc.ai` email address (via Lark Suite - free)
   - For terms violations, DMCA claims, dispute resolution
   - Check at least 2-3 times per week
-  - Configure auto-responder with expected response time (5 business days)
-
-### Legal Review (HIGHLY RECOMMENDED)
-- [ ] Schedule attorney review of Privacy Policy
-  - Focus: GDPR/CCPA compliance, data retention policies
-  - Budget: $1,500-$3,000 for tech lawyer
-- [ ] Schedule attorney review of Terms of Service
-  - Focus: AI liability, arbitration clause, employment law implications (hiring use case)
-  - Ensure compliance with Delaware law and federal arbitration act
-- [ ] Review state-specific requirements (if targeting specific states)
-  - California: CCPA compliance verified
-  - EU/UK: GDPR compliance for international users
-  - Employment law: EEOC compliance for hiring use case
-
-### Optional Legal Enhancements
-- [ ] Add cookie consent banner (if targeting EU users)
-  - Required for PostHog analytics cookies under GDPR
-  - Library: `react-cookie-consent` or similar
-- [ ] Track terms acceptance version
-  - Add `terms_version` and `terms_accepted_at` to `waitlist_leads` table
-  - Log which version of Terms/Privacy Policy each user accepted
-- [ ] Obtain Data Processing Agreements (DPAs) from vendors
-  - Request DPAs from Supabase, OpenAI, Resend if needed for enterprise customers
 
 ---
 
@@ -211,26 +187,26 @@ See: `app/privacy/page.tsx` and `app/terms/page.tsx`
 
 ### Social Accounts
 
-- [ ] Create Twitter account (@authentyc_ai)
-- [ ] Create LinkedIn page
-- [ ] Update social links in Footer.tsx
+- [x] Create Twitter/X account (@AuthentycAI) → https://x.com/AuthentycAI
+- [x] Create LinkedIn page → https://www.linkedin.com/company/authentyc
+- [x] Update social links in Footer.tsx (via constants)
 - [ ] Update social links in email templates
 
 ### ACTUALLY COSTS MONEY
-- [ ] Purchase/verify authentyc.ai domain
+- [x] Purchase/verify authentyc.ai domain
 
 ### Code Quality
 - [x] `npm run build` succeeds with no errors
 - [x] No TypeScript errors
-- [ ] Remove/disable console.log statements
-- [ ] Review all TODO comments in code
+- [x] Remove/disable console.log statements
+- [x] Review all TODO comments in code
 
 ### Security
 - [x] `.env.local` is in `.gitignore`
 - [x] No API keys in source code
-- [ ] Rate limiting tested and working
+- [x] Rate limiting tested and working
 - [x] Input validation reviewed
-- [ ] Check for XSS vulnerabilities
+- [x] Check for XSS vulnerabilities
 - [ ] Review CORS settings
 
 ### SEO & Marketing
@@ -261,20 +237,33 @@ See: `app/privacy/page.tsx` and `app/terms/page.tsx`
 - [ ] Error monitoring active
 - [ ] Billing alerts configured
 
+## Legal Stuff
+
+### Legal Review (HIGHLY RECOMMENDED)
+- [ ] Schedule attorney review of Privacy Policy
+  - Focus: GDPR/CCPA compliance, data retention policies
+  - Budget: $1,500-$3,000 for tech lawyer
+- [ ] Schedule attorney review of Terms of Service
+  - Focus: AI liability, arbitration clause, employment law implications (hiring use case)
+  - Ensure compliance with Delaware law and federal arbitration act
+- [ ] Review state-specific requirements (if targeting specific states)
+  - California: CCPA compliance verified
+  - EU/UK: GDPR compliance for international users
+  - Employment law: EEOC compliance for hiring use case
+
+### Optional Legal Enhancements
+- [ ] Add cookie consent banner (if targeting EU users)
+  - Required for PostHog analytics cookies under GDPR
+  - Library: `react-cookie-consent` or similar
+- [ ] Track terms acceptance version
+  - Add `terms_version` and `terms_accepted_at` to `waitlist_leads` table
+  - Log which version of Terms/Privacy Policy each user accepted
+- [ ] Obtain Data Processing Agreements (DPAs) from vendors
+  - Request DPAs from Supabase, OpenAI, Resend if needed for enterprise customers
+
 ### Legal Compliance (CRITICAL)
 - [x] Legal pages finalized (Privacy Policy + Terms of Service)
-- [ ] Legal email addresses set up (`privacy@authentyc.ai`, `legal@authentyc.ai`)
+- [x] Legal email addresses set up (`hello@`, `privacy@`, `legal@authentyc.ai`) via Lark Suite
 - [ ] Legal review completed OR risk accepted for beta launch
 - [ ] Terms acceptance tracking implemented (optional but recommended)
 - [ ] Cookie consent banner added (if targeting EU users)
-
-### Go/No-Go Decision
-**CANNOT LAUNCH WITHOUT:**
-- Legal email addresses (`privacy@authentyc.ai`, `legal@authentyc.ai`) ← MUST HAVE
-- Privacy Policy & Terms of Service published (DONE ✅)
-- Basic security measures (HTTPS, rate limiting, input validation)
-
-**SHOULD NOT LAUNCH WITHOUT:**
-- Attorney review of legal pages
-- Analytics tracking verified
-- Production testing complete

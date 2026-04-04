@@ -8,20 +8,20 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { analyzeRequestSchema } from '@/lib/utils/validation';
+import { analyzeRequestSchema, MAX_BODY_SIZE, sanitizeUserInput } from '@/lib/utils/validation';
 import { fetchChatGPTShareLink, hashShareUrl } from '@/lib/chatgpt/fetcher';
 import {
   parseChatGPTShareHTML,
   validateParsedConversation,
   parseResponse
 } from '@/lib/chatgpt/parser';
-import { gemini } from '@/lib/openai/client';
-import { buildQuickAnalysisPrompt } from '@/lib/openai/prompts';
+import { createModelWithSystemInstruction } from '@/lib/ai/client';
+import { buildQuickAnalysisPrompt } from '@/lib/ai/prompts';
 import { supabaseServer } from '@/lib/supabase/server';
-import { generatePersonalizedCharacters } from '@/lib/openai/character-generator';
+import { generatePersonalizedCharacters } from '@/lib/ai/character-generator';
 import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
 import type { Category } from '@/components/landing/SimulationResults';
-import { checkRateLimit } from '@/lib/utils/ratelimit';
+import { checkRateLimit, getClientIP } from '@/lib/utils/ratelimit';
 import {getConversationPrompts} from "@/lib/constants/conversation-prompts";
 
 const geminiApiTimeoutMilliseconds = 30000;
@@ -29,15 +29,17 @@ const geminiApiMaxRetries = 3;
 const geminiApiRetryDelayMilliseconds = [1000, 2000, 4000];
 
 async function generateContentWithTimeout(
-  prompt: string,
+  userContent: string,
+  systemInstruction: string,
   timeoutMs: number = geminiApiTimeoutMilliseconds
 ): Promise<any> {
+  const model = createModelWithSystemInstruction(systemInstruction);
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(new Error('Gemini API request timed out'));
     }, timeoutMs);
 
-    gemini.generateContent(prompt)
+    model.generateContent(userContent)
       .then((result) => {
         clearTimeout(timeoutId);
         resolve(result);
@@ -50,15 +52,15 @@ async function generateContentWithTimeout(
 }
 
 async function generateContentWithRetry(
-  prompt: string,
+  userContent: string,
+  systemInstruction: string,
   maxRetries: number = geminiApiMaxRetries
 ): Promise<any> {
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      console.log(`[analyze-chat] Gemini API attempt ${attempt + 1}/${maxRetries}`);
-      const result = await generateContentWithTimeout(prompt);
+      const result = await generateContentWithTimeout(userContent, systemInstruction);
       return result;
     } catch (error: any) {
       lastError = error;
@@ -66,7 +68,6 @@ async function generateContentWithRetry(
 
       if (attempt < maxRetries - 1) {
         const delayMs = geminiApiRetryDelayMilliseconds[attempt] || 1000;
-        console.log(`[analyze-chat] Retrying in ${delayMs}ms...`);
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
     }
@@ -124,7 +125,13 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
   try {
-    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    // Enforce body size limit
+    const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+    if (contentLength > MAX_BODY_SIZE) {
+      return NextResponse.json({ error: 'Request too large' }, { status: 413 });
+    }
+
+    const ipAddress = getClientIP(request);
     const rateLimitMaxRequests = 10;
     const rateLimitWindowMilliseconds = 60 * 60 * 1000;
 
@@ -136,7 +143,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (!rateLimit.allowed) {
-      console.warn('[analyze-chat] Rate limit exceeded for IP:', ipAddress);
+      console.warn('[analyze-chat] Rate limit exceeded');
       return NextResponse.json(
         {
           error: 'Rate limit exceeded. Please try again later.',
@@ -146,9 +153,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse and validate request body
     const body = await request.json();
-    console.log('[analyze-chat] Received request:', { body });
     const { shareUrl, category, manualText } = analyzeRequestSchema.parse(body);
 
     const urlHash = hashShareUrl(shareUrl);
@@ -179,21 +184,11 @@ export async function POST(request: NextRequest) {
 
     // If manual text is provided, use it directly instead of fetching HTML
     if (manualText && manualText.trim()) {
-      console.log('[analyze-chat] Using manual text input, length:', manualText.length);
-      parsed = parseManualText(manualText.trim());
-      console.log('[analyze-chat] Manual text parsed:', {
-        messageCount: parsed.messageCount,
-        hasPersonalityPrompt: parsed.hasPersonalityPrompt,
-        quality: parsed.estimatedQuality
-      });
+      parsed = parseManualText(sanitizeUserInput(manualText.trim()));
     } else {
-      // Fetch ChatGPT share link HTML
-      console.log('[analyze-chat] Fetching share link:', shareUrl);
       const fetchResult = await fetchChatGPTShareLink(shareUrl);
-      console.log('[analyze-chat] Fetch result:', { success: fetchResult.success, error: fetchResult.error, htmlLength: fetchResult.html?.length });
 
       if (!fetchResult.success || !fetchResult.html) {
-        console.error('[analyze-chat] Fetch failed:', fetchResult.error);
         return NextResponse.json(
           { error: fetchResult.error || 'Failed to fetch' },
           { status: 400 }
@@ -207,12 +202,6 @@ export async function POST(request: NextRequest) {
     const validation = await validateParsedConversation(parsed);
 
     if (!validation.valid) {
-      console.error('[analyze-chat] Validation failed:', {
-        reason: validation.reason,
-        messageCount: parsed.messageCount,
-        hasPersonalityPrompt: parsed.hasPersonalityPrompt,
-        quality: parsed.estimatedQuality,
-      });
       return NextResponse.json(
         { error: validation.reason || 'Invalid conversation' },
         { status: 400 }
@@ -228,29 +217,18 @@ export async function POST(request: NextRequest) {
     let assessmentDetails = undefined;
 
     if (lastAssistantMessage) {
-      console.log('[analyze-chat] Extracting completeness rating from last assistant message');
       const parsedResponse = parseResponse(lastAssistantMessage.content);
       completenessRating = parsedResponse.completenessRating;
       assessmentDetails = parsedResponse.assessmentDetails;
-
-      console.log('[analyze-chat] Completeness rating:', completenessRating);
-      if (assessmentDetails) {
-        console.log('[analyze-chat] Assessment rating:', assessmentDetails.rating);
-      }
-    } else {
-      console.warn('[analyze-chat] No assistant message found in conversation');
     }
 
-    // Analyze with Gemini (prompt now fetched from database)
-    const prompt = await buildQuickAnalysisPrompt(parsed);
-    const fullPrompt = `You are a personality analysis expert.\n\n${prompt}`;
-
-    console.log('[analyze-chat] Sending prompt to Gemini, length:', fullPrompt.length);
+    // Analyze with Gemini using structured input (system instruction separated from user data)
+    const { systemInstruction, userContent } = await buildQuickAnalysisPrompt(parsed);
+    const fullSystemInstruction = `You are a personality analysis expert.\n\n${systemInstruction}`;
 
     let result;
     try {
-      result = await generateContentWithRetry(fullPrompt);
-      console.log('[analyze-chat] Got result from Gemini');
+      result = await generateContentWithRetry(userContent, fullSystemInstruction);
     } catch (err: any) {
       console.error('[analyze-chat] Gemini API error:', err);
 
@@ -261,41 +239,29 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      throw new Error(`Gemini API failed: ${err.message}`);
+      throw new Error('AI analysis unavailable. Please try again later.');
     }
 
     const response = await result.response;
-    console.log('[analyze-chat] Response details:', {
-      candidates: response.candidates?.length,
-      promptFeedback: response.promptFeedback,
-      firstCandidate: response.candidates?.[0] ? {
-        finishReason: response.candidates[0].finishReason,
-        safetyRatings: response.candidates[0].safetyRatings,
-        hasContent: !!response.candidates[0].content,
-      } : null
-    });
 
     // Check for blocked content
     if (response.promptFeedback?.blockReason) {
       console.error('[analyze-chat] Prompt blocked:', response.promptFeedback.blockReason);
-      throw new Error(`Content blocked: ${response.promptFeedback.blockReason}`);
+      throw new Error('Content could not be analyzed. Please try a different conversation.');
     }
 
     const analysisText = response.text();
-    console.log('[analyze-chat] Analysis text length:', analysisText?.length);
 
     if (!analysisText) {
       console.error('[analyze-chat] Empty response from Gemini');
-      console.error('[analyze-chat] Full response:', JSON.stringify(response, null, 2));
-      throw new Error('No response from Gemini');
+      throw new Error('AI analysis unavailable. Please try again later.');
     }
 
     let analysis;
     try {
       analysis = JSON.parse(analysisText);
     } catch (parseError) {
-      console.error('[analyze-chat] Invalid JSON from Gemini:', parseError);
-      console.error('[analyze-chat] Raw response:', analysisText.substring(0, 500));
+      console.error('[analyze-chat] Invalid JSON from Gemini');
       return NextResponse.json(
         { error: 'AI returned invalid response. Please try again.' },
         { status: 500 }
@@ -303,10 +269,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (!analysis.overall_vibe || !analysis.insights) {
-      console.error('[analyze-chat] Incomplete analysis structure:', {
-        hasOverallVibe: !!analysis.overall_vibe,
-        hasInsights: !!analysis.insights
-      });
       return NextResponse.json(
         { error: 'Incomplete analysis from AI. Please try again.' },
         { status: 500 }
@@ -372,21 +334,17 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('[analyze-chat] Analysis error:', error);
-    console.error('[analyze-chat] Error stack:', error.stack);
-    console.error('[analyze-chat] Error name:', error.name);
-    console.error('[analyze-chat] Error message:', error.message);
+    console.error('[analyze-chat] Analysis error:', error.message);
 
     if (error.name === 'ZodError') {
-      console.error('[analyze-chat] Zod validation error:', JSON.stringify(error.errors, null, 2));
       return NextResponse.json(
-        { error: 'Invalid request', details: error.errors },
+        { error: 'Invalid request data' },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
-      { error: error.message || 'Failed to analyze. Please try again.' },
+      { error: 'Failed to analyze. Please try again.' },
       { status: 500 }
     );
   }

@@ -5,7 +5,7 @@
  * Falls back to template-based generation on failure
  */
 
-import { gemini } from './client';
+import { createModelWithSystemInstruction } from './client';
 import { buildCharacterGenerationPrompt } from './prompts';
 import { generateSimulatedCharacters, CHARACTER_TEMPLATES } from '@/lib/constants/simulated-characters';
 import type { SimulatedCharacter, Category } from '@/components/landing/SimulationResults';
@@ -39,18 +39,16 @@ export async function generatePersonalizedCharacters(
 ): Promise<SimulatedCharacter[]> {
   const { personalityAnalysis, category, conversationSample } = input;
 
-  // Build prompt (now async - fetches from database)
-  const prompt = await buildCharacterGenerationPrompt(
+  // Build structured prompt (now async - fetches from database)
+  const { systemInstruction, userContent } = await buildCharacterGenerationPrompt(
     personalityAnalysis,
     category,
     conversationSample
   );
 
-  console.log('[character-generator] Generating characters for category:', category);
-  console.log('[character-generator] Prompt length:', prompt.length);
-
-  // Call Gemini API
-  const result = await gemini.generateContent(prompt);
+  // Call Gemini API with structured input (system instruction separated from user data)
+  const model = createModelWithSystemInstruction(systemInstruction);
+  const result = await model.generateContent(userContent);
   const response = await result.response;
 
   // Check for errors
@@ -63,15 +61,12 @@ export async function generatePersonalizedCharacters(
     throw new Error('Empty response from Gemini');
   }
 
-  console.log('[character-generator] Response length:', responseText.length);
-
   // Parse JSON response
   let parsed: GeminiCharacterResponse;
   try {
     parsed = JSON.parse(responseText);
   } catch (parseError) {
-    console.error('[character-generator] JSON parse error:', parseError);
-    console.error('[character-generator] Raw response:', responseText.substring(0, 500));
+    console.error('[character-generator] JSON parse error');
     throw new Error('Invalid JSON response from Gemini');
   }
 
@@ -118,10 +113,6 @@ export async function generatePersonalizedCharacters(
   // Sort by match score descending
   characters.sort((a, b) => b.matchScore - a.matchScore);
 
-  console.log('[character-generator] Successfully generated characters:',
-    characters.map(character => `${character.name} (${character.matchScore}%)`).join(', ')
-  );
-
   return characters;
 }
 
@@ -130,6 +121,5 @@ export async function generatePersonalizedCharacters(
  * This is the existing implementation
  */
 export function generateFallbackCharacters(category: Category): SimulatedCharacter[] {
-  console.log('[character-generator] Using fallback template generation');
   return generateSimulatedCharacters(category);
 }

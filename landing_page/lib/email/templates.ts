@@ -2,9 +2,6 @@
  * Email Templates
  *
  * HTML email templates for waitlist and notifications.
- *
- * TODO: Verify domain (authentyc.ai) and social handles before launch
- * TODO: Consider using React Email or MJML for better templating
  */
 
 import { SOCIAL_LINKS, LAUNCH_COPY, COMPANY_INFO } from '@/lib/constants';
@@ -109,8 +106,7 @@ export function getWelcomeEmailHTML(data: WelcomeEmailData): string {
     <p><strong>In the meantime, you can:</strong></p>
     <ul>
       <li>Follow our journey on Twitter <a href="${SOCIAL_LINKS.TWITTER}">@authentyc_ai</a></li>
-      <!-- TODO: Verify Twitter handle exists before launch -->
-      <li>Share with friends who'd benefit from authentic matching</li>
+<li>Share with friends who'd benefit from authentic matching</li>
     </ul>
 
     <p>Questions? Just reply to this email.</p>
@@ -124,7 +120,78 @@ export function getWelcomeEmailHTML(data: WelcomeEmailData): string {
 
   <div class="footer">
     <p>© ${COMPANY_INFO.YEAR} ${COMPANY_INFO.LEGAL_NAME}</p>
-    <!-- TODO: Verify domain authentyc.ai is configured before launch -->
+<p>
+      <a href="https://authentyc.ai/privacy">Privacy Policy</a> |
+      <a href="https://authentyc.ai/terms">Terms of Service</a>
+    </p>
+  </div>
+</body>
+</html>
+  `.trim();
+}
+
+/**
+ * Email template for duplicate waitlist signup attempts
+ */
+export function getAlreadyOnWaitlistEmailHTML(): string {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're already on the Authentyc waitlist</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      line-height: 1.6;
+      color: #1a1a1a;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .content {
+      padding: 30px 0;
+    }
+    .footer {
+      border-top: 1px solid #e5e7eb;
+      padding: 20px 0;
+      font-size: 14px;
+      color: #6b7280;
+      text-align: center;
+    }
+    a {
+      color: #2D3FE5;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Authentyc</h1>
+  </div>
+
+  <div class="content">
+    <p>Hi there,</p>
+
+    <p>It looks like you tried to join the Authentyc waitlist again — good news, <strong>you're already on it!</strong></p>
+
+    <p>We have your spot saved. We'll email you as soon as we launch invite-only access in ${LAUNCH_COPY.SHORT}.</p>
+
+    <p>In the meantime, follow our journey on <a href="${SOCIAL_LINKS.TWITTER}">Twitter</a> or <a href="${SOCIAL_LINKS.LINKEDIN}">LinkedIn</a>.</p>
+
+    <p>Questions? Just reply to this email.</p>
+
+    <p>— The Authentyc Team</p>
+  </div>
+
+  <div class="footer">
+    <p>&copy; ${COMPANY_INFO.YEAR} ${COMPANY_INFO.LEGAL_NAME}</p>
     <p>
       <a href="https://authentyc.ai/privacy">Privacy Policy</a> |
       <a href="https://authentyc.ai/terms">Terms of Service</a>
