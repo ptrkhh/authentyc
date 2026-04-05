@@ -3,36 +3,68 @@
  *
  * Comprehensive terms covering service usage, AI disclaimers,
  * intellectual property, liability limitations, and dispute resolution.
- * Last reviewed: January 2026
  */
+
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | Authentyc',
+  description: 'Terms of Service for using Authentyc AI personality analysis and matching services.',
+};
 
 export default function TermsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="mb-4">
+        <a href="/" className="text-brand-primary underline text-sm">
+          &larr; Back to Home
+        </a>
+      </div>
+
       <h1 className="text-4xl font-bold mb-8">Terms of Service</h1>
 
-      <div className="prose prose-gray max-w-none space-y-6">
-        <p className="text-gray-600">
-          <strong>Effective Date:</strong> {new Date().toLocaleDateString()}
-          <br />
-          <strong>Last Updated:</strong> {new Date().toLocaleDateString()}
-        </p>
+      <div className="prose prose-invert max-w-none space-y-6">
+        {/* Table of Contents */}
+        <nav className="p-4 bg-dark-850 border border-dark-800 rounded-lg mb-8">
+          <p className="font-semibold mb-2 text-gray-200">Contents</p>
+          <ol className="list-decimal pl-6 space-y-1 text-sm">
+            <li><a href="#acceptance" className="text-brand-primary underline">Acceptance of Terms</a></li>
+            <li><a href="#description" className="text-brand-primary underline">Description of Service</a></li>
+            <li><a href="#ai-disclaimer" className="text-brand-primary underline">AI-Generated Content Disclaimer</a></li>
+            <li><a href="#user-responsibilities" className="text-brand-primary underline">User Responsibilities</a></li>
+            <li><a href="#intellectual-property" className="text-brand-primary underline">Intellectual Property Rights</a></li>
+            <li><a href="#privacy-data" className="text-brand-primary underline">Privacy & Data Usage</a></li>
+            <li><a href="#availability" className="text-brand-primary underline">Service Availability & Support</a></li>
+            <li><a href="#fees" className="text-brand-primary underline">Fees & Payment (Future)</a></li>
+            <li><a href="#termination" className="text-brand-primary underline">Termination</a></li>
+            <li><a href="#disclaimers" className="text-brand-primary underline">Disclaimers of Warranties</a></li>
+            <li><a href="#liability" className="text-brand-primary underline">Limitation of Liability</a></li>
+            <li><a href="#indemnification" className="text-brand-primary underline">Indemnification</a></li>
+            <li><a href="#third-party" className="text-brand-primary underline">Third-Party Links & Services</a></li>
+            <li><a href="#dmca" className="text-brand-primary underline">DMCA & Intellectual Property Claims</a></li>
+            <li><a href="#disputes" className="text-brand-primary underline">Dispute Resolution & Arbitration</a></li>
+            <li><a href="#governing-law" className="text-brand-primary underline">Governing Law & Jurisdiction</a></li>
+            <li><a href="#changes" className="text-brand-primary underline">Changes to These Terms</a></li>
+            <li><a href="#general" className="text-brand-primary underline">General Provisions</a></li>
+            <li><a href="#contact" className="text-brand-primary underline">Contact Information</a></li>
+          </ol>
+        </nav>
 
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
-          <p className="text-sm font-semibold text-yellow-900">IMPORTANT NOTICE</p>
-          <p className="text-sm text-yellow-800 mt-2">
+        <div className="p-4 bg-yellow-900/20 border border-yellow-700/40 rounded-lg mb-6">
+          <p className="text-sm font-semibold text-yellow-400">IMPORTANT NOTICE</p>
+          <p className="text-sm text-yellow-300/80 mt-2">
             These Terms contain a binding arbitration clause and class action waiver in Section 15.
             By using our Service, you agree to resolve disputes through individual arbitration
             rather than court proceedings or class actions.
           </p>
         </div>
 
-        <section>
+        <section id="acceptance">
           <h2 className="text-2xl font-semibold mt-8 mb-4">1. Acceptance of Terms</h2>
           <p>
-            These Terms of Service (&quot;Terms&quot;) constitute a legally binding agreement between you and
-            Authentyc AI, Inc. (&quot;Authentyc&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) regarding your access to and use
-            of our website, services, and applications (collectively, the &quot;Service&quot;).
+            These Terms of Service ("Terms") constitute a legally binding agreement between you and
+            Authentyc AI, Inc. ("Authentyc", "we", "our", or "us") regarding your access to and use
+            of our website, services, and applications (collectively, the "Service").
           </p>
           <p>
             By accessing or using the Service, you acknowledge that you have read, understood, and
@@ -48,7 +80,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="description">
           <h2 className="text-2xl font-semibold mt-8 mb-4">2. Description of Service</h2>
           <p>
             Authentyc provides AI-powered personality analysis and compatibility matching services.
@@ -79,15 +111,15 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="ai-disclaimer">
           <h2 className="text-2xl font-semibold mt-8 mb-4">
             3. AI-Generated Content Disclaimer
           </h2>
 
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg my-4">
-            <p className="font-semibold text-red-900">CRITICAL DISCLAIMER</p>
-            <p className="text-sm text-red-800 mt-2">
-              Authentyc&apos;s personality analyses and match suggestions are generated by artificial
+          <div className="p-4 bg-red-900/20 border border-red-700/40 rounded-lg my-4">
+            <p className="font-semibold text-red-400">CRITICAL DISCLAIMER</p>
+            <p className="text-sm text-red-300/80 mt-2">
+              Authentyc's personality analyses and match suggestions are generated by artificial
               intelligence and are provided FOR ENTERTAINMENT AND EXPERIMENTAL PURPOSES ONLY. They
               are NOT professional advice and should not be used as the sole basis for important
               life decisions.
@@ -150,7 +182,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="user-responsibilities">
           <h2 className="text-2xl font-semibold mt-8 mb-4">4. User Responsibilities</h2>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">4.1 Account & Information Accuracy</h3>
@@ -173,7 +205,7 @@ export default function TermsPage() {
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>
-              You have the legal right to share the content (it&apos;s your conversation or you have
+              You have the legal right to share the content (it's your conversation or you have
               permission)
             </li>
             <li>The content does not violate any third-party rights (privacy, copyright, etc.)</li>
@@ -230,7 +262,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="intellectual-property">
           <h2 className="text-2xl font-semibold mt-8 mb-4">5. Intellectual Property Rights</h2>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">5.1 Ownership of Service</h3>
@@ -264,13 +296,13 @@ export default function TermsPage() {
 
           <h3 className="text-xl font-semibold mt-6 mb-3">5.3 Feedback & Suggestions</h3>
           <p>
-            If you provide feedback, suggestions, or ideas about the Service (&quot;Feedback&quot;), you
+            If you provide feedback, suggestions, or ideas about the Service ("Feedback"), you
             grant Authentyc a perpetual, irrevocable, worldwide, royalty-free license to use,
             modify, and incorporate Feedback into our Service without compensation or attribution.
           </p>
         </section>
 
-        <section>
+        <section id="privacy-data">
           <h2 className="text-2xl font-semibold mt-8 mb-4">6. Privacy & Data Usage</h2>
           <p>
             Your privacy is important to us. Our collection, use, and disclosure of personal
@@ -295,12 +327,12 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        <section>
+        <section id="availability">
           <h2 className="text-2xl font-semibold mt-8 mb-4">7. Service Availability & Support</h2>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">7.1 No Uptime Guarantees</h3>
           <p>
-            The Service is provided on an &quot;as available&quot; basis. We do not guarantee the Service
+            The Service is provided on an "as available" basis. We do not guarantee the Service
             will be available 24/7, uninterrupted, or error-free. We may experience downtime for
             maintenance, upgrades, or due to factors beyond our control (third-party API outages,
             hosting issues, etc.).
@@ -315,22 +347,22 @@ export default function TermsPage() {
           <h3 className="text-xl font-semibold mt-6 mb-3">7.3 Customer Support</h3>
           <p>
             We provide best-effort email support at{' '}
-            <a href="mailto:legal@authentyc.ai" className="text-brand-primary underline">
-              legal@authentyc.ai
+            <a href="mailto:hello@authentyc.ai" className="text-brand-primary underline">
+              hello@authentyc.ai
             </a>
             . We aim to respond within 5 business days but do not guarantee response times or issue
             resolution.
           </p>
         </section>
 
-        <section>
+        <section id="fees">
           <h2 className="text-2xl font-semibold mt-8 mb-4">8. Fees & Payment (Future)</h2>
           <p>
             The Service is currently <strong>free during the waitlist/beta phase</strong>. We may
             introduce paid plans or premium features in the future. If we do:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>We will provide at least 30 days&apos; notice before charging existing users</li>
+            <li>We will provide at least 30 days' notice before charging existing users</li>
             <li>Pricing will be clearly disclosed on our website</li>
             <li>
               You will have the option to opt-out and delete your account before any charges occur
@@ -339,7 +371,7 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        <section>
+        <section id="termination">
           <h2 className="text-2xl font-semibold mt-8 mb-4">9. Termination</h2>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">9.1 Termination by You</h3>
@@ -378,12 +410,12 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        <section>
+        <section id="disclaimers">
           <h2 className="text-2xl font-semibold mt-8 mb-4">10. Disclaimers of Warranties</h2>
           <p>
             <strong>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SERVICE IS PROVIDED &quot;AS IS&quot; AND &quot;AS
-              AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SERVICE IS PROVIDED "AS IS" AND "AS
+              AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
             </strong>
           </p>
           <p>
@@ -411,7 +443,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="liability">
           <h2 className="text-2xl font-semibold mt-8 mb-4">11. Limitation of Liability</h2>
           <p>
             <strong>
@@ -424,7 +456,7 @@ export default function TermsPage() {
             </strong>
           </p>
           <p>
-            In no event shall Authentyc&apos;s total liability to you for all claims arising out of or
+            In no event shall Authentyc's total liability to you for all claims arising out of or
             related to these Terms or the Service exceed $100 USD or the amount you paid to us in
             the 12 months preceding the claim (whichever is greater).
           </p>
@@ -460,12 +492,12 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="indemnification">
           <h2 className="text-2xl font-semibold mt-8 mb-4">12. Indemnification</h2>
           <p>
             You agree to indemnify, defend, and hold harmless Authentyc and its officers,
             directors, employees, agents, and affiliates from and against any claims, liabilities,
-            damages, losses, costs, or expenses (including reasonable attorneys&apos; fees) arising out
+            damages, losses, costs, or expenses (including reasonable attorneys' fees) arising out
             of or related to:
           </p>
           <ul className="list-disc pl-6 space-y-2">
@@ -487,7 +519,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="third-party">
           <h2 className="text-2xl font-semibold mt-8 mb-4">13. Third-Party Links & Services</h2>
           <p>
             The Service may contain links to third-party websites, services, or content (e.g.,
@@ -496,13 +528,13 @@ export default function TermsPage() {
             terms and privacy policies.
           </p>
           <p>
-            Specifically, when you share ChatGPT conversation links, you are subject to OpenAI&apos;s
+            Specifically, when you share ChatGPT conversation links, you are subject to OpenAI's
             Terms of Service and Sharing Policy. Ensure you have the right to share such
             conversations.
           </p>
         </section>
 
-        <section>
+        <section id="dmca">
           <h2 className="text-2xl font-semibold mt-8 mb-4">
             14. DMCA & Intellectual Property Claims
           </h2>
@@ -530,14 +562,14 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        <section>
+        <section id="disputes">
           <h2 className="text-2xl font-semibold mt-8 mb-4">
             15. Dispute Resolution & Arbitration
           </h2>
 
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg my-4">
-            <p className="font-semibold text-yellow-900">BINDING ARBITRATION CLAUSE</p>
-            <p className="text-sm text-yellow-800 mt-2">
+          <div className="p-4 bg-yellow-900/20 border border-yellow-700/40 rounded-lg my-4">
+            <p className="font-semibold text-yellow-400">BINDING ARBITRATION CLAUSE</p>
+            <p className="text-sm text-yellow-300/80 mt-2">
               This section contains a binding arbitration agreement and class action waiver. It
               affects your legal rights. Please read carefully.
             </p>
@@ -557,7 +589,7 @@ export default function TermsPage() {
           <p>
             If we cannot resolve the dispute informally, you and Authentyc agree that any claim,
             dispute, or controversy arising out of or relating to these Terms or the Service
-            (collectively, &quot;Disputes&quot;) will be resolved by{' '}
+            (collectively, "Disputes") will be resolved by{' '}
             <strong>binding individual arbitration</strong> administered by the American
             Arbitration Association (AAA) under its Consumer Arbitration Rules, rather than in
             court.
@@ -574,7 +606,7 @@ export default function TermsPage() {
               or via videoconference/telephone if you prefer
             </li>
             <li>
-              <strong>Costs:</strong> Each party pays their own attorneys&apos; fees. Authentyc will pay
+              <strong>Costs:</strong> Each party pays their own attorneys' fees. Authentyc will pay
               AAA filing fees for claims under $10,000
             </li>
             <li>
@@ -582,7 +614,7 @@ export default function TermsPage() {
               the Federal Arbitration Act and Delaware law (excluding conflict-of-law principles)
             </li>
             <li>
-              <strong>Arbitrator&apos;s Authority:</strong> The arbitrator may award the same relief as
+              <strong>Arbitrator's Authority:</strong> The arbitrator may award the same relief as
               a court, but only to the individual party seeking relief
             </li>
           </ul>
@@ -617,12 +649,12 @@ export default function TermsPage() {
             <a href="mailto:legal@authentyc.ai" className="text-brand-primary underline">
               legal@authentyc.ai
             </a>{' '}
-            with subject line &quot;Arbitration Opt-Out&quot; and including your name and email address. If
+            with subject line "Arbitration Opt-Out" and including your name and email address. If
             you opt out, all other terms still apply, but disputes will be resolved in court.
           </p>
         </section>
 
-        <section>
+        <section id="governing-law">
           <h2 className="text-2xl font-semibold mt-8 mb-4">16. Governing Law & Jurisdiction</h2>
           <p>
             These Terms are governed by the laws of the State of Delaware, United States, without
@@ -633,14 +665,13 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="changes">
           <h2 className="text-2xl font-semibold mt-8 mb-4">17. Changes to These Terms</h2>
           <p>
             We may update these Terms from time to time to reflect changes in our Service, legal
             requirements, or business practices. We will notify you of material changes by:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Updating the &quot;Last Updated&quot; date at the top of these Terms</li>
             <li>Sending an email to registered users (for material changes)</li>
             <li>Displaying a prominent notice on our website</li>
           </ul>
@@ -651,7 +682,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="general">
           <h2 className="text-2xl font-semibold mt-8 mb-4">18. General Provisions</h2>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">18.1 Entire Agreement</h3>
@@ -665,7 +696,7 @@ export default function TermsPage() {
           <p>
             If any provision of these Terms is found invalid or unenforceable, the remaining
             provisions will remain in full force and effect, and the invalid provision will be
-            modified to reflect the parties&apos; intent to the maximum extent permitted by law.
+            modified to reflect the parties' intent to the maximum extent permitted by law.
           </p>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">18.3 Waiver</h3>
@@ -686,7 +717,8 @@ export default function TermsPage() {
           <p>
             We are not liable for delays or failures in performance due to causes beyond our
             reasonable control, including acts of God, natural disasters, war, terrorism, labor
-            disputes, third-party service outages (AWS, OpenAI, etc.), or government restrictions.
+            disputes, third-party service outages, internet infrastructure failures, or government
+            restrictions.
           </p>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">18.6 Export Controls</h3>
@@ -698,7 +730,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section>
+        <section id="contact">
           <h2 className="text-2xl font-semibold mt-8 mb-4">19. Contact Information</h2>
           <p>If you have questions or concerns about these Terms, please contact us:</p>
           <div className="mt-4">
@@ -717,24 +749,13 @@ export default function TermsPage() {
           </div>
         </section>
 
-        <div className="mt-12 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <p className="text-sm text-gray-600">
-            <strong>Legal Review Recommended:</strong> These Terms were drafted based on industry
-            best practices and standard legal protections for AI/SaaS products. However, they
-            should be reviewed by a licensed attorney familiar with technology law, AI liability,
-            and your specific jurisdiction before launch. Consider additional provisions for
-            employment discrimination (if hiring use case), GDPR compliance (if targeting EU
-            users), or sector-specific regulations.
-          </p>
-        </div>
-
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-900">
+        <div className="mt-4 p-4 bg-brand-primary/10 border border-brand-primary/20 rounded-lg">
+          <p className="text-sm text-emerald-300">
             <strong>User-Friendly Summary (Not Legally Binding):</strong>
           </p>
-          <ul className="text-sm text-blue-800 mt-2 space-y-1 list-disc pl-6">
+          <ul className="text-sm text-emerald-300/80 mt-2 space-y-1 list-disc pl-6">
             <li>Our AI personality analyses are for entertainment/experimental purposes only</li>
-            <li>Don&apos;t use our Service as the sole basis for important life decisions</li>
+            <li>Don't use our Service as the sole basis for important life decisions</li>
             <li>
               You own your data, but we can use aggregated insights to improve our algorithms
             </li>
@@ -742,7 +763,7 @@ export default function TermsPage() {
               Disputes are resolved through individual arbitration, not class action lawsuits
             </li>
             <li>
-              We&apos;re not liable for decisions you make based on AI-generated insights (hiring,
+              We're not liable for decisions you make based on AI-generated insights (hiring,
               dating, etc.)
             </li>
             <li>Read the full Terms above for complete legal details</li>
