@@ -20,19 +20,26 @@ import { buildQuickAnalysisPrompt } from '@/lib/ai/prompts';
 import { supabaseServer } from '@/lib/supabase/server';
 import { generatePersonalizedCharacters } from '@/lib/ai/character-generator';
 import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
-import type { Category } from '@/components/landing/SimulationResults';
 import { checkRateLimit, getClientIP } from '@/lib/utils/ratelimit';
-import {getConversationPrompts} from "@/lib/constants/conversation-prompts";
 
 const geminiApiTimeoutMilliseconds = 30000;
 const geminiApiMaxRetries = 3;
 const geminiApiRetryDelayMilliseconds = [1000, 2000, 4000];
 
+interface GeminiResponse {
+  promptFeedback?: { blockReason?: string };
+  text: () => string;
+}
+
+interface GeminiResult {
+  response: GeminiResponse;
+}
+
 async function generateContentWithTimeout(
   userContent: string,
   systemInstruction: string,
   timeoutMs: number = geminiApiTimeoutMilliseconds
-): Promise<any> {
+): Promise<GeminiResult> {
   const model = createModelWithSystemInstruction(systemInstruction);
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
@@ -55,16 +62,16 @@ async function generateContentWithRetry(
   userContent: string,
   systemInstruction: string,
   maxRetries: number = geminiApiMaxRetries
-): Promise<any> {
+): Promise<GeminiResult> {
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const result = await generateContentWithTimeout(userContent, systemInstruction);
       return result;
-    } catch (error: any) {
-      lastError = error;
-      console.warn(`[analyze-chat] Gemini API attempt ${attempt + 1} failed:`, error.message);
+    } catch (error: unknown) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      console.warn(`[analyze-chat] Gemini API attempt ${attempt + 1} failed:`, lastError.message);
 
       if (attempt < maxRetries - 1) {
         const delayMs = geminiApiRetryDelayMilliseconds[attempt] || 1000;
@@ -229,10 +236,10 @@ export async function POST(request: NextRequest) {
     let result;
     try {
       result = await generateContentWithRetry(userContent, fullSystemInstruction);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[analyze-chat] Gemini API error:', err);
 
-      if (err.message === 'Gemini API request timed out') {
+      if (err instanceof Error && err.message === 'Gemini API request timed out') {
         return NextResponse.json(
           { error: 'Analysis timed out. Please try again.' },
           { status: 504 }
@@ -260,7 +267,7 @@ export async function POST(request: NextRequest) {
     let analysis;
     try {
       analysis = JSON.parse(analysisText);
-    } catch (parseError) {
+    } catch {
       console.error('[analyze-chat] Invalid JSON from Gemini');
       return NextResponse.json(
         { error: 'AI returned invalid response. Please try again.' },
@@ -333,10 +340,10 @@ export async function POST(request: NextRequest) {
         used_fallback: usedFallback,
       },
     });
-  } catch (error: any) {
-    console.error('[analyze-chat] Analysis error:', error.message);
+  } catch (error: unknown) {
+    console.error('[analyze-chat] Analysis error:', error instanceof Error ? error.message : error);
 
-    if (error.name === 'ZodError') {
+    if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
         { error: 'Invalid request data' },
         { status: 400 }

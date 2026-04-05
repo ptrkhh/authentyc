@@ -88,12 +88,11 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
     watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      interests: getDefaultInterests(preselectedCategory) as any,
+      interests: getDefaultInterests(preselectedCategory) as FormData['interests'],
     },
   });
 
@@ -199,14 +198,15 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
         waitlist_position: result.position,
         time_spent_seconds: timeSpent,
       });
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       const timeSpent = formStartTime ? Math.round((Date.now() - formStartTime) / 1000) : 0;
 
       // Track form submission error
       trackEvent('waitlist_form_error', {
-        error_message: err.message,
+        error_message: errorMessage,
         preselected_category: preselectedCategory || 'none',
         time_spent_seconds: timeSpent,
       });
@@ -218,11 +218,11 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>✓ You're on the list!</DialogTitle>
+            <DialogTitle>✓ You&apos;re on the list!</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p>
-              Thanks for joining. You're #{position} on the waitlist. We'll send you an invite as
+              Thanks for joining. You&apos;re #{position} on the waitlist. We&apos;ll send you an invite as
               soon as we launch in {LAUNCH_COPY.SHORT}.
             </p>
             <p className="text-sm text-gray-600">
@@ -367,7 +367,7 @@ export function WaitlistForm({ open, onOpenChange, preselectedCategory }: Waitli
           </Button>
 
           <p className="text-xs text-gray-500 text-center !mt-2 sm:!mt-4">
-            By joining, you'll get invite-only early access, updates on our launch progress, and
+            By joining, you&apos;ll get invite-only early access, updates on our launch progress, and
             the chance to shape the product.
           </p>
         </form>

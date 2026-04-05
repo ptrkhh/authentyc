@@ -34,7 +34,7 @@ export function validateShareLinkFormat(url: string): {
     }
 
     return { valid: true };
-  } catch (error) {
+  } catch {
     return {
       valid: false,
       error: 'Invalid URL format',

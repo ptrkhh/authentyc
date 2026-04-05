@@ -161,13 +161,13 @@ export async function POST(request: NextRequest) {
         if (!emailResult.success) {
           console.error('[waitlist] Email sending failed:', emailResult.error);
         }
-      } catch (emailError: any) {
+      } catch (emailError: unknown) {
         console.error('[waitlist] Email error:', emailError);
         await supabaseServer
           .from('email_jobs')
           .update({
             status: 'failed',
-            error_message: emailError.message,
+            error_message: emailError instanceof Error ? emailError.message : String(emailError),
           })
           .eq('id', emailJobId);
       }
@@ -178,10 +178,10 @@ export async function POST(request: NextRequest) {
       message: 'Successfully joined waitlist',
       position,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Waitlist error:', error);
 
-    if (error.name === 'ZodError') {
+    if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
         { error: 'Invalid form data' },
         { status: 400 }

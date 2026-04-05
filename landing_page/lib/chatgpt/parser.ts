@@ -87,7 +87,7 @@ function isConversationMessage(str: string): boolean {
 /**
  * Recursively extract message-like strings from parsed JSON structure
  */
-function extractMessagesFromJSON(obj: any, depth: number = 0): string[] {
+function extractMessagesFromJSON(obj: unknown, depth: number = 0): string[] {
     if (depth > 20) return []; // Prevent infinite recursion
 
     const found: string[] = [];
@@ -99,8 +99,9 @@ function extractMessagesFromJSON(obj: any, depth: number = 0): string[] {
             found.push(...extractMessagesFromJSON(item, depth + 1));
         }
     } else if (typeof obj === 'object' && obj !== null) {
-        for (const key in obj) {
-            found.push(...extractMessagesFromJSON(obj[key], depth + 1));
+        const record = obj as Record<string, unknown>;
+        for (const key in record) {
+            found.push(...extractMessagesFromJSON(record[key], depth + 1));
         }
     }
 
@@ -118,7 +119,7 @@ async function debugSaveHTML(html: string, filename: string): Promise<void> {
         const {join} = await import('path');
         const filePath = join(process.cwd(), filename);
         await writeFile(filePath, html, 'utf-8');
-    } catch (error) {
+    } catch {
         // Debug file save failed — not critical
     }
 }
@@ -151,11 +152,8 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
 
 
                 const conversationMessages: string[] = [];
-                let processedCount = 0;
-                let filteredOutCount = 0;
 
                 for (const match of stringMatches) {
-                    processedCount++;
                     const unescaped = unescapeString(match[1]);
 
                     // Check if this is a large JSON payload containing messages
@@ -164,16 +162,14 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
                             const parsed = JSON.parse(unescaped);
                             const extractedMessages = extractMessagesFromJSON(parsed);
                             conversationMessages.push(...extractedMessages);
-                            filteredOutCount++;
                             continue;
-                        } catch (e) {
+                        } catch {
                             // Not valid JSON, treat as regular string
                         }
                     }
 
                     // Filter out technical/metadata strings
                     if (isTechnicalString(unescaped)) {
-                        filteredOutCount++;
                         continue;
                     }
 
@@ -237,18 +233,6 @@ function findFirstMismatchPosition(stringA: string, stringB: string): number {
 }
 
 /**
- * Extract context around a specific position for debugging
- */
-function getContextAroundPosition(text: string, position: number, contextLength: number = 50): string {
-    const start = Math.max(0, position - contextLength);
-    const end = Math.min(text.length, position + contextLength);
-    const before = text.substring(start, position);
-    const at = text[position] || '[END]';
-    const after = text.substring(position + 1, end);
-    return `...${before}[→${at}←]${after}...`;
-}
-
-/**
  * Validate that the first message matches exactly one of the predefined prompts
  */
 export async function validatePromptExactMatch(parsed: ParsedConversation): Promise<{
@@ -272,7 +256,6 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
     const userPrompt = firstUserMessage.content;
     debugSaveHTML(userPrompt, 'prompt_user.txt');
 
-    let matchedPromptCategory: string | undefined;
     let detailedMismatchReason: string | undefined;
 
     const matchesPrompt = conversationPrompts.some((prompt) => {
@@ -286,8 +269,6 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
             if (mismatchPos !== -1 && !detailedMismatchReason) {
                 detailedMismatchReason = `Length: ${userPrompt.length} vs ${prompt.prompt.length} (diff: ${lengthDiff}). Mismatch at position ${mismatchPos}.`;
             }
-        } else {
-            matchedPromptCategory = prompt.category;
         }
 
         return isMatch;

@@ -21,10 +21,10 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-2xl font-semibold mt-8 mb-4">1. Introduction</h2>
           <p>
-            Authentyc AI, Inc. ("Authentyc", "we", "our", or "us") is committed to protecting
+            Authentyc AI, Inc. (&quot;Authentyc&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting
             your privacy. This Privacy Policy explains how we collect, use, store, and disclose
             your personal information when you use our website and services (collectively, the
-            "Service"). By using our Service, you agree to the collection and use of information
+            &quot;Service&quot;). By using our Service, you agree to the collection and use of information
             in accordance with this policy.
           </p>
           <p>
@@ -318,7 +318,7 @@ export default function PrivacyPage() {
 
           <h3 className="text-xl font-semibold mt-6 mb-3">5.4 Analytics Data</h3>
           <p>
-            PostHog analytics data is retained according to PostHog's retention policy (typically 7
+            PostHog analytics data is retained according to PostHog&apos;s retention policy (typically 7
             years for free tier, configurable for paid plans). This data is anonymized and cannot
             be linked back to your email address.
           </p>
@@ -423,7 +423,7 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-6 space-y-2">
             <li>Right to know what personal information is collected, used, and shared</li>
             <li>Right to delete personal information (with certain exceptions)</li>
-            <li>Right to opt-out of the "sale" of personal information (we do not sell data)</li>
+            <li>Right to opt-out of the &quot;sale&quot; of personal information (we do not sell data)</li>
             <li>Right to non-discrimination for exercising your CCPA rights</li>
           </ul>
 
@@ -435,7 +435,7 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-6 space-y-2">
             <li>Right to access your personal data</li>
             <li>Right to rectification of inaccurate data</li>
-            <li>Right to erasure ("right to be forgotten")</li>
+            <li>Right to erasure (&quot;right to be forgotten&quot;)</li>
             <li>Right to restrict processing</li>
             <li>Right to data portability</li>
             <li>Right to object to processing</li>
@@ -458,7 +458,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mt-8 mb-4">9. Children's Privacy</h2>
+          <h2 className="text-2xl font-semibold mt-8 mb-4">9. Children&apos;s Privacy</h2>
           <p>
             Our Service is <strong>not intended for children under 18</strong>. We do not knowingly
             collect personal information from children under 18. If you are a parent or guardian
@@ -493,7 +493,7 @@ export default function PrivacyPage() {
             material changes by:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Updating the "Last Updated" date at the top of this policy</li>
+            <li>Updating the &quot;Last Updated&quot; date at the top of this policy</li>
             <li>Sending an email to registered users (if material changes affect your rights)</li>
             <li>Displaying a prominent notice on our website</li>
           </ul>

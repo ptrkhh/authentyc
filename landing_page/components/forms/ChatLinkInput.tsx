@@ -59,7 +59,7 @@ export function ChatLinkInput({ onSubmit, loading }: ChatLinkInputProps) {
       </Button>
 
       <p className="text-sm text-gray-500 text-center">
-        Don't have a shared link?{' '}
+        Don&apos;t have a shared link?{' '}
         <a href="#" className="text-brand-primary underline">
           Click here for instructions
         </a>

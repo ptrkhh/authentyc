@@ -30,7 +30,7 @@ export function initPostHog() {
 /**
  * Track custom event
  */
-export function trackEvent(eventName: string, properties?: Record<string, any>) {
+export function trackEvent(eventName: string, properties?: Record<string, unknown>) {
   if (typeof window !== 'undefined') {
     posthog.capture(eventName, properties);
   }

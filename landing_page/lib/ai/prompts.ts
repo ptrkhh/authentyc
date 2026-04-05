@@ -13,7 +13,7 @@
 import { ParsedConversation } from '../chatgpt/parser';
 import { CHARACTER_TEMPLATES } from '@/lib/constants/simulated-characters';
 import type { Category, SimulatedCharacter } from '@/components/landing/SimulationResults';
-import { getPrompt, replacePlaceholders, trackPromptUsage } from '@/lib/prompts/service';
+import { getPrompt, replacePlaceholders } from '@/lib/prompts/service';
 import { sanitizeUserInput } from '@/lib/utils/validation';
 
 /**

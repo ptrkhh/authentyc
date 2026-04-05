@@ -22,7 +22,7 @@ export async function GET() {
       success: true,
       count: count || 0,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Waitlist count error:', error);
 
     return NextResponse.json(

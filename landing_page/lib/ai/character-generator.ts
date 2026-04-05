@@ -65,7 +65,7 @@ export async function generatePersonalizedCharacters(
   let parsed: GeminiCharacterResponse;
   try {
     parsed = JSON.parse(responseText);
-  } catch (parseError) {
+  } catch {
     console.error('[character-generator] JSON parse error');
     throw new Error('Invalid JSON response from Gemini');
   }

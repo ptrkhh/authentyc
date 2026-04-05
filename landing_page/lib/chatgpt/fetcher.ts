@@ -59,7 +59,7 @@ export async function fetchChatGPTShareLink(shareUrl: string): Promise<FetchResu
         signal: controller.signal,
       });
       clearTimeout(timeoutId);
-    } catch (fetchError: any) {
+    } catch (fetchError: unknown) {
       clearTimeout(timeoutId);
       throw fetchError;
     }
@@ -91,14 +91,14 @@ export async function fetchChatGPTShareLink(shareUrl: string): Promise<FetchResu
     }
 
     return { success: true, html, statusCode: 200 };
-  } catch (error: any) {
+  } catch (error: unknown) {
 
     let errorMessage = 'Network error';
-    if (error.name === 'AbortError') {
+    if (error instanceof Error && error.name === 'AbortError') {
       errorMessage = 'Request timed out after 10 seconds. The ChatGPT share link may be slow to respond.';
-    } else if (error.message.includes('fetch failed')) {
+    } else if (error instanceof Error && error.message.includes('fetch failed')) {
       errorMessage = 'Unable to connect to ChatGPT. This may be due to network restrictions or the share link being private. Please ensure the link is publicly accessible.';
-    } else {
+    } else if (error instanceof Error) {
       errorMessage = `Network error: ${error.message}`;
     }
 

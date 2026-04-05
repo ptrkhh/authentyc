@@ -14,23 +14,23 @@ import { VARIANTS } from '@/lib/animations/constants';
 const STEPS = [
   {
     number: 1,
-    title: 'Select & Create',
+    title: 'Build Your Profile',
     description:
-      'Choose your category (hiring, dating, or co-founder matching) and create your basic profile.',
+      'Grab a prompt, drop it into ChatGPT, and share the link. Three quick steps and your personality profile writes itself.',
     icon: '🎯',
   },
   {
     number: 2,
-    title: 'Share Your Profile',
+    title: 'Match on Substance',
     description:
-      'Copy our specialized prompt, paste it into ChatGPT, and it analyzes your chat history to create an authentic personality profile. Review your profile, then share the ChatGPT conversation link with us.',
+      'Your profile captures how you actually think and communicate, drawn from a real conversation. That depth is what drives every match.',
     icon: '📤',
   },
   {
     number: 3,
-    title: 'Get Matched & Connect',
+    title: 'Connect with Confidence',
     description:
-      "We analyze compatibility between you and others in your category. When there's strong compatibility + mutual interest, we connect you.",
+      'See exactly why you clicked: shared values, communication style, sense of humor. Walk into every first conversation already knowing what you have in common.',
     icon: '🤝',
   },
 ];
@@ -45,7 +45,7 @@ export function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          How It <GradientText>Works</GradientText>
+          From Conversation to <GradientText>Connection</GradientText>
         </motion.h2>
 
         <motion.div

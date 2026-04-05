@@ -71,7 +71,7 @@ export function SolutionSection() {
             </motion.ul>
 
             <p className="text-gray-400 mt-8 text-base">
-              All from conversations they've already had—no extra hoops, no performance pressure.
+              All from conversations they&apos;ve already had—no extra hoops, no performance pressure.
             </p>
           </motion.div>
 

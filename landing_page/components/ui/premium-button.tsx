@@ -25,7 +25,6 @@ export function PremiumButton({
   children,
   onClick,
   size = 'md',
-  variant = 'primary',
   className = '',
 }: PremiumButtonProps) {
   return (
