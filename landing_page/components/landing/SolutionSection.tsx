@@ -1,103 +1,186 @@
 /**
- * Solution Section - Dark Design
+ * Solution Section - Hybrid Design
  *
- * Explains the Authentyc approach with benefits checklist.
- * Updated with premium design system and animations.
+ * Centered layout with three highlighted traits in frosted pills and a
+ * frosted glass tag cloud showing the breadth of personality signals
+ * Authentyc detects. Dark theme consistent with the rest of the site.
  */
 
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { GradientText } from '@/components/ui/gradient-text';
 import { VARIANTS } from '@/lib/animations/constants';
 
-const INSIGHTS = [
-  'Problem-solving patterns',
-  'Communication clarity',
+const HIGHLIGHTED_TRAITS = [
+  'Communication style',
   'Emotional intelligence',
-  'Learning velocity',
-  'Collaboration style',
-  'Authentic values & priorities',
+  'Values & priorities',
 ];
+
+const TAG_CLOUD_SIGNALS = [
+  'humor & wit',
+  'conflict resolution',
+  'empathy',
+  'risk tolerance',
+  'values alignment',
+  'adaptability',
+  'decision-making',
+  'collaboration style',
+  'clarity under pressure',
+  'vulnerability',
+];
+
+const TAG_STYLE = 'text-sm text-gray-300';
+
+const TAG_STAGGER_DELAY_SECONDS = 0.05;
+const TAG_CLOUD_BASE_DELAY_SECONDS = 0.3;
+
+function CheckIcon() {
+  return (
+    <svg
+      className="w-5 h-5 text-brand-primary mr-2 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+    >
+      <path
+        fillRule="evenodd"
+        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+function AnimatedChevronDown() {
+  return (
+    <motion.svg
+      className="w-5 h-5 mx-auto mt-2 text-brand-primary/60"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      animate={{ y: [0, 6, 0] }}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </motion.svg>
+  );
+}
 
 export function SolutionSection() {
   return (
     <section className="relative py-36 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="font-display text-4xl lg:text-mega font-bold mb-6">
-              Reveal <GradientText>Authentic Patterns</GradientText>
-            </h2>
+      <div className="max-w-5xl mx-auto text-center">
+        {/* Headline */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="font-display text-5xl lg:text-hero font-bold mb-6">
+            Reveal <GradientText>Authentic Patterns</GradientText>
+          </h2>
 
-            <p className="text-lg lg:text-xl text-gray-300 mb-8 leading-relaxed">
-              Analyze real conversations to see how someone actually thinks and communicates. No performance, no rehearsal.
+          <p className="text-lg lg:text-xl text-gray-300 mb-12 leading-relaxed max-w-2xl mx-auto">
+            Analyze real conversations to see how someone actually thinks and
+            communicates. No performance, no rehearsal.
+          </p>
+        </motion.div>
+
+        {/* Unified frosted glass card with radial glow */}
+        <div className="relative">
+          {/* Radial glow behind the card */}
+          <div
+            className="absolute -inset-8 rounded-3xl opacity-30 blur-2xl pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(ellipse at center, var(--brand-primary-glow) 0%, transparent 70%)',
+            }}
+          />
+
+          <motion.div
+            className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl
+              px-8 py-8 md:px-12 md:py-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            {/* Section label */}
+            <p className="text-sm text-gray-400 uppercase tracking-widest mb-6">
+              Core signals we analyze
             </p>
 
-            <h3 className="text-xl font-semibold mb-6 text-white">See the real person:</h3>
-
-            <motion.ul
-              className="space-y-4"
+            {/* Three highlighted traits as frosted pills */}
+            <motion.div
+              className="flex flex-wrap justify-center gap-4 mb-8"
               variants={VARIANTS.stagger}
               initial="initial"
               whileInView="animate"
               viewport={{ once: true }}
             >
-              {INSIGHTS.map((item) => (
-                <motion.li
-                  key={item}
-                  className="flex items-start"
+              {HIGHLIGHTED_TRAITS.map((trait) => (
+                <motion.div
+                  key={trait}
+                  className="flex items-center text-white text-lg font-medium
+                    bg-white/5 border border-white/10 rounded-full px-5 py-2.5"
                   variants={VARIANTS.fadeIn}
                 >
-                  <svg
-                    className="w-6 h-6 text-brand-primary mr-4 mt-0.5 flex-shrink-0"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-gray-300 text-lg">{item}</span>
-                </motion.li>
+                  <CheckIcon />
+                  {trait}
+                </motion.div>
               ))}
-            </motion.ul>
+            </motion.div>
 
-            <p className="text-gray-400 mt-8 text-base">
-              All from conversations they&apos;ve already had—no extra hoops, no performance pressure.
-            </p>
-          </motion.div>
-
-          {/* Analyzer Screenshot */}
-          <motion.div
-            className="h-96 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-transparent
-              border border-white/10 flex items-center justify-center relative overflow-hidden group"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-transparent
-              opacity-50 group-hover:opacity-70 transition-opacity duration-700" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
-            {/* Screenshot */}
-            <div className="relative z-10 w-full h-full p-6">
-              <Image
-                src="https://epdjtermjtfijzmhxzoo.supabase.co/storage/v1/object/public/Public/screenshot-analyzer.png"
-                alt="Chat analyzer showing personality insights and compatibility matches"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
-              />
+            {/* Tag cloud */}
+            <div className="flex flex-wrap justify-center items-baseline gap-x-6 gap-y-3">
+              {TAG_CLOUD_SIGNALS.map((signal, index) => (
+                <motion.span
+                  key={signal}
+                  className={TAG_STYLE}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    delay:
+                      TAG_CLOUD_BASE_DELAY_SECONDS +
+                      index * TAG_STAGGER_DELAY_SECONDS,
+                  }}
+                >
+                  {signal}
+                </motion.span>
+              ))}
             </div>
+
+            {/* "Dozens more" at the bottom */}
+            <motion.p
+              className="text-gray-500 text-sm mt-6 tracking-wide"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                delay:
+                  TAG_CLOUD_BASE_DELAY_SECONDS +
+                  TAG_CLOUD_SIGNALS.length * TAG_STAGGER_DELAY_SECONDS,
+              }}
+            >
+              &hellip; and dozens more
+            </motion.p>
           </motion.div>
         </div>
+
+        {/* Transitional CTA bridging to HowItWorks */}
+        <motion.div
+          className="mt-10 text-gray-400 text-base"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+        >
+          <p>Here&apos;s how it works</p>
+          <AnimatedChevronDown />
+        </motion.div>
       </div>
     </section>
   );
