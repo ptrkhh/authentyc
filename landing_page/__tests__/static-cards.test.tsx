@@ -1,0 +1,63 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+
+jest.mock('framer-motion', () => {
+  const ReactLib = require('react');
+  const passthrough =
+    (tag: string) =>
+    ({
+      children,
+      whileHover,
+      whileTap,
+      whileInView,
+      viewport,
+      variants,
+      initial,
+      animate,
+      exit,
+      transition,
+      ...rest
+    }: any) =>
+      ReactLib.createElement(tag, rest, children);
+  return {
+    __esModule: true,
+    motion: new Proxy({}, { get: (_t, tag) => passthrough(String(tag)) }),
+    AnimatePresence: ({ children }: any) =>
+      ReactLib.createElement(ReactLib.Fragment, null, children),
+  };
+});
+
+import { SurfaceCard } from '@/components/ui/surface-card';
+import { ProblemSection } from '@/components/landing/ProblemSection';
+import { HowItWorks } from '@/components/landing/HowItWorks';
+
+// framer-motion's whileHover gesture is not observable in jsdom, so we assert on
+// the hover-border class — gated on the same `interactive` flag — as its proxy.
+const HOVER_BORDER = 'hover:border-[var(--surface-highlight)]';
+
+describe('SurfaceCard interactive prop', () => {
+  it('is static by default (no clickable-looking hover border)', () => {
+    const { container } = render(<SurfaceCard>content</SurfaceCard>);
+    const root = container.firstChild as HTMLElement;
+    expect(root.className).not.toContain(HOVER_BORDER);
+  });
+
+  it('shows the hover border only when interactive', () => {
+    const { container } = render(<SurfaceCard interactive>content</SurfaceCard>);
+    const root = container.firstChild as HTMLElement;
+    expect(root.className).toContain(HOVER_BORDER);
+  });
+});
+
+describe('Informational landing cards are static', () => {
+  it('ProblemSection has no hover affordance (no hover border, no icon hover-glow)', () => {
+    const { container } = render(<ProblemSection />);
+    expect(container.innerHTML).not.toContain(HOVER_BORDER);
+    expect(container.innerHTML).not.toContain('group-hover:shadow');
+  });
+
+  it('HowItWorks has no hover border affordance', () => {
+    const { container } = render(<HowItWorks />);
+    expect(container.innerHTML).not.toContain(HOVER_BORDER);
+  });
+});
