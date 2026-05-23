@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Parse HTML to extract conversation
-      parsed = parseChatGPTShareHTML(fetchResult.html);
+      parsed = await parseChatGPTShareHTML(fetchResult.html);
     }
 
     const validation = await validateParsedConversation(parsed);

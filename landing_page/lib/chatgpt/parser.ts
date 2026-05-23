@@ -1,17 +1,17 @@
 /**
  * ChatGPT HTML Parser
  *
- * ⚠️  CRITICAL WARNING: This is the most fragile component.
- * ChatGPT's HTML structure changes frequently without notice.
- * Expect to update this parser monthly.
+ * Extracts the conversation from a ChatGPT /share/ page by decoding the
+ * React Router turbo-stream payload embedded in the page's
+ * `streamController.enqueue(...)` calls, then reading messages by structured
+ * field path (loaderData -> serverResponse -> data -> linear_conversation).
  *
- * Current implementation (Dec 2024):
- * Parses React Server Components format by extracting JSON payloads
- * from window.__reactRouterContext scripts and recursively searching
- * for conversation messages within the JSON structure.
+ * Single path, no heuristic fallback: parseChatGPTShareHTML throws a
+ * ChatGPTParseError with a stage-specific code if ChatGPT's data format
+ * changes, rather than silently mis-parsing.
  */
 
-import * as cheerio from 'cheerio';
+import { decode } from 'turbo-stream';
 import {getConversationPrompts} from '../constants/conversation-prompts';
 
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
@@ -37,79 +37,26 @@ export interface ParsedChatGPTResponse {
 }
 
 /**
- * Unescape JSON string escape sequences
+ * Distinct failure stages of the structured share-page parser. The code lets
+ * server logs identify which layer of ChatGPT's data format changed.
  */
-function unescapeString(str: string): string {
-    return str
-        .replace(/\\\\/g, '\x00')  // Temporarily store backslashes
-        .replace(/\\n/g, '\n')
-        .replace(/\\r/g, '\r')
-        .replace(/\\t/g, '\t')
-        .replace(/\\"/g, '"')
-        .replace(/\\'/g, "'")
-        .replace(/\x00/g, '\\');   // Restore single backslashes
-}
+export type ChatGPTParseErrorCode =
+    | 'TRANSPORT_CHANGED'   // no streamController.enqueue payloads in the HTML
+    | 'DECODE_FAILED'       // turbo-stream decode threw (corrupt/truncated payload)
+    | 'SCHEMA_CHANGED'      // linear_conversation not found in the decoded graph
+    | 'EMPTY';              // no visible user/assistant text messages survived filtering
 
-/**
- * Check if a string looks like technical metadata rather than conversation content
- */
-function isTechnicalString(str: string): boolean {
-    return (
-        str.startsWith('http') ||
-        str.startsWith('https://') ||
-        str.includes('cdn.oaistatic') ||
-        str.includes('window.') ||
-        str.includes('function(') ||
-        str.includes('import ') ||
-        !!str.match(/^[a-f0-9-]{36}$/i) ||  // UUIDs
-        str.includes('_v4.0') ||             // Model names
-        str.startsWith(':') ||               // Technical data
-        !!str.match(/^[\d\.,\[\]\{\}\\:]+/) || // Starts with JSON-like chars
-        str.length < 20 ||
-        !str.match(/[a-z]{3,}/i)             // Must contain actual words
-    );
-}
-
-/**
- * Check if a string looks like a conversation message
- */
-function isConversationMessage(str: string): boolean {
-    return (
-        str.length > 50 &&
-        !str.startsWith('http') &&
-        !str.includes('cdn.oaistatic') &&
-        !str.includes('window.') &&
-        !str.includes('function(') &&
-        !!str.match(/[a-z]{10,}/i)
-    );
-}
-
-/**
- * Recursively extract message-like strings from parsed JSON structure
- */
-function extractMessagesFromJSON(obj: unknown, depth: number = 0): string[] {
-    if (depth > 20) return []; // Prevent infinite recursion
-
-    const found: string[] = [];
-
-    if (typeof obj === 'string' && isConversationMessage(obj)) {
-        found.push(obj);
-    } else if (Array.isArray(obj)) {
-        for (const item of obj) {
-            found.push(...extractMessagesFromJSON(item, depth + 1));
-        }
-    } else if (typeof obj === 'object' && obj !== null) {
-        const record = obj as Record<string, unknown>;
-        for (const key in record) {
-            found.push(...extractMessagesFromJSON(record[key], depth + 1));
-        }
+export class ChatGPTParseError extends Error {
+    code: ChatGPTParseErrorCode;
+    constructor(code: ChatGPTParseErrorCode, options?: { cause?: unknown }) {
+        super(code, options);
+        this.name = 'ChatGPTParseError';
+        this.code = code;
     }
-
-    return found;
 }
 
 /**
- * Debug helper to save HTML content for analysis (development only)
+ * Debug helper to save content for analysis (development only).
  */
 async function debugSaveHTML(html: string, filename: string): Promise<void> {
     if (!IS_DEVELOPMENT) return;
@@ -125,73 +72,126 @@ async function debugSaveHTML(html: string, filename: string): Promise<void> {
 }
 
 /**
- * Parse ChatGPT share link HTML to extract conversation
+ * Extract the string argument of every `streamController.enqueue("…")` call.
+ * Each captured group is a JS string literal; JSON.parse un-escapes it.
  */
-export function parseChatGPTShareHTML(html: string): ParsedConversation {
-    const $ = cheerio.load(html);
-    const messages: ParsedConversation['messages'] = [];
-
-    debugSaveHTML(html, 'parsed.txt');
-
-    // Parse React Server Components format (ChatGPT as of Dec 2024)
-    try {
-        const scripts = $('script');
-        let foundData = false;
-
-        scripts.each((i, el) => {
-            const scriptContent = $(el).html() || '';
-
-            // Look for large script tags with React Router context data
-            if (scriptContent.includes('window.__reactRouterContext') && scriptContent.length > 10000) {
-                foundData = true;
-
-                // Extract all quoted strings from the script
-                const stringPattern = /"((?:[^"\\]|\\.)*)"/g;
-                const allStringMatches = [...scriptContent.matchAll(stringPattern)];
-                const stringMatches = allStringMatches.filter(match => match[1].length >= 50);
-
-
-                const conversationMessages: string[] = [];
-
-                for (const match of stringMatches) {
-                    const unescaped = unescapeString(match[1]);
-
-                    // Check if this is a large JSON payload containing messages
-                    if (unescaped.length > 10000 && (unescaped.startsWith('[{') || unescaped.startsWith('{"'))) {
-                        try {
-                            const parsed = JSON.parse(unescaped);
-                            const extractedMessages = extractMessagesFromJSON(parsed);
-                            conversationMessages.push(...extractedMessages);
-                            continue;
-                        } catch {
-                            // Not valid JSON, treat as regular string
-                        }
-                    }
-
-                    // Filter out technical/metadata strings
-                    if (isTechnicalString(unescaped)) {
-                        continue;
-                    }
-
-                    conversationMessages.push(unescaped);
-                }
-
-                // Assign roles alternating user/assistant (ChatGPT conversations always alternate)
-                conversationMessages.forEach((content, index) => {
-                    const role = index % 2 === 0 ? 'user' : 'assistant';
-                    messages.push({role, content});
-                });
-            }
-        });
-
-        if (!foundData) {
-            console.warn('[parser] No React Router context found in HTML');
+function extractEnqueuePayloads(html: string): string[] {
+    const payloads: string[] = [];
+    const pattern = /streamController\.enqueue\(("(?:[^"\\]|\\.)*")\)/g;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(html)) !== null) {
+        try {
+            payloads.push(JSON.parse(match[1]));
+        } catch (cause) {
+            throw new ChatGPTParseError('DECODE_FAILED', {cause});
         }
-    } catch (e) {
-        console.error('[parser] Error during parsing:', e);
     }
+    if (payloads.length === 0) {
+        throw new ChatGPTParseError('TRANSPORT_CHANGED');
+    }
+    return payloads;
+}
 
-    // Analyze conversation quality
+/**
+ * Decode the React Router turbo-stream payload chunks into an object graph.
+ */
+async function decodeReactRouterStream(payloads: string[]): Promise<unknown> {
+    const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+            const encoder = new TextEncoder();
+            for (const payload of payloads) {
+                controller.enqueue(encoder.encode(payload));
+            }
+            controller.close();
+        },
+    });
+
+    try {
+        const decoded = await decode(stream);
+        await decoded.done;
+        return decoded.value;
+    } catch (cause) {
+        throw new ChatGPTParseError('DECODE_FAILED', {cause});
+    }
+}
+
+interface ConversationData {
+    title?: string;
+    linear_conversation: unknown[];
+}
+
+/**
+ * Navigate the decoded graph to the conversation data object. Searches
+ * loaderData entries by the presence of `linear_conversation` rather than
+ * hardcoding the route key, so a route-segment rename does not break it.
+ */
+function findConversationData(value: unknown): ConversationData {
+    const loaderData = (value as {loaderData?: Record<string, unknown>})?.loaderData;
+    if (loaderData && typeof loaderData === 'object') {
+        for (const entry of Object.values(loaderData)) {
+            const data = (entry as {serverResponse?: {data?: unknown}})?.serverResponse?.data;
+            if (
+                data &&
+                typeof data === 'object' &&
+                'linear_conversation' in data &&
+                Array.isArray((data as {linear_conversation?: unknown}).linear_conversation)
+            ) {
+                const conv = data as {title?: unknown; linear_conversation: unknown[]};
+                return {
+                    title: typeof conv.title === 'string' ? conv.title : undefined,
+                    linear_conversation: conv.linear_conversation,
+                };
+            }
+        }
+    }
+    throw new ChatGPTParseError('SCHEMA_CHANGED');
+}
+
+interface MessageNode {
+    message?: {
+        author?: {role?: string};
+        content?: {content_type?: string; parts?: unknown[]};
+        metadata?: {is_visually_hidden_from_conversation?: boolean};
+    };
+}
+
+/**
+ * Filter conversation nodes to visible text user/assistant turns and map them
+ * to {role, content}. Roles come straight from author.role — no guessing.
+ */
+function mapMessages(nodes: unknown[]): ParsedConversation['messages'] {
+    const messages: ParsedConversation['messages'] = [];
+    for (const node of nodes as MessageNode[]) {
+        const msg = node?.message;
+        if (!msg) continue;
+        const role = msg.author?.role;
+        if (role !== 'user' && role !== 'assistant') continue;
+        if (msg.content?.content_type !== 'text') continue;
+        if (msg.metadata?.is_visually_hidden_from_conversation === true) continue;
+        const parts = msg.content?.parts ?? [];
+        const content = parts.filter((p): p is string => typeof p === 'string').join('');
+        if (!content.trim()) continue;
+        messages.push({role, content});
+    }
+    if (messages.length === 0) {
+        throw new ChatGPTParseError('EMPTY');
+    }
+    return messages;
+}
+
+/**
+ * Parse ChatGPT share link HTML to extract the conversation.
+ *
+ * Structured single-path parser: decodes the React Router turbo-stream payload
+ * and reads messages by their data shape. Throws ChatGPTParseError (with a
+ * stage-specific code) instead of silently mis-parsing when the format changes.
+ */
+export async function parseChatGPTShareHTML(html: string): Promise<ParsedConversation> {
+    const payloads = extractEnqueuePayloads(html);
+    const decoded = await decodeReactRouterStream(payloads);
+    const data = findConversationData(decoded);
+    const messages = mapMessages(data.linear_conversation);
+
     const fullText = messages.map((m) => m.content).join(' ').toLowerCase();
     const hasPersonalityPrompt =
         fullText.includes('personality') ||
@@ -211,7 +211,7 @@ export function parseChatGPTShareHTML(html: string): ParsedConversation {
     return {
         messages,
         messageCount: messages.length,
-        title: $('title').text().trim() || undefined,
+        title: data.title,
         hasPersonalityPrompt,
         estimatedQuality,
     };
@@ -241,6 +241,17 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
 }> {
     if (parsed.messages.length === 0) {
         return {valid: false, reason: 'No messages found in conversation.'};
+    }
+
+    // Fallback: if only assistant response is available (SSR only embeds last message for /s/ links),
+    // validate by checking the assessment format markers are present
+    const hasAssessmentMarkers = parsed.messages.some(m =>
+        m.role === 'assistant' &&
+        m.content.includes('--- ASSESSMENT ---') &&
+        m.content.includes('OVERALL COMPLETENESS:')
+    );
+    if (hasAssessmentMarkers && !parsed.messages.some(m => m.role === 'user')) {
+        return {valid: true};
     }
 
     const firstUserMessage = parsed.messages.find(m => m.role === 'user');
@@ -273,6 +284,11 @@ export async function validatePromptExactMatch(parsed: ParsedConversation): Prom
 
         return isMatch;
     });
+
+    // Also accept if no user message matched but an assistant message has assessment markers
+    if (!matchesPrompt && hasAssessmentMarkers) {
+        return {valid: true};
+    }
 
     if (!matchesPrompt) {
         return {
