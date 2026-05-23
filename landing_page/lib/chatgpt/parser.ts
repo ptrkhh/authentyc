@@ -1,14 +1,14 @@
 /**
  * ChatGPT HTML Parser
  *
- * ⚠️  CRITICAL WARNING: This is the most fragile component.
- * ChatGPT's HTML structure changes frequently without notice.
- * Expect to update this parser monthly.
+ * Extracts the conversation from a ChatGPT /share/ page by decoding the
+ * React Router turbo-stream payload embedded in the page's
+ * `streamController.enqueue(...)` calls, then reading messages by structured
+ * field path (loaderData -> serverResponse -> data -> linear_conversation).
  *
- * Current implementation (Dec 2024):
- * Parses React Server Components format by extracting JSON payloads
- * from window.__reactRouterContext scripts and recursively searching
- * for conversation messages within the JSON structure.
+ * Single path, no heuristic fallback: parseChatGPTShareHTML throws a
+ * ChatGPTParseError with a stage-specific code if ChatGPT's data format
+ * changes, rather than silently mis-parsing.
  */
 
 import { decode } from 'turbo-stream';
@@ -80,7 +80,11 @@ function extractEnqueuePayloads(html: string): string[] {
     const pattern = /streamController\.enqueue\(("(?:[^"\\]|\\.)*")\)/g;
     let match: RegExpExecArray | null;
     while ((match = pattern.exec(html)) !== null) {
-        payloads.push(JSON.parse(match[1]));
+        try {
+            payloads.push(JSON.parse(match[1]));
+        } catch (cause) {
+            throw new ChatGPTParseError('DECODE_FAILED', {cause});
+        }
     }
     if (payloads.length === 0) {
         throw new ChatGPTParseError('TRANSPORT_CHANGED');
