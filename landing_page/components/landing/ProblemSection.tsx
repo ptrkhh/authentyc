@@ -52,10 +52,9 @@ export function ProblemSection() {
         >
           {PROBLEMS.map((problem, index) => (
             <SurfaceCard key={index}>
-              {/* Icon with glow effect */}
+              {/* Icon */}
               <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
-                border border-white/10 flex items-center justify-center text-3xl
-                transition-all">
+                border border-white/10 flex items-center justify-center text-3xl">
                 {problem.icon}
               </div>
 
