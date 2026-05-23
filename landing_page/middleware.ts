@@ -65,16 +65,26 @@ export function middleware(request: NextRequest) {
       const origin = request.headers.get('origin');
       const referer = request.headers.get('referer');
 
-      // In production, require origin or referer to match our domain
+      // Same-origin check: the Origin (or Referer) host must match the host
+      // the request was actually served on. This is the real CSRF invariant
+      // and holds across every domain the app runs on (apex, www, vercel.app
+      // aliases) without depending on NEXT_PUBLIC_SITE_URL, whose misconfig
+      // would otherwise silently 403 every state-changing request.
       const isVercelProduction = process.env.VERCEL_ENV === 'production';
       const isNonVercel = !process.env.VERCEL_ENV && process.env.NODE_ENV === 'production';
       if (isVercelProduction || isNonVercel) {
-        const normalizeHost = (h: string) => h.replace(/^www\./, '');
-        const allowedHost = normalizeHost(new URL(ALLOWED_ORIGIN).hostname);
-        const isValidOrigin = origin && normalizeHost(new URL(origin).hostname) === allowedHost;
-        const isValidReferer = referer && normalizeHost(new URL(referer).hostname) === allowedHost;
+        const normalizeHost = (host: string) => host.replace(/^www\./, '').toLowerCase();
+        const requestHost = request.headers.get('host');
+        const matchesRequestHost = (value: string | null): boolean => {
+          if (!value || !requestHost) return false;
+          try {
+            return normalizeHost(new URL(value).hostname) === normalizeHost(requestHost.split(':')[0]);
+          } catch {
+            return false;
+          }
+        };
 
-        if (!isValidOrigin && !isValidReferer) {
+        if (!matchesRequestHost(origin) && !matchesRequestHost(referer)) {
           return NextResponse.json(
             { error: 'Forbidden' },
             { status: 403 }
