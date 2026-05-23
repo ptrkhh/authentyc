@@ -233,7 +233,7 @@ export function ChatAnalyzer({ category }: ChatAnalyzerProps) {
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://chatgpt.com/share/..."
+                placeholder="https://chatgpt.com/s/... or /share/..."
                 className="w-full px-4 py-3 bg-dark-900 border border-white/10 text-gray-200 placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary/50"
               />
               <button

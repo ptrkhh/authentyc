@@ -37,7 +37,7 @@ export async function fetchChatGPTShareLink(shareUrl: string): Promise<FetchResu
       };
     }
 
-    if (!url.pathname.includes('/share/')) {
+    if (!url.pathname.includes('/share/') && !url.pathname.startsWith('/s/')) {
       return {
         success: false,
         error: 'This doesn\'t appear to be a shared link. Make sure to click the share icon and copy the share link.',

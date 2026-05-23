@@ -124,7 +124,7 @@ interface CategoryCardProps {
 
 function CategoryCard({ category, featured, isExpanded, onTryItClick }: CategoryCardProps) {
   return (
-    <SurfaceCard className={`h-full flex flex-col ${isExpanded ? 'ring-2 ring-brand-primary' : ''}`} featured={featured}>
+    <SurfaceCard interactive className={`h-full flex flex-col ${isExpanded ? 'ring-2 ring-brand-primary' : ''}`} featured={featured}>
       {/* Icon with glow */}
       <div
         className="mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10

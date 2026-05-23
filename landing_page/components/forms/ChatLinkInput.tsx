@@ -29,7 +29,11 @@ export function ChatLinkInput({ onSubmit, loading }: ChatLinkInputProps) {
       return;
     }
 
-    if (!url.includes('chatgpt.com/share/') && !url.includes('chat.openai.com/share/')) {
+    const isValidShareUrl =
+      url.includes('chatgpt.com/share/') ||
+      url.includes('chat.openai.com/share/') ||
+      url.includes('chatgpt.com/s/');
+    if (!isValidShareUrl) {
       setError('Invalid ChatGPT share link format');
       return;
     }
@@ -47,7 +51,7 @@ export function ChatLinkInput({ onSubmit, loading }: ChatLinkInputProps) {
             setUrl(e.target.value);
             setError(null);
           }}
-          placeholder="https://chatgpt.com/share/..."
+          placeholder="https://chatgpt.com/s/... or /share/..."
           disabled={loading}
           className={error ? 'border-red-500' : ''}
         />

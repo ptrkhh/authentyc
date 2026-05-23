@@ -66,9 +66,13 @@ export function middleware(request: NextRequest) {
       const referer = request.headers.get('referer');
 
       // In production, require origin or referer to match our domain
-      if (process.env.NODE_ENV === 'production') {
-        const isValidOrigin = origin && new URL(origin).hostname === new URL(ALLOWED_ORIGIN).hostname;
-        const isValidReferer = referer && new URL(referer).hostname === new URL(ALLOWED_ORIGIN).hostname;
+      const isVercelProduction = process.env.VERCEL_ENV === 'production';
+      const isNonVercel = !process.env.VERCEL_ENV && process.env.NODE_ENV === 'production';
+      if (isVercelProduction || isNonVercel) {
+        const normalizeHost = (h: string) => h.replace(/^www\./, '');
+        const allowedHost = normalizeHost(new URL(ALLOWED_ORIGIN).hostname);
+        const isValidOrigin = origin && normalizeHost(new URL(origin).hostname) === allowedHost;
+        const isValidReferer = referer && normalizeHost(new URL(referer).hostname) === allowedHost;
 
         if (!isValidOrigin && !isValidReferer) {
           return NextResponse.json(
