@@ -21,7 +21,7 @@ jest.mock('framer-motion', () => {
       ReactLib.createElement(tag, rest, children);
   return {
     __esModule: true,
-    motion: new Proxy({}, { get: (_t, tag: string) => passthrough(tag) }),
+    motion: new Proxy({}, { get: (_t, tag) => passthrough(String(tag)) }),
     AnimatePresence: ({ children }: any) =>
       ReactLib.createElement(ReactLib.Fragment, null, children),
   };
@@ -29,6 +29,8 @@ jest.mock('framer-motion', () => {
 
 import { SurfaceCard } from '@/components/ui/surface-card';
 
+// framer-motion's whileHover gesture is not observable in jsdom, so we assert on
+// the hover-border class — gated on the same `interactive` flag — as its proxy.
 const HOVER_BORDER = 'hover:border-[var(--surface-highlight)]';
 
 describe('SurfaceCard interactive prop', () => {
