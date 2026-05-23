@@ -55,7 +55,7 @@ export function ProblemSection() {
               {/* Icon with glow effect */}
               <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-primary/10
                 border border-white/10 flex items-center justify-center text-3xl
-                group-hover:shadow-[0_0_40px_var(--brand-primary-glow)] transition-all">
+                transition-all">
                 {problem.icon}
               </div>
 

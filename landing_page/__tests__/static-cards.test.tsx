@@ -28,6 +28,8 @@ jest.mock('framer-motion', () => {
 });
 
 import { SurfaceCard } from '@/components/ui/surface-card';
+import { ProblemSection } from '@/components/landing/ProblemSection';
+import { HowItWorks } from '@/components/landing/HowItWorks';
 
 // framer-motion's whileHover gesture is not observable in jsdom, so we assert on
 // the hover-border class — gated on the same `interactive` flag — as its proxy.
@@ -44,5 +46,18 @@ describe('SurfaceCard interactive prop', () => {
     const { container } = render(<SurfaceCard interactive>content</SurfaceCard>);
     const root = container.firstChild as HTMLElement;
     expect(root.className).toContain(HOVER_BORDER);
+  });
+});
+
+describe('Informational landing cards are static', () => {
+  it('ProblemSection has no hover affordance (no hover border, no icon hover-glow)', () => {
+    const { container } = render(<ProblemSection />);
+    expect(container.innerHTML).not.toContain(HOVER_BORDER);
+    expect(container.innerHTML).not.toContain('group-hover:shadow');
+  });
+
+  it('HowItWorks has no hover border affordance', () => {
+    const { container } = render(<HowItWorks />);
+    expect(container.innerHTML).not.toContain(HOVER_BORDER);
   });
 });
