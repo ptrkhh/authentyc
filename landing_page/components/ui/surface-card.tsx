@@ -7,6 +7,12 @@ interface SurfaceCardProps {
   children: React.ReactNode;
   className?: string;
   featured?: boolean;
+  /**
+   * Opt in to button-like hover (lift, scale, border highlight). Default false:
+   * the card is static, so it does not look clickable. Only pass this when the
+   * card actually leads to an action.
+   */
+  interactive?: boolean;
 }
 
 /**
@@ -17,7 +23,8 @@ interface SurfaceCardProps {
 export function SurfaceCard({
   children,
   className = '',
-  featured = false
+  featured = false,
+  interactive = false,
 }: SurfaceCardProps) {
   return (
     <motion.div
@@ -27,14 +34,14 @@ export function SurfaceCard({
         border border-[var(--surface-border)]
         shadow-[0_8px_32px_rgba(0,0,0,0.3)]
         transition-all duration-500 ease-smooth
-        hover:border-[var(--surface-highlight)]
+        ${interactive ? 'hover:border-[var(--surface-highlight)]' : ''}
         overflow-hidden
         group
         ${featured ? 'will-change-transform' : ''}
         ${className}
       `}
       variants={VARIANTS.fadeIn}
-      whileHover={{ y: -8, scale: featured ? 1.02 : 1.01 }}
+      whileHover={interactive ? { y: -8, scale: featured ? 1.02 : 1.01 } : undefined}
       transition={SPRING_CONFIGS.gentle}
     >
       {/* Top highlight line */}
