@@ -76,7 +76,7 @@ export function SwipeDeck({ characters, category, onJoinWaitlist, onReset }: Swi
       >
         {/* Faint peek of the next card, behind and scaled down (decorative). */}
         {deck.next && (
-          <div className="absolute inset-x-3 top-3 -z-0 scale-95 opacity-50" aria-hidden="true">
+          <div className="absolute inset-x-3 top-3 z-0 scale-95 opacity-50" aria-hidden="true">
             <SwipeCard character={deck.next} active={false} reducedMotion={reducedMotion} onCommit={() => {}} />
           </div>
         )}

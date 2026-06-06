@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 
 jest.mock('framer-motion', () => {
   const ReactLib = require('react');
@@ -126,5 +126,27 @@ describe('SwipeDeck', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Like Person 2' }));
     fireEvent.click(screen.getByRole('button', { name: 'Replay' }));
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
+  });
+
+  it('latch blocks a same-tick double commit (advances once, not twice)', () => {
+    renderDeck();
+    const likeBtn = screen.getByRole('button', { name: 'Like Person 1' });
+    // Two synchronous clicks in ONE act() share the same handleCommit closure;
+    // the committingRef latch makes the second a no-op (the [deck.index] effect
+    // that clears the latch has not run yet). Without the latch, both commits
+    // would fire and the deck would jump straight to the done screen.
+    act(() => {
+      likeBtn.click();
+      likeBtn.click();
+    });
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Like Person 2' })).toBeInTheDocument();
+  });
+
+  it('advances on ArrowLeft (pass) via keyboard', () => {
+    renderDeck();
+    const group = screen.getByRole('group', { name: /card 1 of 2/i });
+    fireEvent.keyDown(group, { key: 'ArrowLeft' });
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
   });
 });
