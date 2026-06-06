@@ -217,6 +217,25 @@ See: `app/privacy/page.tsx` and `app/terms/page.tsx`
 
 ---
 
+## Phase 8: Trust & Reputation (ScamAdviser Fixes)
+**Time**: 2-4 hours
+
+### Infrastructure & Metadata
+- [ ] Update domain registration (WHOIS) to use professional email addresses (`admin@authentyc.ai`) instead of personal ones
+- [ ] Ensure all domain contacts (technical, administrative) use domain-based emails
+- [ ] Migrate to a dedicated IP or a reputable cloud provider (e.g., Vercel's paid tier or AWS with dedicated IP) to avoid proximity to low-reputation sites
+
+### Content & Trust
+- [ ] Review landing page copy for "scammer-associated" words (e.g., high-pressure sales, "secret", "guaranteed")
+- [ ] Add more transparency to the "About Us" section (e.g., team members, company location, registration details)
+- [ ] Ensure "Privacy Policy" and "Terms of Service" are fully drafted and linkable (currently placeholders)
+
+### Reputation & Traffic
+- [ ] Implement SEO strategy to improve Tranco rank over time
+- [ ] Encourage users to leave reviews on reputable platforms
+
+---
+
 ## Launch Readiness
 
 **Ready to launch when ALL checked:**
