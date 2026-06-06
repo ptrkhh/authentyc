@@ -28,9 +28,10 @@ interface AnalysisResult {
 
 interface ChatAnalyzerProps {
   category: Category;
+  onJoinWaitlist?: (category: Category) => void; // optional here; always provided by page.tsx in practice
 }
 
-export function ChatAnalyzer({ category }: ChatAnalyzerProps) {
+export function ChatAnalyzer({ category, onJoinWaitlist }: ChatAnalyzerProps) {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
@@ -137,6 +138,7 @@ export function ChatAnalyzer({ category }: ChatAnalyzerProps) {
           <SimulationResults
             characters={characters}
             category={category}
+            onJoinWaitlist={onJoinWaitlist ?? (() => {})}
             onReset={handleReset}
             insights={{
               overall_vibe: results.overall_vibe,
