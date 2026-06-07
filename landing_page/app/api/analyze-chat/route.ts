@@ -21,6 +21,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { generatePersonalizedCharacters } from '@/lib/ai/character-generator';
 import { generateSimulatedCharacters } from '@/lib/constants/simulated-characters';
 import { checkRateLimit, getClientIP } from '@/lib/utils/ratelimit';
+import { isCanaryRequest } from '@/lib/utils/canary';
 
 const geminiApiTimeoutMilliseconds = 30000;
 const geminiApiMaxRetries = 3;
@@ -160,31 +161,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Canary cache-bypass: a matching x-canary-secret forces the real pipeline
+    // (skip cache read + write) so the daily synthetic monitor never gets a
+    // stale cached green. Bypasses ONLY the cache, never the rate limiter above.
+    const isCanary = isCanaryRequest(
+      request.headers.get('x-canary-secret'),
+      process.env.CANARY_SECRET,
+    );
+
     const body = await request.json();
     const { shareUrl, category, manualText } = analyzeRequestSchema.parse(body);
 
+    // The canary never sends manualText; reject the combination so a leaked
+    // secret cannot drive cache-bypassed Gemini calls over arbitrary text
+    // (the manualText branch skips the chatgpt.com host allowlist).
+    if (isCanary && manualText && manualText.trim()) {
+      return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+    }
+
     const urlHash = hashShareUrl(shareUrl);
 
-    // Check cache for existing analysis with this category
-    const { data: existing } = await supabaseServer
-      .from('chat_analyses')
-      .select('*')
-      .eq('share_url_hash', urlHash)
-      .eq('category', category)
-      .single();
+    // Check cache for existing analysis with this category.
+    // Skipped on canary runs so the real fetch→parse→Gemini path always runs.
+    // The cached-return block stays INSIDE this guard: `existing` is block-scoped.
+    if (!isCanary) {
+      const { data: existing } = await supabaseServer
+        .from('chat_analyses')
+        .select('*')
+        .eq('share_url_hash', urlHash)
+        .eq('category', category)
+        .single();
 
-    if (existing && existing.generated_characters) {
-      return NextResponse.json({
-        success: true,
-        cached: true,
-        analysis: {
-          overall_vibe: existing.personality_summary,
-          insights: existing.traits,
-        },
-        characters: existing.generated_characters,
-        completenessRating: existing.completeness_rating || null,
-        assessmentDetails: undefined,
-      });
+      if (existing && existing.generated_characters) {
+        return NextResponse.json({
+          success: true,
+          cached: true,
+          analysis: {
+            overall_vibe: existing.personality_summary,
+            insights: existing.traits,
+          },
+          characters: existing.generated_characters,
+          completenessRating: existing.completeness_rating || null,
+          assessmentDetails: undefined,
+        });
+      }
     }
 
     let parsed;
@@ -309,19 +329,22 @@ export async function POST(request: NextRequest) {
 
     const characterGenTime = Date.now() - characterGenStartTime;
 
-    // Store results in database with characters
-    await supabaseServer.from('chat_analyses').insert({
-      share_url_hash: urlHash,
-      category,
-      personality_summary: analysis.overall_vibe || 'Analysis complete',
-      traits: analysis.insights || {},
-      generated_characters: generatedCharacters,
-      processing_time_ms: Date.now() - startTime,
-      character_generation_time_ms: characterGenTime,
-      message_count: parsed.messageCount,
-      used_fallback_templates: usedFallback,
-      completeness_rating: completenessRating,
-    });
+    // Store results in database with characters.
+    // Skipped on canary runs so chat_analyses stays free of canary rows.
+    if (!isCanary) {
+      await supabaseServer.from('chat_analyses').insert({
+        share_url_hash: urlHash,
+        category,
+        personality_summary: analysis.overall_vibe || 'Analysis complete',
+        traits: analysis.insights || {},
+        generated_characters: generatedCharacters,
+        processing_time_ms: Date.now() - startTime,
+        character_generation_time_ms: characterGenTime,
+        message_count: parsed.messageCount,
+        used_fallback_templates: usedFallback,
+        completeness_rating: completenessRating,
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -338,6 +361,7 @@ export async function POST(request: NextRequest) {
         quality: parsed.estimatedQuality,
         processing_time_ms: Date.now() - startTime,
         used_fallback: usedFallback,
+        canary: isCanary,
       },
     });
   } catch (error: unknown) {

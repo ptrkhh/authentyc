@@ -1,0 +1,109 @@
+name: Canary — Analyze Chat
+
+on:
+  schedule:
+    - cron: "0 1 * * *"   # 01:00 UTC = 08:00 GMT+7, daily
+  workflow_dispatch:
+
+env:
+  BASE_URL: https://www.authentyc.ai   # canonical host; apex 307-redirects here, so target www directly to avoid a redirect hop
+
+jobs:
+  canary:
+    name: analyze-chat (${{ matrix.category }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        category: [hiring, dating, cofounder]
+    steps:
+      - name: Probe /api/analyze-chat
+        env:
+          CANARY_SECRET: ${{ secrets.CANARY_SECRET }}
+          SHARE_URL_HIRING: ${{ secrets.CANARY_SHARE_URL_HIRING }}
+          SHARE_URL_DATING: ${{ secrets.CANARY_SHARE_URL_DATING }}
+          SHARE_URL_COFOUNDER: ${{ secrets.CANARY_SHARE_URL_COFOUNDER }}
+        run: |
+          set -euo pipefail
+          echo "::add-mask::$CANARY_SECRET"
+          cat="${{ matrix.category }}"
+          varname="SHARE_URL_$(echo "$cat" | tr '[:lower:]' '[:upper:]')"
+          share_url="${!varname:-}"
+          if [ -z "$share_url" ]; then
+            echo "::error::[$cat] missing share-URL secret ($varname)"; exit 1
+          fi
+          if [ -z "${CANARY_SECRET:-}" ]; then
+            echo "::error::CANARY_SECRET not set in repo secrets"; exit 1
+          fi
+
+          # One probe attempt. Returns 1 (never exits) on any failure so the
+          # retry loop below can run attempt 2; set -e is disabled inside a
+          # function called in an `if`/`&&`/`||` context, so explicit `return 1`
+          # is required on every failure path.
+          probe() {
+            local http_code body
+            http_code="$(curl -sS -L --connect-timeout 10 --max-time 60 \
+              -X POST "$BASE_URL/api/analyze-chat" \
+              -H "Content-Type: application/json" \
+              -H "Origin: $BASE_URL" \
+              -H "x-canary-secret: $CANARY_SECRET" \
+              -d "{\"shareUrl\":\"$share_url\",\"category\":\"$cat\"}" \
+              -o body.json -w '%{http_code}')" \
+              || { echo "::warning::[$cat] curl transport error"; return 1; }
+            body="$(cat body.json)"
+
+            echo "HTTP $http_code"
+            printf '%s\n' "$body" | jq . > /dev/null 2>&1 \
+              || { echo "::warning::[$cat] non-JSON response"; printf '%s\n' "$body"; return 1; }
+
+            if [ "$http_code" != "200" ]; then
+              echo "::warning::[$cat] HTTP $http_code"; printf '%s\n' "$body"; return 1
+            fi
+
+            # All shape/quality assertions. message_count >= 4 is a PLACEHOLDER:
+            # pin it per category to the sample's real count − margin.
+            if printf '%s\n' "$body" | jq -e '
+                  .success == true
+                  and .cached == false
+                  and (.metadata.canary == true)
+                  and (.metadata.used_fallback == false)
+                  and (.analysis.overall_vibe | type == "string" and (. | length) > 0)
+                  and (.analysis.insights | type == "array" and (. | length) > 0)
+                  and (.characters | type == "array" and (. | length) > 0)
+                  and (.metadata.message_count | type == "number" and . >= 4)
+                ' > /dev/null; then
+              echo "[$cat] OK"; return 0
+            fi
+
+            if [ "$(printf '%s' "$body" | jq -r '.cached // false')" = "true" ]; then
+              echo "::warning::[$cat] got cached:true — the canary did NOT run the real pipeline (CANARY_SECRET likely missing/mismatched in Vercel)"
+            else
+              echo "::warning::[$cat] response assertion failed (see body above)"
+            fi
+            return 1
+          }
+
+          # Single 20s-delayed re-probe absorbs a one-shot transient blip; two
+          # consecutive failures go red. (COMP5 debounce.)
+          for attempt in 1 2; do
+            if probe; then exit 0; fi
+            if [ "$attempt" -eq 2 ]; then echo "::error::[$cat] failed twice"; exit 1; fi
+            echo "[$cat] transient failure — retrying in 20s..."; sleep 20
+          done
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RESEND_API_KEY:-}" ]; then
+            echo "::error::pager misconfigured: RESEND_API_KEY unset — canary red but no email sent"; exit 1
+          fi
+          code=$(curl -sS -o /tmp/resend.json -w "%{http_code}" -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" -H 'Content-Type: application/json' \
+            -d "{\"from\":\"canary@authentyc.ai\",\"to\":\"hello@authentyc.ai\",\"subject\":\"[canary] analyze-chat ${{ matrix.category }} FAILED\",\"text\":\"See run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}")
+          if [ "${code:0:1}" != "2" ]; then
+            echo "::error::Resend send failed (HTTP $code) — pager is broken"; cat /tmp/resend.json; exit 1
+          fi
