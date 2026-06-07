@@ -41,7 +41,11 @@ const CATEGORIES = [
   },
 ];
 
-export function CategoryCards() {
+interface CategoryCardsProps {
+  onJoinWaitlist?: (category: Category) => void; // threaded from page.tsx
+}
+
+export function CategoryCards({ onJoinWaitlist }: CategoryCardsProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const analyzerSectionRef = useRef<HTMLDivElement>(null);
 
@@ -107,6 +111,7 @@ export function CategoryCards() {
             <ChatAnalyzer
               key={expandedCategory}
               category={expandedCategory as Category}
+              onJoinWaitlist={onJoinWaitlist}
             />
           </div>
         )}

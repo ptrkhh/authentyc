@@ -143,7 +143,7 @@ export default function Home() {
       <HowItWorks />
 
       {/* Category Selection Cards (with embedded ChatGPT Analyzer) */}
-      <CategoryCards />
+      <CategoryCards onJoinWaitlist={openForm} />
 
       {/* FAQ Section */}
       <FAQ />
