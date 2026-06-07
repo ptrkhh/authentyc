@@ -42,3 +42,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY: placeholder
           NEXT_PUBLIC_POSTHOG_KEY: placeholder
           NEXT_PUBLIC_SITE_URL: https://authentyc.ai
+          # Build imports route modules; supabase/server.ts and ai/client.ts
+          # throw at module-load if these are unset. Placeholders only — build
+          # collects page data without making real calls.
+          SUPABASE_SECRET_KEY: placeholder
+          GEMINI_API_KEY: placeholder
