@@ -61,8 +61,9 @@ jobs:
               echo "::warning::[$cat] HTTP $http_code"; printf '%s\n' "$body"; return 1
             fi
 
-            # All shape/quality assertions. message_count >= 4 is a PLACEHOLDER:
-            # pin it per category to the sample's real count − margin.
+            # All shape/quality assertions. message_count >= 2 matches the sample
+            # share links (user prompt + assistant assessment = 2 messages); a
+            # degraded SSR-only share parses to 1 → reds, which is the intent.
             if printf '%s\n' "$body" | jq -e '
                   .success == true
                   and .cached == false
@@ -71,7 +72,7 @@ jobs:
                   and (.analysis.overall_vibe | type == "string" and (. | length) > 0)
                   and (.analysis.insights | type == "array" and (. | length) > 0)
                   and (.characters | type == "array" and (. | length) > 0)
-                  and (.metadata.message_count | type == "number" and . >= 4)
+                  and (.metadata.message_count | type == "number" and . >= 2)
                 ' > /dev/null; then
               echo "[$cat] OK"; return 0
             fi
@@ -79,7 +80,8 @@ jobs:
             if [ "$(printf '%s' "$body" | jq -r '.cached // false')" = "true" ]; then
               echo "::warning::[$cat] got cached:true — the canary did NOT run the real pipeline (CANARY_SECRET likely missing/mismatched in Vercel)"
             else
-              echo "::warning::[$cat] response assertion failed (see body above)"
+              echo "::warning::[$cat] response assertion failed; body follows:"
+              printf '%s\n' "$body" | jq -C . 2>/dev/null || printf '%s\n' "$body"
             fi
             return 1
           }
