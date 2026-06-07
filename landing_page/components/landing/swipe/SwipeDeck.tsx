@@ -72,13 +72,13 @@ export function SwipeDeck({ characters, category, onJoinWaitlist, onReset }: Swi
         aria-label={`Card ${deck.index + 1} of ${characters.length}`}
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        className="relative w-full max-w-sm rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-4 focus-visible:ring-offset-dark-850"
+        className="relative grid grid-cols-1 grid-rows-1 w-full max-w-sm rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-4 focus-visible:ring-offset-dark-850"
       >
         <span className="sr-only">Use the left and right arrow keys to pass or like.</span>
 
         {/* Faint peek of the next card, behind and scaled down (decorative). */}
         {deck.next && (
-          <div className="absolute inset-x-3 top-3 z-0 scale-95 opacity-50" aria-hidden="true">
+          <div className="col-start-1 row-start-1 z-0 translate-y-3 scale-[0.97] opacity-50 pointer-events-none" aria-hidden="true">
             <SwipeCard character={deck.next} active={false} reducedMotion={reducedMotion} onCommit={() => {}} />
           </div>
         )}

@@ -54,7 +54,7 @@ export function SwipeCard({ character, active, reducedMotion, onCommit }: SwipeC
       variants={exitVariants}
       exit="fly"
       onDragEnd={active ? handleDragEnd : undefined}
-      className={`relative w-full rounded-2xl border border-white/10 bg-dark-800/80 backdrop-blur-sm overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)] ${
+      className={`relative col-start-1 row-start-1 w-full rounded-2xl border border-white/10 bg-dark-800 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)] ${
         active ? 'cursor-grab active:cursor-grabbing z-10' : 'pointer-events-none'
       }`}
     >

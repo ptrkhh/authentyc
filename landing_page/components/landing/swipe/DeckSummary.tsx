@@ -32,20 +32,6 @@ export function DeckSummary({ liked, category, onJoinWaitlist, onReplayDeck, onR
 
   return (
     <div className="max-w-md mx-auto text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
-      {likedCount > 0 && (
-        <div className="flex justify-center -space-x-3">
-          {liked.map((c) => (
-            <div
-              key={c.id}
-              title={c.name}
-              className={`w-12 h-12 rounded-full ${c.avatarColor} flex items-center justify-center text-white font-bold text-lg ring-2 ring-dark-850 shadow-lg`}
-            >
-              {c.name.charAt(0)}
-            </div>
-          ))}
-        </div>
-      )}
-
       <h3 className="text-2xl font-bold text-gray-100">{headline}</h3>
 
       <div className="flex flex-col gap-3 pt-2">

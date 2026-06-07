@@ -31,12 +31,11 @@ describe('DeckSummary', () => {
     (useReducedMotion as jest.Mock).mockReturnValue(false);
   });
 
-  it('shows the interested headline and liked avatars when liked.length > 0', () => {
+  it('shows the interested headline when liked.length > 0', () => {
     render(
       <DeckSummary liked={[makeChar('1'), makeChar('2')]} category="hiring" onJoinWaitlist={() => {}} onReplayDeck={() => {}} onReset={() => {}} />
     );
     expect(screen.getByText(/You're interested in 2/)).toBeInTheDocument();
-    expect(screen.getAllByText('P')).toHaveLength(2);
   });
 
   it('shows the alternate copy when nothing was liked', () => {
