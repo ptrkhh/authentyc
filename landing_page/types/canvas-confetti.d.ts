@@ -1,3 +1,6 @@
+// Minimal ambient types for canvas-confetti (the package ships none at v1.9.4).
+// DELETE this file if @types/canvas-confetti is ever added to devDependencies —
+// two ambient declarations for the same module would collide.
 declare module 'canvas-confetti' {
   interface ConfettiOptions {
     particleCount?: number;
