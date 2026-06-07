@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useReducedMotion } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import type { Category, SimulatedCharacter } from '@/components/landing/SimulationResults';
 
 interface DeckSummaryProps {
@@ -12,6 +15,16 @@ interface DeckSummaryProps {
 
 export function DeckSummary({ liked, category, onJoinWaitlist, onReplayDeck, onReset }: DeckSummaryProps) {
   const likedCount = liked.length;
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (likedCount > 0 && !reducedMotion) {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
+    // Fire once on mount only — do not re-fire on re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const headline =
     likedCount > 0
       ? `You're interested in ${likedCount} — join to meet them for real`
