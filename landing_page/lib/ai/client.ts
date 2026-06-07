@@ -7,7 +7,7 @@
  * prompt injection from user-provided conversation text.
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, type GenerationConfig } from '@google/generative-ai';
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error('Missing GEMINI_API_KEY environment variable');
@@ -39,10 +39,13 @@ export const gemini = genAI.getGenerativeModel({
  * This separates system-level instructions from user-provided content,
  * preventing user text from being interpreted as system instructions.
  */
-export function createModelWithSystemInstruction(systemInstruction: string) {
+export function createModelWithSystemInstruction(
+  systemInstruction: string,
+  generationConfigOverrides?: Partial<GenerationConfig>,
+) {
   return genAI.getGenerativeModel({
     model: MODEL,
-    generationConfig: BASE_GENERATION_CONFIG,
+    generationConfig: { ...BASE_GENERATION_CONFIG, ...generationConfigOverrides },
     systemInstruction,
   });
 }
