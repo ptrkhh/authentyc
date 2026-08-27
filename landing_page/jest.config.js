@@ -11,6 +11,6 @@ const config = {
 };
 
 // Kept as .js (not .ts) so Jest loads its config without a TypeScript loader.
-// CI runs Node 20, which has no native .ts support; a .ts config there demands
-// ts-node (absent), which broke CI. A plain .js config works on every Node.
+// A .ts config demands ts-node (not a dependency here), which broke CI once
+// already. A plain .js config works on every Node version, no loader needed.
 module.exports = createJestConfig(config);
