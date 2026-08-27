@@ -24,8 +24,10 @@ npm test        # unit + accessibility suites
 npm run test:ci # what CI runs
 ```
 
-### Database Testing
-Run `verify_tables.sql` in Supabase SQL Editor
+### Database Setup
+Run `migration.sql` in the Supabase SQL Editor. It creates `waitlist_leads`,
+`chat_analyses`, `rate_limits`, `email_jobs` and `prompts` — check all five
+exist afterwards. `cleanup.sql` drops them again to start fresh (destructive).
 
 Email delivery is covered end-to-end by the analyze-chat canary, which pages
 through Resend on failure — see `.github/workflows/canary-analyze-chat.yml`.
