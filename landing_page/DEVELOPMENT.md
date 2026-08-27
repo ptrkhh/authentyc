@@ -19,12 +19,15 @@ Key variables:
 
 ## Testing
 
-### Email Testing
 ```bash
-node test-email.js ptrkhh@outlook.com
+npm test        # unit + accessibility suites
+npm run test:ci # what CI runs
 ```
 
 ### Database Testing
 Run `verify_tables.sql` in Supabase SQL Editor
+
+Email delivery is covered end-to-end by the analyze-chat canary, which pages
+through Resend on failure — see `.github/workflows/canary-analyze-chat.yml`.
 
 ---
