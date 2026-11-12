@@ -16,10 +16,20 @@ export const SOCIAL_LINKS = {
  * Launch date information
  */
 export const LAUNCH_COPY = {
-  QUARTER: 'Q2 2026',
-  YEAR: '2026',
-  FULL: 'Launching Q2 2026',
-  SHORT: 'Q2 2026',
+  // No date: the last one (Q2 2026) passed while still on the site.
+  // SHORT is used as "launch in {SHORT}".
+  FULL: 'Invite-only launch coming soon',
+  SHORT: 'the coming months',
+} as const;
+
+/**
+ * Products under the Authentyc umbrella
+ */
+export const PRODUCTS = {
+  LEETVIBECODE: {
+    NAME: 'LeetVibeCode',
+    URL: 'https://leetvibecode.authentyc.ai',
+  },
 } as const;
 
 /**

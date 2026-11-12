@@ -9,6 +9,7 @@ import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { COMPANY_INFO } from '@/lib/constants';
+import { SiteNav } from '@/components/landing/SiteNav';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -99,6 +100,7 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:bg-brand-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:text-sm">
           Skip to main content
         </a>
+        <SiteNav />
         <Providers>{children}</Providers>
       </body>
     </html>
