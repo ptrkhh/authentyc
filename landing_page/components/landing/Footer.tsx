@@ -4,7 +4,7 @@
  * Site footer with emerald accents and premium styling.
  */
 
-import { SOCIAL_LINKS, COMPANY_INFO } from '@/lib/constants';
+import { SOCIAL_LINKS, COMPANY_INFO, PRODUCTS } from '@/lib/constants';
 
 export function Footer() {
   return (
@@ -15,6 +15,12 @@ export function Footer() {
           <p className="text-gray-300 text-lg">{COMPANY_INFO.TAGLINE}</p>
 
           <div className="flex justify-center space-x-8 pt-6">
+            <a
+              href={PRODUCTS.LEETVIBECODE.URL}
+              className="text-gray-400 hover:text-brand-primary transition-colors duration-300"
+            >
+              {PRODUCTS.LEETVIBECODE.NAME}
+            </a>
             <a
               href={SOCIAL_LINKS.TWITTER}
               className="text-gray-400 hover:text-brand-primary transition-colors duration-300"

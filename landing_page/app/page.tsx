@@ -20,6 +20,7 @@ import { Hero } from '@/components/landing/Hero';
 import { ProblemSection } from '@/components/landing/ProblemSection';
 import { SolutionSection } from '@/components/landing/SolutionSection';
 import { HowItWorks } from '@/components/landing/HowItWorks';
+import { ProductSection } from '@/components/landing/ProductSection';
 import { PageAnalytics } from '@/components/analytics/PageAnalytics';
 import { WaitlistForm } from '@/components/forms/WaitlistForm';
 import { LAUNCH_COPY } from '@/lib/constants';
@@ -144,6 +145,9 @@ export default function Home() {
 
       {/* Category Selection Cards (with embedded ChatGPT Analyzer) */}
       <CategoryCards onJoinWaitlist={openForm} />
+
+      {/* LeetVibeCode: the product visitors can try today */}
+      <ProductSection />
 
       {/* FAQ Section */}
       <FAQ />
